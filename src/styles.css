@@ -1,3 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+@import 'primeicons/primeicons.css';
 
-@import "tailwindcss";
+/* DIALOG CONFI */
+.p-dialog-content {
+  margin-bottom: 60px;
+}
+.p-dialog-footer {
+  padding: 10px !important;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+}
