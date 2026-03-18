@@ -44,14 +44,13 @@ export class DocumentEditor {
 
   readonly CURRENT_DATE = new Date();
 
-  readonly data: any = inject(DynamicDialogConfig).data;
+  readonly data: any | undefined = inject(DynamicDialogConfig).data;
 
   form: FormGroup = this.formBuilder.nonNullable.group({
     title: ['', Validators.required],
     summary: ['', Validators.required],
-    number: ['', Validators.required],
+    correlativeNumber: ['', Validators.required],
     typeId: ['', Validators.required],
-    year: ['', Validators.required],
     validUntil: [''],
     promulgationDate: [null, Validators.required],
     publicationDate: [this.CURRENT_DATE, Validators.required],
@@ -80,7 +79,19 @@ export class DocumentEditor {
     this.file = file;
   }
 
-  save() {}
+  save() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const saveObservable = this.data
+      ? this.documentApi.update(this.data.id, this.form.value, this.file)
+      : this.documentApi.create(this.form.value, this.file!);
+    saveObservable.subscribe(() => {
+      this.diagloRef.close();
+    });
+  }
 
   addRelation() {
     this.relations.push(this.createRelationGroup());

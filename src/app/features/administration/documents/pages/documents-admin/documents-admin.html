@@ -96,12 +96,7 @@
         </div>
       </div>
     </p-popover> -->
-    <p-button
-      label="Agregar"
-      icon="pi pi-plus"
-      size="small"
-      (onClick)="openEditorDialog()"
-    />
+    <p-button label="Agregar" icon="pi pi-plus" size="small" (onClick)="openEditorDialog()" />
   </div>
 </div>
 
@@ -128,28 +123,25 @@
   </ng-template>
   <ng-template #header>
     <tr>
+      <th>Numero</th>
       <th>Nombre</th>
-      <th>Seccion</th>
       <th>Tipo</th>
       <th>Subtipo</th>
-      <th>Gestión</th>
       <th>Estado</th>
-      <th style="width: 3rem"></th>
+      <th style="width: 6rem"></th>
     </tr>
   </ng-template>
   <ng-template #body let-item>
     <tr>
-      <td>
-        <div class="flex items-center">
-          <!-- <file-icon [fileName]="item.file.originalName" /> -->
-          <span class="ml-2 font-semibold">{{ item.title }}</span>
-        </div>
-      </td>
-      <td>{{ item.section.name }}</td>
+      <td>{{ item.code }}</td>
+      <td>{{ item.title }}</td>
       <td>{{ item.type.name }}</td>
-      <td>{{ item.subtype?.name ?? '----' }}</td>
 
-      <td>{{ item.fiscalYear }}</td>
+      <td>
+        <a [href]="item.file.url" target="_blank" title="Abrir PDF" class="underline text-primary">
+          <!-- Que deberia ir aqui -->
+        </a>
+      </td>
       <td>
         @if (item.isActive) {
           <p-tag severity="success" value="Activo"></p-tag>
@@ -158,13 +150,23 @@
         }
       </td>
       <td>
-        <p-button
-          icon="pi pi-pencil"
-          size="small"
-          (click)="openEditorDialog(item)"
-          severity="secondary"
-          rounded
-        />
+        <div class="flex gap-x-2">
+          <p-button
+            icon="pi pi-eye"
+            size="small"
+            [outlined]="true"
+            rounded
+            (click)="openFile(item)"
+            pTooltip="Ver documento"
+          />
+          <p-button
+            icon="pi pi-pencil"
+            size="small"
+            (click)="openEditorDialog(item)"
+            severity="secondary"
+            rounded
+          />
+        </div>
       </td>
     </tr>
   </ng-template>

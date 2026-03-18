@@ -2,34 +2,48 @@ import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angu
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'autocomplete',
   imports: [AutoCompleteModule, ReactiveFormsModule],
   template: `
-    <div class="card flex justify-center">
-      <p-autocomplete [formControl]="control" [suggestions]="items()" (onSelect)="select($event)" />
-    </div>
+    <p-autocomplete
+      [formControl]="control"
+      [suggestions]="items()"
+      (completeMethod)="search($event)"
+      (onSelect)="select($event)"
+      [forceSelection]="true"
+      [placeholder]="placeholder()"
+      [fluid]="true"
+    />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Autocomplete implements OnInit {
   items = input.required<any[]>();
+  placeholder = input<string>('Buscar elemento');
 
   onSearch = output<string>();
   onSelect = output<any>();
 
   control = new FormControl<string>('', { nonNullable: true });
 
-  ngOnInit(): void {
-    this.control.valueChanges
-      .pipe(debounceTime(350), distinctUntilChanged(), takeUntilDestroyed())
-      .subscribe((value) => {
-        console.log(value);
-        this.onSearch.emit(value);
+  private searchSubject = new Subject<string>();
+
+  constructor() {
+    this.searchSubject
+      .pipe(debounceTime(450), distinctUntilChanged(), takeUntilDestroyed())
+      .subscribe((value: string | null) => {
+        this.onSearch.emit(value ?? '');
       });
+  }
+
+  ngOnInit(): void {}
+
+  search(event: AutoCompleteCompleteEvent) {
+    this.searchSubject.next(event.query);
   }
 
   select(option: any) {
