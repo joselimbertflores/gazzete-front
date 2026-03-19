@@ -19,4 +19,15 @@ export const routes: Routes = [
     path: 'auth/error',
     loadComponent: () => import('./features/auth/pages/auth-error-page/auth-error-page'),
   },
+
+  {
+    path: '',
+    loadComponent: () => import('./features/public/layout/public-layout/public-layout'),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/public/pages/landing-page/landing-page'),
+      },
+    ],
+  },
 ];
