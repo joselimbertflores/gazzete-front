@@ -57,6 +57,14 @@ export class DocumentAdminApi {
     );
   }
 
+  searchDocumentForRelation(term: string, targetDocumentId?: string) {
+    return this.http.get<any[]>(`${this.URL}/search-for-relation`, {
+      params: new HttpParams({
+        fromObject: { term, ...(targetDocumentId && { targetDocumentId }) },
+      }),
+    });
+  }
+
   private uploadDocument(pdf: File, year: number | undefined) {
     const formData = new FormData();
     formData.append('file', pdf);

@@ -8,8 +8,8 @@
     <p-step-panels>
       <p-step-panel [value]="1">
         <ng-template #content let-activateCallback="activateCallback">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-4 pt-1">
-            <div class="sm:col-span-3">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-y-6 gap-x-4 pt-1">
+            <div class="sm:col-span-4">
               <p-floatlabel class="w-full" variant="on">
                 <p-select
                   [options]="types()"
@@ -25,13 +25,13 @@
                 <label for="typeTxt">Tipo de documento</label>
               </p-floatlabel>
             </div>
-            <div class="sm:col-span-3">
+            <div class="sm:col-span-4">
               <p-floatlabel variant="on">
                 <input pInputText id="titleTxt" [fluid]="true" formControlName="title" />
                 <label for="titleTxt">Titulo</label>
               </p-floatlabel>
             </div>
-            <div class="sm:col-span-3">
+            <div class="sm:col-span-4">
               <p-floatlabel variant="on">
                 <textarea
                   pTextarea
@@ -211,7 +211,7 @@
 
                   <!-- Documento -->
                   <div class="col-span-8">
-                    <autocomplete [items]="[]" />
+                    <autocomplete [items]="documentsOptions()" (onSearch)="searchDocuments($event)" />
                     <!-- <p-autoComplete
                       formControlName="targetDocumentId"
                       [suggestions]="filteredDocuments[i]"

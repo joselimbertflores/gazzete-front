@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -60,6 +60,7 @@ export class DocumentEditor {
   types = this.documentApi.types;
 
   file: File | null = null;
+  documentsOptions = signal<any[]>([]);
 
   readonly relationTypes = [
     { label: 'Modifica', value: 'MODIFIES' },
@@ -106,6 +107,16 @@ export class DocumentEditor {
 
   removeRelation(index: number) {
     this.relations.removeAt(index);
+  }
+
+  searchDocuments(term: string) {
+    if (!term) {
+      this.documentsOptions.set([]);
+      return;
+    }
+    this.documentApi.searchDocumentForRelation(term).subscribe((resp) => {
+      this.documentsOptions.set(resp.map((doc) => ({ label: `${doc.code} - ${doc.title}`, value: doc.id })));
+    });
   }
 
   get relations(): FormArray {

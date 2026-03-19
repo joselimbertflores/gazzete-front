@@ -17,6 +17,8 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
       [forceSelection]="true"
       [placeholder]="placeholder()"
       [fluid]="true"
+      [optionLabel]="optionLabel()"
+      [optionValue]="optionValue()"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +26,8 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 export class Autocomplete implements OnInit {
   items = input.required<any[]>();
   placeholder = input<string>('Buscar elemento');
+  optionLabel = input<string>('label');
+  optionValue = input<string>('value');
 
   onSearch = output<string>();
   onSelect = output<any>();
@@ -34,7 +38,7 @@ export class Autocomplete implements OnInit {
 
   constructor() {
     this.searchSubject
-      .pipe(debounceTime(450), distinctUntilChanged(), takeUntilDestroyed())
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe((value: string | null) => {
         this.onSearch.emit(value ?? '');
       });
