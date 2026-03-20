@@ -8,8 +8,8 @@
     <p-step-panels>
       <p-step-panel [value]="1">
         <ng-template #content let-activateCallback="activateCallback">
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-y-6 gap-x-4 pt-1">
-            <div class="sm:col-span-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-4 pt-1">
+            <div class="sm:col-span-3">
               <p-floatlabel class="w-full" variant="on">
                 <p-select
                   [options]="types()"
@@ -25,13 +25,13 @@
                 <label for="typeTxt">Tipo de documento</label>
               </p-floatlabel>
             </div>
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-3">
               <p-floatlabel variant="on">
                 <input pInputText id="titleTxt" [fluid]="true" formControlName="title" />
                 <label for="titleTxt">Titulo</label>
               </p-floatlabel>
             </div>
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-3">
               <p-floatlabel variant="on">
                 <textarea
                   pTextarea
@@ -47,15 +47,18 @@
             <p-floatlabel variant="on">
               <p-inputnumber
                 formControlName="correlativeNumber"
-                inputId="numberTxt"
+                inputId="correlativeTxt"
+                [autocomplete]="'off'"
                 mode="decimal"
                 [useGrouping]="false"
                 [fluid]="true"
+                [min]="1"
               />
-              <label for="numberTxt">Numero</label>
+
+              <label for="correlativeTxt">Correlativo</label>
             </p-floatlabel>
 
-            <!-- <p-floatlabel variant="on">
+            <p-floatlabel variant="on">
               <p-datepicker
                 inputId="yearInput"
                 view="year"
@@ -63,11 +66,12 @@
                 showIcon
                 iconDisplay="input"
                 appendTo="body"
-                [fluid]="true"
                 formControlName="year"
+                [fluid]="true"
+                dataType="string"
               />
               <label for="yearInput">Gestión</label>
-            </p-floatlabel> -->
+            </p-floatlabel>
 
             <p-floatlabel variant="on">
               <p-datepicker
@@ -211,7 +215,10 @@
 
                   <!-- Documento -->
                   <div class="col-span-8">
-                    <autocomplete [items]="documentsOptions()" (onSearch)="searchDocuments($event)" />
+                    <autocomplete
+                      [items]="documentsOptions()"
+                      (onSearch)="searchDocuments($event)"
+                    />
                     <!-- <p-autoComplete
                       formControlName="targetDocumentId"
                       [suggestions]="filteredDocuments[i]"

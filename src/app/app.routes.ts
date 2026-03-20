@@ -19,7 +19,6 @@ export const routes: Routes = [
     path: 'auth/error',
     loadComponent: () => import('./features/auth/pages/auth-error-page/auth-error-page'),
   },
-
   {
     path: '',
     loadComponent: () => import('./features/public/layout/public-layout/public-layout'),
@@ -27,6 +26,10 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./features/public/pages/landing-page/landing-page'),
+      },
+      {
+        path: 'documents',
+        loadComponent: () => import('./features/public/pages/documents-page/documents-page'),
       },
     ],
   },

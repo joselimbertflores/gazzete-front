@@ -43,13 +43,15 @@ export class DocumentEditor {
   private documentApi = inject(DocumentAdminApi);
 
   readonly CURRENT_DATE = new Date();
+  readonly CURRENT_YEAR = this.CURRENT_DATE.getFullYear();
 
   readonly data: any | undefined = inject(DynamicDialogConfig).data;
 
   form: FormGroup = this.formBuilder.nonNullable.group({
     title: ['', Validators.required],
     summary: ['', Validators.required],
-    correlativeNumber: ['', Validators.required],
+    year: [this.CURRENT_YEAR.toString(), Validators.required],
+    correlativeNumber: [null, [Validators.required, Validators.min(1)]],
     typeId: ['', Validators.required],
     validUntil: [''],
     promulgationDate: [null, Validators.required],
@@ -115,7 +117,9 @@ export class DocumentEditor {
       return;
     }
     this.documentApi.searchDocumentForRelation(term).subscribe((resp) => {
-      this.documentsOptions.set(resp.map((doc) => ({ label: `${doc.code} - ${doc.title}`, value: doc.id })));
+      this.documentsOptions.set(
+        resp.map((doc) => ({ label: `${doc.code} - ${doc.title}`, value: doc.id })),
+      );
     });
   }
 

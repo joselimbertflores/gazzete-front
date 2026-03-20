@@ -37,9 +37,7 @@ export class AuthDataSource {
     return this.http.get<{ user: AuthUser }>(`${this.URL}/status`, { withCredentials: true }).pipe(
       tap(({ user }) => this._user.set(user)),
       map(() => true),
-      catchError((error) => {
-        alert(error);
-        console.log(error);
+      catchError(() => {
         return of(false);
       }),
     );

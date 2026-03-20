@@ -2,15 +2,23 @@ import { inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { environment } from '../../../../../environments/environment';
 import { Observable, of, switchMap } from 'rxjs';
+
+import { environment } from '../../../../../environments/environment';
 export interface UploadResult {
   id: string;
   name: string;
 }
 
 interface DocumentDto {
+  title: string;
+  year: string;
+  typeId: string;
+  summary?: string;
+  correlativeNumber: number;
   publicationDate: Date;
+  promulgationDate: Date;
+  validUntil?: Date;
 }
 @Injectable({
   providedIn: 'root',
@@ -32,25 +40,27 @@ export class DocumentAdminApi {
     });
   }
 
-  create(data: DocumentDto, pdf: File) {
-    return this.uploadDocument(pdf, data.publicationDate.getFullYear()).pipe(
+  create(dto: DocumentDto, pdf: File) {
+    return this.uploadDocument(pdf, +dto.year).pipe(
       switchMap((fileUploaded) =>
         this.http.post(`${this.URL}`, {
-          ...data,
+          ...dto,
+          year: +dto.year,
           fileId: fileUploaded.id,
         }),
       ),
     );
   }
 
-  update(id: string, data: Partial<DocumentDto>, file: File | null) {
+  update(id: string, dto: Partial<DocumentDto>, file: File | null) {
     const fileUploadObserbable: Observable<null | UploadResult> = file
-      ? this.uploadDocument(file, data.publicationDate?.getFullYear())
+      ? this.uploadDocument(file, dto.year ? +dto.year : undefined)
       : of(null);
     return fileUploadObserbable.pipe(
       switchMap((fileUploaded) =>
         this.http.patch(`${this.URL}/${id}`, {
-          ...data,
+          ...dto,
+          ...(dto.year && { year: +dto.year }),
           ...(fileUploaded && { fileId: fileUploaded.id }),
         }),
       ),
