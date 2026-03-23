@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -15,6 +22,12 @@ import { ButtonModule } from 'primeng/button';
 
 import { Autocomplete, FileSizePipe } from '../../../../../shared';
 import { DocumentAdminApi } from '../../services';
+import { DocumentResponse, RelationCandidateResponseDto } from '../../interfaces';
+
+interface AutocompleteOption {
+  label: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-document-editor',
@@ -36,7 +49,7 @@ import { DocumentAdminApi } from '../../services';
   templateUrl: './document-editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DocumentEditor {
+export class DocumentEditor implements OnInit {
   private formBuilder = inject(FormBuilder);
   private diagloRef = inject(DynamicDialogRef);
 
@@ -45,7 +58,7 @@ export class DocumentEditor {
   readonly CURRENT_DATE = new Date();
   readonly CURRENT_YEAR = this.CURRENT_DATE.getFullYear();
 
-  readonly data: any | undefined = inject(DynamicDialogConfig).data;
+  readonly data: DocumentResponse | undefined = inject(DynamicDialogConfig).data;
 
   form: FormGroup = this.formBuilder.nonNullable.group({
     title: ['', Validators.required],
@@ -62,7 +75,7 @@ export class DocumentEditor {
   types = this.documentApi.types;
 
   file: File | null = null;
-  documentsOptions = signal<any[]>([]);
+  documentsOptions = signal<AutocompleteOption[]>([]);
 
   readonly relationTypes = [
     { label: 'Modifica', value: 'MODIFIES' },
@@ -72,6 +85,10 @@ export class DocumentEditor {
     { label: 'Regula', value: 'REGULATES' },
     { label: 'Referencia', value: 'REFERENCES' },
   ];
+
+  ngOnInit(): void {
+    this.loadFormData();
+  }
 
   close() {
     this.diagloRef.close();
@@ -116,14 +133,28 @@ export class DocumentEditor {
       this.documentsOptions.set([]);
       return;
     }
-    this.documentApi.searchDocumentForRelation(term).subscribe((resp) => {
+    this.documentApi.searchRelationCandidates(term).subscribe((resp) => {
       this.documentsOptions.set(
         resp.map((doc) => ({ label: `${doc.code} - ${doc.title}`, value: doc.id })),
       );
     });
   }
 
-  get relations(): FormArray {
+  selectDocumentRelation(doc: AutocompleteOption, index: number) {
+    // const values = this.relations.value.fi;
+    const itemControl = this.relations.at(index);
+    itemControl.patchValue({ targetDocumentId: doc.value });
+  }
+
+  get relations(): FormArray<
+    FormGroup<{ type: FormControl<string>; targetDocumentId: FormControl<string> }>
+  > {
     return this.form.get('relations') as FormArray;
+  }
+
+  private loadFormData() {
+    if (!this.data) return;
+    const { outgoingRelations, year, ...props } = this.data;
+    this.form.patchValue(props);
   }
 }

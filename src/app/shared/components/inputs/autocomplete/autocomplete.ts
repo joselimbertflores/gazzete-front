@@ -2,12 +2,17 @@ import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angu
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import {
+  AutoCompleteCompleteEvent,
+  AutoCompleteModule,
+  AutoCompleteSelectEvent,
+} from 'primeng/autocomplete';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'autocomplete',
-  imports: [AutoCompleteModule, ReactiveFormsModule],
+  imports: [AutoCompleteModule, ReactiveFormsModule, CommonModule],
   template: `
     <p-autocomplete
       [formControl]="control"
@@ -50,7 +55,7 @@ export class Autocomplete implements OnInit {
     this.searchSubject.next(event.query);
   }
 
-  select(option: any) {
-    this.onSelect.emit(option);
+  select(option: AutoCompleteSelectEvent) {
+    this.onSelect.emit(option.value);
   }
 }

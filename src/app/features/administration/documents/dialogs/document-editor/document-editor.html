@@ -218,16 +218,8 @@
                     <autocomplete
                       [items]="documentsOptions()"
                       (onSearch)="searchDocuments($event)"
+                      (onSelect)="selectDocumentRelation($event, i)"
                     />
-                    <!-- <p-autoComplete
-                      formControlName="targetDocumentId"
-                      [suggestions]="filteredDocuments[i]"
-                      (completeMethod)="searchDocuments($event, i)"
-                      field="title"
-                      [dropdown]="true"
-                      placeholder="Buscar documento..."
-                      class="w-full"
-                    ></p-autoComplete> -->
                   </div>
 
                   <!-- Botón eliminar -->
@@ -244,6 +236,7 @@
               </div>
             </div>
           </div>
+          <pre>{{form.value | json  }}</pre>
 
           <div class="flex pt-6 justify-between">
             <p-button

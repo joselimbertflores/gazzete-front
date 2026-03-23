@@ -2,9 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, of, switchMap, tap } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
+import { DocumentResponse, RelationCandidateResponseDto } from '../interfaces';
 export interface UploadResult {
   id: string;
   name: string;
@@ -35,9 +36,11 @@ export class DocumentAdminApi {
   constructor() {}
 
   findAll(limit: number, offset: number, term?: string) {
-    return this.http.get<{ documents: any[]; total: number }>(`${this.URL}`, {
-      params: new HttpParams({ fromObject: { limit, offset, ...(term && { term }) } }),
-    });
+    return this.http
+      .get<{ documents: DocumentResponse[]; total: number }>(`${this.URL}`, {
+        params: new HttpParams({ fromObject: { limit, offset, ...(term && { term }) } }),
+      })
+      .pipe(tap((resp) => console.log(resp)));
   }
 
   create(dto: DocumentDto, pdf: File) {
@@ -67,8 +70,8 @@ export class DocumentAdminApi {
     );
   }
 
-  searchDocumentForRelation(term: string, targetDocumentId?: string) {
-    return this.http.get<any[]>(`${this.URL}/search-for-relation`, {
+  searchRelationCandidates(term: string, targetDocumentId?: string) {
+    return this.http.get<RelationCandidateResponseDto[]>(`${this.URL}/search-for-relation`, {
       params: new HttpParams({
         fromObject: { term, ...(targetDocumentId && { targetDocumentId }) },
       }),
