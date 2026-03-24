@@ -113,6 +113,7 @@
   currentPageReportTemplate="{first} - {last} de {totalRecords}"
   [rowsPerPageOptions]="[10, 25, 50]"
   class="text-sm"
+  [loading]="resource.isLoading()"
 >
   <ng-template #caption>
     <div class="flex sm:justify-end">
@@ -124,25 +125,36 @@
   <ng-template #header>
     <tr>
       <th>Numero</th>
-      <th>Nombre</th>
       <th>Tipo</th>
-      <th>Subtipo</th>
+      <th>Titulo</th>
+      <th>Publicacion</th>
       <th>Estado</th>
-      <th style="width: 6rem"></th>
+      <th style="width: 5rem"></th>
     </tr>
   </ng-template>
   <ng-template #body let-item>
     <tr>
       <td>{{ item.code }}</td>
-      <td>{{ item.title }}</td>
       <td>{{ item.type.name }}</td>
-
-     <td>{{ item.legalStatus }}</td>
+      <td>{{ item.title }}</td>
+      <td>{{ item.publicationDate | date: 'shortDate' }}</td>
       <td>
-        @if (item.isActive) {
-          <p-tag severity="success" value="Activo"></p-tag>
-        } @else {
-          <p-tag severity="danger" value="Inactivo"></p-tag>
+        @switch (item.legalStatus) {
+          @case ('VALID') {
+            <p-tag severity="success">Vigente</p-tag>
+          }
+          @case ('ABROGATED') {
+            <p-tag severity="danger">Abrogado</p-tag>
+          }
+          @case ('DEROGATED') {
+            <p-tag severity="warn">Abrogado</p-tag>
+          }
+          @case ('MODIFIED') {
+            <p-tag severity="info">Modificado</p-tag>
+          }
+          @default {
+            <p-tag severity="secondary" value="Si estado" />
+          }
         }
       </td>
       <td>
@@ -154,6 +166,8 @@
             rounded
             (click)="openFile(item)"
             pTooltip="Ver documento"
+            tooltipPosition="bottom"
+            showDelay="500"
           />
           <p-button
             icon="pi pi-pencil"

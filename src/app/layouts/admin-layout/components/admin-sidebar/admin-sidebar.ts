@@ -24,7 +24,7 @@ interface SidebarItem {
       <div class="flex items-center gap-3 h-14 sm:px-4">
         <!-- <app-icon /> -->
         <div class="flex flex-col leading-tight">
-          <span class="font-semibold text-surface-900"> Intranet </span>
+          <span class="font-semibold text-surface-900"> Gaceta </span>
           <span class="text-xs text-surface-500"> Administracion </span>
         </div>
       </div>

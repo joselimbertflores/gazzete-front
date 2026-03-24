@@ -4,10 +4,12 @@ import { provideRouter } from '@angular/router';
 
 import { definePreset, palette } from '@primeuix/themes';
 import { providePrimeNG } from 'primeng/config';
+import { MessageService } from 'primeng/api';
 import theme from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/auth-interceptor';
+import { httpErrorInterceptor } from './core/http/http-error-interceptor';
 
 const primaryColor = palette('{sky}');
 const AuraSky = definePreset(theme, {
@@ -20,7 +22,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([httpErrorInterceptor, authInterceptor])),
     providePrimeNG({
       theme: {
         preset: AuraSky,
@@ -29,5 +31,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    MessageService,
   ],
 };

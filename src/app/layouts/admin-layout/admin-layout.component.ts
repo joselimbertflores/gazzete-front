@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
+import { ToastModule } from 'primeng/toast';
 
 import { ProfileOverlay, AdminSidebar } from './components';
 
@@ -12,6 +13,7 @@ import { ProfileOverlay, AdminSidebar } from './components';
   selector: 'app-admin-layout',
   imports: [
     RouterModule,
+    ToastModule,
     ButtonModule,
     DrawerModule,
     AdminSidebar,

@@ -147,6 +147,19 @@
                     </span>
                   </div>
                 </div>
+              } @else if (data?.file) {
+                @let file = data!.file;
+                <div class="flex items-center gap-x-4 p-2">
+                  <i class="pi pi-file-pdf text-red-500" style="font-size: 1.5rem"></i>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-sm font-medium truncate">
+                      {{ file.name }}
+                    </span>
+                    <span class="text-xs text-surface-500">
+                      {{ file.size | fileSize }}
+                    </span>
+                  </div>
+                </div>
               } @else {
                 <div class="text-center mt-5 p-2">
                   <span class="text-sm text-surface-500 font-medium">
@@ -216,6 +229,7 @@
                   <!-- Documento -->
                   <div class="col-span-8">
                     <autocomplete
+                      [initivalValue]="initialOptions[i]"
                       [items]="documentsOptions()"
                       (onSearch)="searchDocuments($event)"
                       (onSelect)="selectDocumentRelation($event, i)"
@@ -236,14 +250,13 @@
               </div>
             </div>
           </div>
-          <pre>{{form.value | json  }}</pre>
 
           <div class="flex pt-6 justify-between">
             <p-button
               label="Atras"
               severity="secondary"
               icon="pi pi-arrow-left"
-              (onClick)="activateCallback(1)"
+              (onClick)="activateCallback(2)"
               [outlined]="true"
               size="small"
             />

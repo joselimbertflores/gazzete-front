@@ -20,14 +20,9 @@ import { StepperModule } from 'primeng/stepper';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 
-import { Autocomplete, FileSizePipe } from '../../../../../shared';
+import { Autocomplete, AutocompleteOption, FileSizePipe } from '../../../../../shared';
 import { DocumentAdminApi } from '../../services';
-import { DocumentResponse, RelationCandidateResponseDto } from '../../interfaces';
-
-interface AutocompleteOption {
-  label: string;
-  value: string;
-}
+import { DocumentResponse } from '../../interfaces';
 
 @Component({
   selector: 'app-document-editor',
@@ -76,6 +71,10 @@ export class DocumentEditor implements OnInit {
 
   file: File | null = null;
   documentsOptions = signal<AutocompleteOption[]>([]);
+
+  currentRelations = signal<any[]>([]);
+
+  initialOptions: AutocompleteOption[] = [];
 
   readonly relationTypes = [
     { label: 'Modifica', value: 'MODIFIES' },
@@ -141,7 +140,6 @@ export class DocumentEditor implements OnInit {
   }
 
   selectDocumentRelation(doc: AutocompleteOption, index: number) {
-    // const values = this.relations.value.fi;
     const itemControl = this.relations.at(index);
     itemControl.patchValue({ targetDocumentId: doc.value });
   }
@@ -154,7 +152,31 @@ export class DocumentEditor implements OnInit {
 
   private loadFormData() {
     if (!this.data) return;
-    const { outgoingRelations, year, ...props } = this.data;
-    this.form.patchValue(props);
+    const { outgoingRelations, year, publicationDate, promulgationDate, validUntil, ...props } =
+      this.data;
+    this.form.patchValue({
+      ...props,
+      promulgationDate: new Date(promulgationDate),
+      publicationDate: new Date(publicationDate),
+      validUntil: new Date(validUntil),
+    });
+    this.getRelations(this.data.id);
+  }
+
+  private getRelations(id: string) {
+    this.documentApi.findOutgoingRelationsByDocument(id).subscribe((resp) => {
+      resp.forEach((item) => {
+        const group = this.createRelationGroup();
+
+        group.patchValue({ type: item.relationType, targetDocumentId: item.targetDocument.id });
+
+        this.relations.push(group);
+
+        this.initialOptions.push({
+          label: `${item.targetDocument.code} - ${item.targetDocument.title}`,
+          value: item.targetDocument.id,
+        });
+      });
+    });
   }
 }

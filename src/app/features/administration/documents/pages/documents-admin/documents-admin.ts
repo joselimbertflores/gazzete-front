@@ -10,9 +10,10 @@ import { TagModule } from 'primeng/tag';
 import { DocumentAdminApi } from '../../services';
 import { DocumentEditor } from '../../dialogs';
 import { SearchInput } from '../../../../../shared';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-documents-admin',
-  imports: [TableModule, TagModule, ButtonModule, TooltipModule, SearchInput],
+  imports: [CommonModule, TableModule, TagModule, ButtonModule, TooltipModule, SearchInput],
   templateUrl: './documents-admin.html',
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,

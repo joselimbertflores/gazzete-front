@@ -1,14 +1,19 @@
 import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import {
   AutoCompleteCompleteEvent,
-  AutoCompleteModule,
   AutoCompleteSelectEvent,
+  AutoCompleteModule,
 } from 'primeng/autocomplete';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { CommonModule } from '@angular/common';
+
+export interface AutocompleteOption {
+  label: string;
+  value: any;
+}
 
 @Component({
   selector: 'autocomplete',
@@ -28,28 +33,33 @@ import { CommonModule } from '@angular/common';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Autocomplete implements OnInit {
-  items = input.required<any[]>();
+export class Autocomplete<T> implements OnInit {
+  initivalValue = input<any>();
+  items = input.required<AutocompleteOption[]>();
   placeholder = input<string>('Buscar elemento');
-  optionLabel = input<string>('label');
-  optionValue = input<string>('value');
+  optionLabel = input<string>();
+  optionValue = input<string>();
 
   onSearch = output<string>();
   onSelect = output<any>();
 
-  control = new FormControl<string>('', { nonNullable: true });
+  control = new FormControl<AutocompleteOption | null>(null);
 
   private searchSubject = new Subject<string>();
 
   constructor() {
     this.searchSubject
-      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed())
+      .pipe(debounceTime(350), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe((value: string | null) => {
         this.onSearch.emit(value ?? '');
       });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.initivalValue()) {
+      this.control.setValue(this.initivalValue() ?? null, { emitEvent: false });
+    }
+  }
 
   search(event: AutoCompleteCompleteEvent) {
     this.searchSubject.next(event.query);

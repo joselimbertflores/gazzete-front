@@ -78,6 +78,12 @@ export class DocumentAdminApi {
     });
   }
 
+  findOutgoingRelationsByDocument(id: string) {
+    return this.http
+      .get<any[]>(`${this.URL}/${id}/relations`)
+      .pipe(tap((resp) => console.log(resp)));
+  }
+
   private uploadDocument(pdf: File, year: number | undefined) {
     const formData = new FormData();
     formData.append('file', pdf);
