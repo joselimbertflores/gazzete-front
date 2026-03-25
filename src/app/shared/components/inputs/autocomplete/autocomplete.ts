@@ -29,6 +29,7 @@ export interface AutocompleteOption {
       [fluid]="true"
       [optionLabel]="optionLabel()"
       [optionValue]="optionValue()"
+      appendTo="body"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
