@@ -1,19 +1,30 @@
 import { ChangeDetectionStrategy, linkedSignal, Component, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
+import { MenuModule } from 'primeng/menu';
 import { TagModule } from 'primeng/tag';
 
 import { DocumentAdminApi } from '../../services';
 import { DocumentEditor } from '../../dialogs';
 import { SearchInput } from '../../../../../shared';
-import { CommonModule } from '@angular/common';
+import { DocumentResponse } from '../../interfaces';
+import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-documents-admin',
-  imports: [CommonModule, TableModule, TagModule, ButtonModule, TooltipModule, SearchInput],
+  imports: [
+    CommonModule,
+    TableModule,
+    TagModule,
+    ButtonModule,
+    TooltipModule,
+    MenuModule,
+    SearchInput,
+  ],
   templateUrl: './documents-admin.html',
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,6 +50,8 @@ export default class DocumentsAdmin {
   );
   dataSize = linkedSignal(() => (this.resource.hasValue() ? this.resource.value().total : 0));
 
+  items: MenuItem[] = [];
+
   chagePage(event: TablePageEvent) {
     this.limit.set(event.rows);
     this.offset.set(event.first);
@@ -54,13 +67,13 @@ export default class DocumentsAdmin {
 
   openEditorDialog(item?: any) {
     const diagloRef = this.dialogService.open(DocumentEditor, {
-      header: 'Editar Documentación',
+      header: item ? 'Editar Documento' : 'Crear Documento',
       modal: true,
       focusOnShow: false,
       closable: true,
       draggable: false,
       data: item,
-      width: '50vw',
+      width: '40vw',
       breakpoints: {
         '960px': '75vw',
         '640px': '90vw',
@@ -78,5 +91,20 @@ export default class DocumentsAdmin {
 
   search(term: string) {
     this.searchTerm.set(term);
+  }
+
+  setMenuItems(row: DocumentResponse) {
+    this.items = [
+      {
+        label: 'Opciones',
+        items: [
+          {
+            label: 'Editar',
+            icon: 'pi pi-fw pi-pencil',
+            command: () => this.openEditorDialog(row),
+          },
+        ],
+      },
+    ];
   }
 }

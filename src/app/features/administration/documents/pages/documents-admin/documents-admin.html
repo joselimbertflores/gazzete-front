@@ -101,9 +101,10 @@
 </div>
 
 <p-table
-  [paginator]="true"
-  [lazy]="true"
+  class="text-sm"
   size="small"
+  [lazy]="true"
+  [paginator]="true"
   [value]="dataSource()"
   [totalRecords]="dataSize()"
   (onPage)="chagePage($event)"
@@ -111,8 +112,7 @@
   [rows]="limit()"
   [showCurrentPageReport]="true"
   currentPageReportTemplate="{first} - {last} de {totalRecords}"
-  [rowsPerPageOptions]="[10, 25, 50]"
-  class="text-sm"
+  [rowsPerPageOptions]="[10, 25, 40, 50]"
   [loading]="resource.isLoading()"
 >
   <ng-template #caption>
@@ -175,6 +175,19 @@
             (click)="openEditorDialog(item)"
             severity="secondary"
             rounded
+          />
+          <p-menu
+            #menu
+            [model]="items"
+            [popup]="true"
+            appendTo="body"
+            (onShow)="setMenuItems(item)"
+          />
+          <p-button
+            [text]="true"
+            size="small"
+            (click)="menu.toggle($event)"
+            icon="pi pi-bars"
           />
         </div>
       </td>
