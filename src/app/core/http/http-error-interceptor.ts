@@ -12,6 +12,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         let messageConfig: ToastMessageOptions = {};
         switch (error.status) {
           case 400:
+          case 409:
             messageConfig = {
               severity: 'warn',
               summary: 'Solictud incorrecta',

@@ -1,0 +1,51 @@
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-2xl font-semibold">Usuarios</h2>
+</div>
+<div>
+  <p-table
+    #table
+    [value]="dataSource()"
+    [totalRecords]="dataSize()"
+    [rows]="limit()"
+    [paginator]="true"
+    [lazy]="true"
+    (onPage)="changePage($event)"
+    size="small"
+  >
+    <ng-template #caption>
+      <div class="flex sm:justify-end">
+        <div class="w-full sm:w-1/4">
+          <search-input (search)="search($event)" label="Buscar" />
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #header>
+      <tr>
+        <th>Nombre</th>
+        <th class="w-37">Estado</th>
+        <th style="width: 2.5rem"></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-item>
+      <tr>
+        <td>{{ item.fullName | titlecase }}</td>
+        <td>
+          @if (item.isActive) {
+            <p-tag severity="success" value="Activo" />
+          } @else {
+            <p-tag severity="warn" value="Inactivo" />
+          }
+        </td>
+        <td>
+          <p-button
+            [text]="true"
+            [rounded]="true"
+            icon="pi pi-pencil"
+            size="small"
+            (click)="openUserDialog(item)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

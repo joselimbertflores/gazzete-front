@@ -1,0 +1,48 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="flex flex-col">
+    <div class="flow-root">
+      <dl class="-my-3 divide-y divide-surface-200">
+        <div class="grid grid-cols-1 gap-1 py-2 sm:grid-cols-4 sm:gap-4">
+          <dt class="font-medium text-surface-900">Nombre</dt>
+          <dd class="text-surface-700 sm:col-span-3">
+            {{ data.fullName | titlecase }}
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <div class="mt-6 flex flex-col gap-1">
+      <p-listbox
+        [options]="roles"
+        [multiple]="true"
+        [checkbox]="true"
+        [filter]="true"
+        class="w-full"
+        optionValue="value"
+        scrollHeight="600px"
+        filterPlaceHolder="Nombre del rol"
+        formControlName="roles"
+        emptyFilterMessage="Sin resultados"
+        emptyMessage="Sin registros"
+      >
+        <ng-template #header>
+          <span class="racking-wide">Listado de roles</span>
+        </ng-template>
+        <ng-template #item let-option>
+          <div class="flex flex-col ml-2">
+            <p class="font-medium text-primary">{{ option.title }}</p>
+            <span class="text-xs">{{ option.description }}</span>
+          </div>
+        </ng-template>
+      </p-listbox>
+      @if (formUtils.isInvalid(form.get('roles'))) {
+        <p-message severity="error" size="small" variant="simple">
+          Seleccione al menos un rol
+        </p-message>
+      }
+    </div>
+  </div>
+  <div class="p-dialog-footer">
+    <p-button label="Cancelar" type="button" severity="secondary" (onClick)="close()" />
+    <p-button label="Guardar" type="submit" />
+  </div>
+</form>

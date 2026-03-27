@@ -1,0 +1,1 @@
+export * from "./responses/user-response.interface"

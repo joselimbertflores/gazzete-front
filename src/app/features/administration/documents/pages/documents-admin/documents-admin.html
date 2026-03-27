@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between mb-2">
   <h2 class="text-2xl font-semibold">Documentos</h2>
   <div class="flex gap-x-2">
-    <!-- @let isFiltering = activeFiltersCount > 0;
+    @let isFiltering = activeFiltersCount > 0;
     <p-button
       (click)="filterPopover.toggle($event)"
       [icon]="isFiltering ? 'pi pi-filter-fill' : 'pi pi-filter'"
@@ -10,95 +10,80 @@
       [severity]="isFiltering ? 'primary' : 'secondary'"
       [badge]="isFiltering ? activeFiltersCount.toString() : undefined"
     />
-    <p-popover #filterPopover>
-      <div class="flex flex-col w-[600px] gap-y-6">
-        <div class="flex items-center justify-between px-2">
-          <span class="text-lg font-semibold text-surface-700"> Filtros </span>
-          <p-button
-            icon="pi pi-times"
-            [text]="true"
-            [rounded]="true"
-            severity="secondary"
-            (click)="filterPopover.hide()"
-            size="small"
-          />
-        </div>
-        <form [formGroup]="filterForm" class="flex flex-col gap-y-4">
-          <p-floatlabel variant="on">
-            <p-treeSelect
-              class="w-full"
-              [options]="treeSections()"
-              selectionMode="single"
-              appendTo="body"
-              [filter]="true"
-              [showClear]="true"
-              filterPlaceholder="Buscar seccion"
-              emptyMessage="Sin resultados"
-          
-              (onNodeSelect)="selectSection($event.node.data)"
-            >
-            </p-treeSelect>
-            <label for="sectionDoc">Sección</label>
-          </p-floatlabel>
-          <p-floatlabel class="w-full" variant="on">
-            <p-select
-              inputId="type"
-              optionLabel="name"
-              class="w-full"
-              [filter]="true"
-              [showClear]="true"
-              [options]="types()"
-              (onChange)="selectType($event.value)"
-            />
-            <label for="type">Tipo</label>
-          </p-floatlabel>
-          <p-floatlabel class="w-full" variant="on">
-            <p-select
-              inputId="subtype"
-              optionValue="id"
-              optionLabel="name"
-              class="w-full"
-              [filter]="true"
-              [showClear]="true"
-              [options]="subtypes()"
-              formControlName="subtypeId"
-            />
-            <label for="subtype">Subtipo</label>
-          </p-floatlabel>
-          <p-floatlabel variant="on">
-            <p-datepicker
-              inputId="yearInput"
-              view="year"
-              dateFormat="yy"
-              showIcon
-              iconDisplay="input"
-              appendTo="body"
-              [readonlyInput]="true"
-              [fluid]="true"
-              [showClear]="true"
-              formControlName="date"
-            />
-            <label for="yearInput">Gestión</label>
-          </p-floatlabel>
-        </form>
-        <div class="flex justify-end gap-x-2">
-          <p-button
-            label="Limpiar"
-            severity="secondary"
-            size="small"
-            (onClick)="clearFilters(); filterPopover.hide()"
-          />
-          <p-button
-            label="Aplicar filtros"
-            size="small"
-            (onClick)="applyFilters(); filterPopover.hide()"
-          />
-        </div>
-      </div>
-    </p-popover> -->
     <p-button label="Agregar" icon="pi pi-plus" size="small" (onClick)="openEditorDialog()" />
   </div>
 </div>
+
+<p-popover #filterPopover>
+  <div class="flex flex-col w-120 gap-y-6">
+    <div class="flex items-center justify-between px-2">
+      <span class="text-lg font-semibold text-surface-700"> Filtros </span>
+      <p-button
+        icon="pi pi-times"
+        [text]="true"
+        [rounded]="true"
+        severity="secondary"
+        (click)="filterPopover.hide()"
+        size="small"
+      />
+    </div>
+    <form [formGroup]="filterForm" class="flex flex-col gap-y-4">
+      <p-floatlabel class="w-full" variant="on">
+        <p-select
+          inputId="type"
+          optionLabel="name"
+          optionValue="id"
+          class="w-full"
+          [filter]="true"
+          [showClear]="true"
+          formControlName="typeId"
+          [options]="documentTypes()"
+        />
+        <label for="type">Tipo documento</label>
+      </p-floatlabel>
+      <p-floatlabel class="w-full" variant="on">
+        <p-select
+          inputId="status"
+          class="w-full"
+          [filter]="true"
+          [showClear]="true"
+          formControlName="legalStatus"
+          [options]="documentStatuses"
+        />
+        <label for="status">Estado legal</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="yearInput"
+          view="year"
+          dateFormat="yy"
+          showIcon
+          iconDisplay="input"
+          appendTo="body"
+          [readonlyInput]="true"
+          [fluid]="true"
+          [showClear]="true"
+          formControlName="year"
+          dataType="string"
+        />
+        <label for="yearInput">Gestión</label>
+      </p-floatlabel>
+    </form>
+    <div class="flex justify-end gap-x-2">
+      <p-button
+        label="Limpiar"
+        severity="secondary"
+        size="small"
+        (onClick)="clearFilters(); filterPopover.hide()"
+      />
+      <p-button
+        label="Aplicar filtros"
+        size="small"
+        (onClick)="applyFilters(); filterPopover.hide()"
+      />
+    </div>
+  </div>
+</p-popover>
 
 <p-table
   class="text-sm"
@@ -124,7 +109,7 @@
   </ng-template>
   <ng-template #header>
     <tr>
-      <th>Numero</th>
+      <th style="width: 100px">Numero</th>
       <th>Tipo</th>
       <th>Titulo</th>
       <th>Publicacion</th>
@@ -137,7 +122,7 @@
       <td>{{ item.code }}</td>
       <td>{{ item.type.name }}</td>
       <td>{{ item.title }}</td>
-      <td>{{ item.publicationDate | date: 'shortDate' }}</td>
+      <td>{{ item.publicationDate | date: 'dd/MM/yyyy' }}</td>
       <td>
         @switch (item.legalStatus) {
           @case ('VALID') {
@@ -158,36 +143,30 @@
         }
       </td>
       <td>
-        <div class="flex gap-x-2">
+        <div class="flex gap-x-1">
           <p-button
+            severity="secondary"
             icon="pi pi-eye"
             size="small"
-            [outlined]="true"
-            rounded
+            [rounded]="true"
             (click)="openFile(item)"
             pTooltip="Ver documento"
             tooltipPosition="bottom"
             showDelay="500"
           />
-          <p-button
-            icon="pi pi-pencil"
-            size="small"
-            (click)="openEditorDialog(item)"
-            severity="secondary"
-            rounded
-          />
           <p-menu
             #menu
-            [model]="items"
+            [model]="menuItems"
             [popup]="true"
             appendTo="body"
             (onShow)="setMenuItems(item)"
           />
           <p-button
-            [text]="true"
+            severity="secondary"
+            [rounded]="true"
             size="small"
             (click)="menu.toggle($event)"
-            icon="pi pi-bars"
+            icon="pi pi-ellipsis-v"
           />
         </div>
       </td>
@@ -195,7 +174,9 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="6">Sin resultados.</td>
+      <td colspan="6">
+        <div class="py-1">Sin resultados</div>
+      </td>
     </tr>
   </ng-template>
 </p-table>

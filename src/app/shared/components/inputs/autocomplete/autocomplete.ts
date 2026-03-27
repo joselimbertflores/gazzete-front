@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, OnInit, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,6 @@ export interface AutocompleteOption {
       [suggestions]="items()"
       (completeMethod)="search($event)"
       (onSelect)="select($event)"
-      [forceSelection]="true"
       [placeholder]="placeholder()"
       [fluid]="true"
       [optionLabel]="optionLabel()"
@@ -49,6 +48,12 @@ export class Autocomplete<T> implements OnInit {
   private searchSubject = new Subject<string>();
 
   constructor() {
+    effect(() => {
+      const value = this.initivalValue();
+      this.control.setValue(value ?? null, { emitEvent: false });
+      console.log(value);
+    });
+
     this.searchSubject
       .pipe(debounceTime(350), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe((value: string | null) => {
@@ -56,11 +61,7 @@ export class Autocomplete<T> implements OnInit {
       });
   }
 
-  ngOnInit(): void {
-    if (this.initivalValue()) {
-      this.control.setValue(this.initivalValue() ?? null, { emitEvent: false });
-    }
-  }
+  ngOnInit(): void {}
 
   search(event: AutoCompleteCompleteEvent) {
     this.searchSubject.next(event.query);

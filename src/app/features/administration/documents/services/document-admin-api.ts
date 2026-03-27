@@ -5,7 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, switchMap, tap } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
-import { DocumentResponse, RelationCandidateResponseDto } from '../interfaces';
+import { DocumentResponse } from '../interfaces';
 export interface UploadResult {
   id: string;
   name: string;
@@ -21,6 +21,15 @@ interface DocumentDto {
   promulgationDate: Date;
   validUntil?: Date;
 }
+
+interface GetDocumentsParams {
+  limit: number;
+  offset: number;
+  term?: string;
+  typeId?: string;
+  year?: string;
+  legalStatus?: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -29,24 +38,24 @@ export class DocumentAdminApi {
 
   private http = inject(HttpClient);
 
-  types = toSignal(this.http.get<any[]>(`${this.URL}/types`), {
+  documentTypes = toSignal(this.http.get<any[]>(`${this.URL}/types`), {
     initialValue: [],
   });
 
   constructor() {}
 
-  findAll(limit: number, offset: number, term?: string) {
-    return this.http
-      .get<{ documents: DocumentResponse[]; total: number }>(`${this.URL}`, {
-        params: new HttpParams({ fromObject: { limit, offset, ...(term && { term }) } }),
-      })
-      .pipe(tap((resp) => console.log(resp)));
+  findAll({ limit, offset, term, ...rest }: GetDocumentsParams) {
+    return this.http.get<{ documents: DocumentResponse[]; total: number }>(`${this.URL}`, {
+      params: new HttpParams({
+        fromObject: { limit, offset, ...(term && { term }), ...this.removeEmptyParams(rest) },
+      }),
+    });
   }
 
   create(dto: DocumentDto, pdf: File) {
     return this.uploadDocument(pdf, +dto.year).pipe(
       switchMap((fileUploaded) =>
-        this.http.post(`${this.URL}`, {
+        this.http.post<DocumentResponse>(`${this.URL}`, {
           ...dto,
           year: +dto.year,
           fileId: fileUploaded.id,
@@ -61,7 +70,7 @@ export class DocumentAdminApi {
       : of(null);
     return fileUploadObserbable.pipe(
       switchMap((fileUploaded) =>
-        this.http.patch(`${this.URL}/${id}`, {
+        this.http.patch<DocumentResponse>(`${this.URL}/${id}`, {
           ...dto,
           ...(dto.year && { year: +dto.year }),
           ...(fileUploaded && { fileId: fileUploaded.id }),
@@ -71,17 +80,23 @@ export class DocumentAdminApi {
   }
 
   searchRelationCandidates(term: string, targetDocumentId?: string) {
-    return this.http.get<RelationCandidateResponseDto[]>(`${this.URL}/search-for-relation`, {
+    return this.http.get<any[]>(`${this.URL}/search-for-relation`, {
       params: new HttpParams({
         fromObject: { term, ...(targetDocumentId && { targetDocumentId }) },
       }),
     });
   }
 
-  findOutgoingRelationsByDocument(id: string) {
+  getDocumentRelations(sourceId: string) {
     return this.http
-      .get<any[]>(`${this.URL}/${id}/relations`)
+      .get<any>(`${this.URL}/${sourceId}/relation`)
       .pipe(tap((resp) => console.log(resp)));
+  }
+
+  private removeEmptyParams(obj: object) {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([_, v]) => v !== null && v !== undefined && v !== ''),
+    );
   }
 
   private uploadDocument(pdf: File, year: number | undefined) {

@@ -1,12 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -20,9 +13,9 @@ import { StepperModule } from 'primeng/stepper';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 
-import { Autocomplete, AutocompleteOption, FileSizePipe } from '../../../../../shared';
-import { DocumentAdminApi } from '../../services';
+import { FileSizePipe } from '../../../../../shared';
 import { DocumentResponse } from '../../interfaces';
+import { DocumentAdminApi } from '../../services';
 
 @Component({
   selector: 'app-document-editor',
@@ -39,7 +32,6 @@ import { DocumentResponse } from '../../interfaces';
     TextareaModule,
     SelectModule,
     FileSizePipe,
-    Autocomplete,
   ],
   templateUrl: './document-editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,17 +56,11 @@ export class DocumentEditor implements OnInit {
     validUntil: [''],
     promulgationDate: [null, Validators.required],
     publicationDate: [this.CURRENT_DATE, Validators.required],
-    relations: this.formBuilder.array([]),
   });
 
-  types = this.documentApi.types;
+  types = this.documentApi.documentTypes;
 
   file: File | null = null;
-  documentsOptions = signal<AutocompleteOption[]>([]);
-
-  currentRelations = signal<any[]>([]);
-
-  initialOptions: AutocompleteOption[] = [];
 
   readonly relationTypes = [
     { label: 'Modifica', value: 'MODIFIES' },
@@ -107,76 +93,19 @@ export class DocumentEditor implements OnInit {
     const saveObservable = this.data
       ? this.documentApi.update(this.data.id, this.form.value, this.file)
       : this.documentApi.create(this.form.value, this.file!);
-    saveObservable.subscribe(() => {
-      this.diagloRef.close();
+    saveObservable.subscribe((resp) => {
+      this.diagloRef.close(resp);
     });
-  }
-
-  addRelation() {
-    this.relations.push(this.createRelationGroup());
-  }
-
-  createRelationGroup(): FormGroup {
-    return this.formBuilder.group({
-      type: ['', Validators.required],
-      targetDocumentId: ['', Validators.required],
-    });
-  }
-
-  removeRelation(index: number) {
-    this.relations.removeAt(index);
-  }
-
-  searchDocuments(term: string) {
-    if (!term) {
-      this.documentsOptions.set([]);
-      return;
-    }
-    this.documentApi.searchRelationCandidates(term).subscribe((resp) => {
-      this.documentsOptions.set(
-        resp.map((doc) => ({ label: `${doc.code} - ${doc.title}`, value: doc.id })),
-      );
-    });
-  }
-
-  selectDocumentRelation(doc: AutocompleteOption, index: number) {
-    const itemControl = this.relations.at(index);
-    itemControl.patchValue({ targetDocumentId: doc.value });
-  }
-
-  get relations(): FormArray<
-    FormGroup<{ type: FormControl<string>; targetDocumentId: FormControl<string> }>
-  > {
-    return this.form.get('relations') as FormArray;
   }
 
   private loadFormData() {
     if (!this.data) return;
-    const { outgoingRelations, year, publicationDate, promulgationDate, validUntil, ...props } =
-      this.data;
+    const { year, publicationDate, promulgationDate, validUntil, ...props } = this.data;
     this.form.patchValue({
       ...props,
       promulgationDate: new Date(promulgationDate),
       publicationDate: new Date(publicationDate),
       validUntil: new Date(validUntil),
-    });
-    this.getRelations(this.data.id);
-  }
-
-  private getRelations(id: string) {
-    this.documentApi.findOutgoingRelationsByDocument(id).subscribe((resp) => {
-      resp.forEach((item) => {
-        const group = this.createRelationGroup();
-
-        group.patchValue({ type: item.relationType, targetDocumentId: item.targetDocument.id });
-
-        this.relations.push(group);
-
-        this.initialOptions.push({
-          label: `${item.targetDocument.code} - ${item.targetDocument.title}`,
-          value: item.targetDocument.id,
-        });
-      });
     });
   }
 }

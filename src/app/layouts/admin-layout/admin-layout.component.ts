@@ -22,6 +22,12 @@ import { ProfileOverlay, AdminSidebar } from './components';
   ],
   templateUrl: './admin-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles:`
+  ::ng-deep .p-drawer-content {
+    padding: 10px !important; /* Removes all padding */
+}
+
+  `
 })
 export default class AdminLayoutComponent {
   isMobile = signal(false);

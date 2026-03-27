@@ -21,13 +21,13 @@ interface SidebarItem {
   imports: [RouterModule, PanelMenuModule, CommonModule],
   template: `
     <div class="h-full flex flex-col bg-surface-0">
-      <div class="flex items-center gap-3 h-14 sm:px-4">
-        <!-- <app-icon /> -->
+      <a routerLink="/admin" class="flex items-center gap-3 h-14 sm:px-4">
+        <img src="images/icons/app.webp" alt="Gaceta" class="h-10 w-10 object-contain" />
         <div class="flex flex-col leading-tight">
-          <span class="font-semibold text-surface-900"> Gaceta </span>
-          <span class="text-xs text-surface-500"> Administracion </span>
+          <span class="font-semibold text-surface-900">Gaceta</span>
+          <span class="text-xs text-surface-500">Administración</span>
         </div>
-      </div>
+      </a>
 
       <div class="flex-1 overflow-y-auto py-2 sm:px-2">
         <p-panelMenu [model]="filteredMenu()" class="w-full" [multiple]="true">
@@ -35,7 +35,6 @@ interface SidebarItem {
             <a
               pRipple
               [routerLink]="item.routerLink"
-              [routerLinkActiveOptions]="{ exact: false }"
               routerLinkActive="bg-primary-100 !text-primary-700 rounded-lg"
               class="flex items-center gap-x-3 px-2 py-2 text-surface-700 hover:bg-surface-100 hover:rounded-lg transition-colors mb-1"
             >
@@ -79,25 +78,32 @@ export class AdminSidebar {
       expanded: true,
       items: [
         {
-          label: 'Tipos de documentos',
+          label: 'Tipos',
           icon: 'pi pi-list',
           routerLink: 'document-types',
-          role: UserRole.USER,
+          role: UserRole.ADMIN,
         },
 
         {
-          label: 'Documentos',
+          label: 'Publicaciones',
           icon: 'pi pi-file',
           routerLink: 'documents',
           role: UserRole.USER,
         },
       ],
     },
-
     {
-      label: 'Usuarios',
-      icon: 'pi pi-users',
-      routerLink: 'users',
+      label: 'Accesos',
+      icon: 'pi pi-folder',
+      expanded: true,
+      items: [
+        {
+          label: 'Usuarios',
+          icon: 'pi pi-users',
+          routerLink: 'users',
+          role: UserRole.ADMIN,
+        },
+      ],
     },
   ];
 
