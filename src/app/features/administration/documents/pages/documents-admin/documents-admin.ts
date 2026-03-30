@@ -95,7 +95,7 @@ export default class DocumentsAdmin {
       closable: true,
       draggable: false,
       data: item,
-      width: '40vw',
+      width: '45vw',
       breakpoints: {
         '960px': '75vw',
         '640px': '90vw',

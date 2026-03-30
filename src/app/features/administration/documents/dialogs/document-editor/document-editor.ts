@@ -1,5 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  FormBuilder,
+  Validators,
+  FormGroup,
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -9,21 +17,46 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { StepperModule } from 'primeng/stepper';
+import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 
 import { FileSizePipe } from '../../../../../shared';
 import { DocumentResponse } from '../../interfaces';
+import { FormUtils } from '../../../../../helpers';
 import { DocumentAdminApi } from '../../services';
 
+function isBefore(targetControlName: string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const target = control.parent?.get(targetControlName);
+
+    if (!control.value || !target?.value) return null;
+
+    const current = new Date(control.value).getTime();
+    const targetDate = new Date(target.value).getTime();
+
+    return current > targetDate ? { isBefore: true } : null;
+  };
+}
+
+function isAfter(targetControlName: string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const target = control.parent?.get(targetControlName);
+
+    if (!control.value || !target?.value) return null;
+
+    const current = new Date(control.value).getTime();
+    const targetDate = new Date(target.value).getTime();
+
+    return current < targetDate ? { isAfter: true } : null;
+  };
+}
 @Component({
   selector: 'app-document-editor',
   imports: [
     CommonModule,
     ReactiveFormsModule,
     ButtonModule,
-    StepperModule,
     FloatLabelModule,
     InputNumberModule,
     DatePickerModule,
@@ -31,6 +64,7 @@ import { DocumentAdminApi } from '../../services';
     InputTextModule,
     TextareaModule,
     SelectModule,
+    MessageModule,
     FileSizePipe,
   ],
   templateUrl: './document-editor.html',
@@ -41,35 +75,29 @@ export class DocumentEditor implements OnInit {
   private diagloRef = inject(DynamicDialogRef);
 
   private documentApi = inject(DocumentAdminApi);
-
-  readonly CURRENT_DATE = new Date();
-  readonly CURRENT_YEAR = this.CURRENT_DATE.getFullYear();
-
   readonly data: DocumentResponse | undefined = inject(DynamicDialogConfig).data;
 
-  form: FormGroup = this.formBuilder.nonNullable.group({
+  readonly currentDate = new Date();
+
+  file: File | null = null;
+  form: FormGroup = this.formBuilder.group({
     title: ['', Validators.required],
     summary: ['', Validators.required],
-    year: [this.CURRENT_YEAR.toString(), Validators.required],
-    correlativeNumber: [null, [Validators.required, Validators.min(1)]],
     typeId: ['', Validators.required],
-    validUntil: [''],
-    promulgationDate: [null, Validators.required],
-    publicationDate: [this.CURRENT_DATE, Validators.required],
+    correlativeNumber: [null, [Validators.required, Validators.min(1)]],
+    year: [this.currentDate.getFullYear().toString(), Validators.required],
+    promulgationDate: [null, [Validators.required, isBefore('publicationDate')]],
+    publicationDate: [this.currentDate, Validators.required],
+    validUntil: [null, isAfter('publicationDate')],
   });
 
   types = this.documentApi.documentTypes;
 
-  file: File | null = null;
-
-  readonly relationTypes = [
-    { label: 'Modifica', value: 'MODIFIES' },
-    { label: 'Abroga', value: 'ABROGATES' },
-    { label: 'Deroga', value: 'DEROGATES' },
-    { label: 'Rectifica', value: 'RECTIFIES' },
-    { label: 'Regula', value: 'REGULATES' },
-    { label: 'Referencia', value: 'REFERENCES' },
-  ];
+  readonly formUtils = FormUtils;
+  readonly customFormErrorMessages = {
+    isBefore: 'Debe ser antes de publicación.',
+    isAfter: 'Debe ser después de publicación.',
+  };
 
   ngOnInit(): void {
     this.loadFormData();
@@ -85,7 +113,7 @@ export class DocumentEditor implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) {
+    if (this.form.invalid || (!this.file && !this.data)) {
       this.form.markAllAsTouched();
       return;
     }

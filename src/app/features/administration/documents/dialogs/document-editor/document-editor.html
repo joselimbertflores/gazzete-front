@@ -1,104 +1,174 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-4 pt-1">
     <div class="sm:col-span-3">
-      <p-floatlabel class="w-full" variant="on">
-        <p-select
-          [options]="types()"
-          [filter]="true"
-          emptyFilterMessage="Sin resultados"
-          inputId="typeTxt"
-          optionLabel="name"
-          optionValue="id"
+      <div class="flex flex-col gap-1">
+        <p-floatlabel class="w-full" variant="on">
+          <p-select
+            [options]="types()"
+            [filter]="true"
+            emptyFilterMessage="Sin resultados"
+            inputId="typeTxt"
+            optionLabel="name"
+            optionValue="id"
+            [fluid]="true"
+            formControlName="typeId"
+            appendTo="body"
+            [invalid]="formUtils.isInvalid(form.get('typeId'))"
+          />
+          <label for="typeTxt">Tipo de documento</label>
+        </p-floatlabel>
+        @if (formUtils.isInvalid(form.get('typeId'))) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ formUtils.getErrorMessage(form.get('typeId')) }}
+          </p-message>
+        }
+      </div>
+    </div>
+    <div class="sm:col-span-3">
+      <div class="flex flex-col gap-1">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="titleTxt"
+            [fluid]="true"
+            formControlName="title"
+            [invalid]="formUtils.isInvalid(form.get('title'))"
+          />
+          <label for="titleTxt">Titulo</label>
+        </p-floatlabel>
+        @if (formUtils.isInvalid(form.get('title'))) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ formUtils.getErrorMessage(form.get('title')) }}
+          </p-message>
+        }
+      </div>
+    </div>
+    <div class="sm:col-span-3">
+      <div class="flex flex-col gap-1">
+        <p-floatlabel variant="on">
+          <textarea
+            pTextarea
+            id="summaryTxt"
+            rows="5"
+            [fluid]="true"
+            formControlName="summary"
+            [invalid]="formUtils.isInvalid(form.get('summary'))"
+          ></textarea>
+          <label for="summaryTxt">Resumen</label>
+        </p-floatlabel>
+        @if (formUtils.isInvalid(form.get('summary'))) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ formUtils.getErrorMessage(form.get('summary')) }}
+          </p-message>
+        }
+      </div>
+    </div>
+    <div class="flex flex-col gap-1">
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          formControlName="correlativeNumber"
+          inputId="correlativeTxt"
+          [autocomplete]="'off'"
+          mode="decimal"
+          [useGrouping]="false"
           [fluid]="true"
-          formControlName="typeId"
-          appendTo="body"
+          [min]="1"
+          [invalid]="formUtils.isInvalid(form.get('correlativeNumber'))"
         />
-        <label for="typeTxt">Tipo de documento</label>
+
+        <label for="correlativeTxt">Correlativo</label>
       </p-floatlabel>
+      @if (formUtils.isInvalid(form.get('correlativeNumber'))) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formUtils.getErrorMessage(form.get('correlativeNumber')) }}
+        </p-message>
+      }
     </div>
-    <div class="sm:col-span-3">
+
+    <div class="flex flex-col gap-1">
       <p-floatlabel variant="on">
-        <input pInputText id="titleTxt" [fluid]="true" formControlName="title" />
-        <label for="titleTxt">Titulo</label>
-      </p-floatlabel>
-    </div>
-    <div class="sm:col-span-3">
-      <p-floatlabel variant="on">
-        <textarea
-          pTextarea
-          id="summaryTxt"
-          rows="5"
+        <p-datepicker
+          inputId="yearInput"
+          view="year"
+          dateFormat="yy"
+          showIcon
+          iconDisplay="input"
+          appendTo="body"
+          formControlName="year"
           [fluid]="true"
-          formControlName="summary"
-        ></textarea>
-        <label for="summaryTxt">Resumen</label>
+          dataType="string"
+          [invalid]="formUtils.isInvalid(form.get('year'))"
+        />
+        <label for="yearInput">Gestión</label>
       </p-floatlabel>
+      @if (formUtils.isInvalid(form.get('year'))) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formUtils.getErrorMessage(form.get('year')) }}
+        </p-message>
+      }
     </div>
 
-    <p-floatlabel variant="on">
-      <p-inputnumber
-        formControlName="correlativeNumber"
-        inputId="correlativeTxt"
-        [autocomplete]="'off'"
-        mode="decimal"
-        [useGrouping]="false"
-        [fluid]="true"
-        [min]="1"
-      />
+    <div class="flex flex-col gap-1">
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="promulgationTxt"
+          showIcon
+          iconDisplay="input"
+          appendTo="body"
+          [fluid]="true"
+          formControlName="promulgationDate"
+          [invalid]="formUtils.isInvalid(form.get('promulgationDate'))"
+          [maxDate]="form.get('publicationDate')?.value"
+        />
+        <label for="promulgationTxt">Fecha promulgacion</label>
+      </p-floatlabel>
+      @if (formUtils.isInvalid(form.get('promulgationDate'))) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formUtils.getErrorMessage(form.get('promulgationDate'), customFormErrorMessages) }}
+        </p-message>
+      }
+    </div>
 
-      <label for="correlativeTxt">Correlativo</label>
-    </p-floatlabel>
+    <div class="flex flex-col gap-1">
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="publicationTxt"
+          showIcon
+          iconDisplay="input"
+          appendTo="body"
+          [fluid]="true"
+          formControlName="publicationDate"
+          [invalid]="formUtils.isInvalid(form.get('publicationDate'))"
+        />
+        <label for="publicationTxt">Fecha publicacion</label>
+      </p-floatlabel>
+      @if (formUtils.isInvalid(form.get('publicationDate'))) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formUtils.getErrorMessage(form.get('publicationDate')) }}
+        </p-message>
+      }
+    </div>
 
-    <p-floatlabel variant="on">
-      <p-datepicker
-        inputId="yearInput"
-        view="year"
-        dateFormat="yy"
-        showIcon
-        iconDisplay="input"
-        appendTo="body"
-        formControlName="year"
-        [fluid]="true"
-        dataType="string"
-      />
-      <label for="yearInput">Gestión</label>
-    </p-floatlabel>
-
-    <p-floatlabel variant="on">
-      <p-datepicker
-        inputId="promulgationTxt"
-        showIcon
-        iconDisplay="input"
-        appendTo="body"
-        [fluid]="true"
-        formControlName="promulgationDate"
-      />
-      <label for="promulgationTxt">Fecha promulgacion</label>
-    </p-floatlabel>
-
-    <p-floatlabel variant="on">
-      <p-datepicker
-        inputId="publicationTxt"
-        showIcon
-        iconDisplay="input"
-        appendTo="body"
-        [fluid]="true"
-        formControlName="publicationDate"
-      />
-      <label for="publicationTxt">Fecha publicacion</label>
-    </p-floatlabel>
-
-    <p-floatlabel variant="on">
-      <p-datepicker
-        inputId="validUntilTxt"
-        showIcon
-        iconDisplay="input"
-        appendTo="body"
-        [fluid]="true"
-        formControlName="validUntil"
-      />
-      <label for="validUntilTxt">Plazo de vigencia</label>
-    </p-floatlabel>
+    <div class="flex flex-col gap-1">
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="validUntilTxt"
+          showIcon
+          iconDisplay="input"
+          appendTo="body"
+          [fluid]="true"
+          formControlName="validUntil"
+          [minDate]="form.get('publicationDate')?.value"
+          [invalid]="formUtils.isInvalid(form.get('validUntil'))"
+        />
+        <label for="validUntilTxt">Plazo de vigencia</label>
+      </p-floatlabel>
+      @if (formUtils.isInvalid(form.get('validUntil'))) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formUtils.getErrorMessage(form.get('validUntil'), customFormErrorMessages) }}
+        </p-message>
+      }
+    </div>
   </div>
 
   <p-fileUpload
