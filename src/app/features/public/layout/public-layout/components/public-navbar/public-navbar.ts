@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
   template: `
     <nav class="border-b border-surface-200 bg-surface-0">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between gap-4 sm:h-18">
+        <div class="flex h-14 items-center justify-between gap-4 sm:h-16">
           <a
             routerLink="/"
             class="flex min-w-0 items-center gap-3 rounded-md outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-sky-700"
@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
             <img
               src="/images/branding/escudo-municipal-48.png"
               alt="Escudo del Gobierno Autónomo Municipal de Sacaba"
-              class="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
+              class="h-10 w-10 shrink-0 object-contain sm:h-10 sm:w-10"
             />
 
             <div class="min-w-0">

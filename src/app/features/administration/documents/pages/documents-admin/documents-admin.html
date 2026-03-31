@@ -111,7 +111,7 @@
     <tr>
       <th style="width: 100px">Numero</th>
       <th>Tipo</th>
-      <th>Titulo</th>
+      <th>Resumen</th>
       <th>Publicacion</th>
       <th>Estado</th>
       <th style="width: 5rem"></th>
@@ -121,7 +121,7 @@
     <tr>
       <td>{{ item.code }}</td>
       <td>{{ item.type.name }}</td>
-      <td>{{ item.title }}</td>
+      <td class="max-w-100 truncate">{{ item.summary }}</td>
       <td>{{ item.publicationDate | date: 'dd/MM/yyyy' }}</td>
       <td>
         @switch (item.legalStatus) {

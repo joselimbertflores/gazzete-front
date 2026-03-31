@@ -81,7 +81,6 @@ export class DocumentEditor implements OnInit {
 
   file: File | null = null;
   form: FormGroup = this.formBuilder.group({
-    title: ['', Validators.required],
     summary: ['', Validators.required],
     typeId: ['', Validators.required],
     correlativeNumber: [null, [Validators.required, Validators.min(1)]],
@@ -133,7 +132,7 @@ export class DocumentEditor implements OnInit {
       ...props,
       promulgationDate: new Date(promulgationDate),
       publicationDate: new Date(publicationDate),
-      validUntil: new Date(validUntil),
+      validUntil: validUntil ? new Date(validUntil) : null,
     });
   }
 }

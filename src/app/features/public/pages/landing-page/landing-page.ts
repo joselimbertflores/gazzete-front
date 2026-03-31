@@ -1,8 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { FormsModule } from '@angular/forms';
 
 interface LatestPublication {
   slug: string;
@@ -15,13 +18,27 @@ interface LatestPublication {
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterModule, CommonModule,InputTextModule, ButtonModule],
+  imports: [
+    RouterModule,
+    CommonModule,
+    FormsModule,
+    InputTextModule,
+    ButtonModule,
+    InputGroupModule,
+    FloatLabelModule,
+  ],
   templateUrl: './landing-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class LandingPage {
+  private router = inject(Router);
   readonly currentYear = new Date().getFullYear();
   readonly searchTerm = signal('');
+
+  search(): void {
+    if (!this.searchTerm().trim()) return;
+    this.router.navigate(['/documents'], { queryParams: { term: this.searchTerm() } });
+  }
 
   updateSearch(event: Event): void {
     const input = event.target as HTMLInputElement;

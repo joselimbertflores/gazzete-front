@@ -11,30 +11,19 @@
     </div>
 
     <div class="mx-auto mt-8 max-w-2xl">
-      <form class="flex flex-col gap-3 sm:flex-row" (submit)="onSearch($event)">
-        <label for="public-search" class="sr-only">
-          Buscar documentos en la Gaceta Municipal
-        </label>
-
-        <input
-          id="public-search"
-          pInputText
-          type="search"
-          autocomplete="off"
-          class="w-full rounded-xl border-slate-300 px-4 py-3 text-base shadow-none"
-          placeholder="Buscar por número, título o palabra clave"
-          [value]="searchTerm()"
-          (input)="updateSearch($event)"
-        />
-
-        <button
-          pButton
-          type="submit"
-          label="Buscar"
-          icon="pi pi-search"
-          class="sm:shrink-0"
-        ></button>
-      </form>
+      <p-inputgroup>
+        <p-floatLabel variant="on">
+          <input
+            pInputText
+            id="search-input"
+            autocomplete="off"
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="search()"
+          />
+          <label for="search-input"> Número de documento, título o tema.</label>
+        </p-floatLabel>
+        <p-button label="Search" icon="pi pi-search" (onClick)="search()" />
+      </p-inputgroup>
 
       <p class="mt-3 text-center text-sm text-slate-500">
         Busque por número de documento, título o tema.

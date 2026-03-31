@@ -27,34 +27,15 @@
     <div class="sm:col-span-3">
       <div class="flex flex-col gap-1">
         <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="titleTxt"
-            [fluid]="true"
-            formControlName="title"
-            [invalid]="formUtils.isInvalid(form.get('title'))"
-          />
-          <label for="titleTxt">Titulo</label>
-        </p-floatlabel>
-        @if (formUtils.isInvalid(form.get('title'))) {
-          <p-message severity="error" size="small" variant="simple">
-            {{ formUtils.getErrorMessage(form.get('title')) }}
-          </p-message>
-        }
-      </div>
-    </div>
-    <div class="sm:col-span-3">
-      <div class="flex flex-col gap-1">
-        <p-floatlabel variant="on">
           <textarea
             pTextarea
-            id="summaryTxt"
+            id="summary_txt"
             rows="5"
             [fluid]="true"
             formControlName="summary"
             [invalid]="formUtils.isInvalid(form.get('summary'))"
           ></textarea>
-          <label for="summaryTxt">Resumen</label>
+          <label for="summary_txt">Resumen</label>
         </p-floatlabel>
         @if (formUtils.isInvalid(form.get('summary'))) {
           <p-message severity="error" size="small" variant="simple">
