@@ -173,5 +173,31 @@
         </div>
       }
     </div>
+    <!-- PAGINATOR -->
+    @if (
+      !dataResource.isLoading() &&
+      dataResource.hasValue() &&
+      dataResource.value().documents.length > 0
+    ) {
+      <div class="flex flex-col items-center mt-2 gap-2">
+        <p-paginator
+          [rows]="limit"
+          [first]="offset"
+          [totalRecords]="dataResource.value().total"
+          (onPageChange)="onPageChange($event)"
+        />
+
+        <!-- INFO OPCIONAL -->
+        <p class="text-sm text-surface-500">
+          Mostrando
+          {{ offset + 1 }}
+          -
+          {{ offset + dataResource.value().documents.length }}
+          de
+          {{ dataResource.value().total }}
+          resultados
+        </p>
+      </div>
+    }
   </div>
 </section>

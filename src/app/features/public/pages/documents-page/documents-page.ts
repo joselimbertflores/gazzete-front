@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -22,20 +23,21 @@ import { DocumentPublicApi, GetPublicDocumentsParams } from '../../services';
 @Component({
   selector: 'app-documents-page',
   imports: [
+    FormsModule,
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
     PanelModule,
     ButtonModule,
     SelectModule,
-    FormsModule,
     RouterModule,
+    TagModule,
     FloatLabelModule,
     IconFieldModule,
     InputIconModule,
     DatePickerModule,
+    PaginatorModule,
     SkeletonModule,
-    TagModule,
   ],
   templateUrl: './documents-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,6 +54,9 @@ export default class DocumentsPage {
     { label: 'MODIFICADA', value: 'MODIFIED' },
   ];
 
+  limit = 5;
+  offset = 0;
+
   filterForm: FormGroup = inject(FormBuilder).group({
     term: [null],
     type: [null],
@@ -66,8 +71,8 @@ export default class DocumentsPage {
         type: params['type'] || null,
         year: params['year'] ?? null,
         legalStatus: params['legalStatus'] ?? null,
-        limit: params['limit'] ? Number(params['limit']) : 10,
-        offset: params['offset'] ? Number(params['offset']) : 0,
+        limit: params['limit'] ? Number(params['limit']) : this.limit,
+        offset: params['offset'] ? Number(params['offset']) : this.offset,
       })),
     ),
   );
@@ -80,6 +85,8 @@ export default class DocumentsPage {
   constructor() {
     effect(() => {
       const params = this.queryParams();
+      this.limit = params?.limit ?? 5;
+      this.offset = params?.offset ?? 0;
       this.filterForm.patchValue(params ?? {}, { emitEvent: false });
     });
   }
@@ -96,6 +103,17 @@ export default class DocumentsPage {
       },
       queryParamsHandling: 'merge',
       replaceUrl: true,
+    });
+  }
+
+  onPageChange(event: PaginatorState) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        offset: event.first,
+        limit: event.rows,
+      },
+      queryParamsHandling: 'merge',
     });
   }
 
