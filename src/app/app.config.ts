@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
 import { definePreset, palette } from '@primeuix/themes';
 import { providePrimeNG } from 'primeng/config';
@@ -8,9 +8,9 @@ import { MessageService } from 'primeng/api';
 import theme from '@primeuix/themes/aura';
 import { es } from 'primelocale/es.json';
 
-import { routes } from './app.routes';
-import { authInterceptor } from './core/auth/auth-interceptor';
 import { httpErrorInterceptor } from './core/http/http-error-interceptor';
+import { authInterceptor } from './core/auth/auth-interceptor';
+import { routes } from './app.routes';
 
 const primaryColor = palette('{sky}');
 const AuraSky = definePreset(theme, {
@@ -22,7 +22,13 @@ const AuraSky = definePreset(theme, {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'disabled',
+      }),
+    ),
     provideHttpClient(withInterceptors([httpErrorInterceptor, authInterceptor])),
     providePrimeNG({
       translation: es,

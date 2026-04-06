@@ -47,6 +47,10 @@ export const routes: Routes = [
         path: 'documents',
         loadComponent: () => import('./features/public/pages/documents-page/documents-page'),
       },
+      {
+        path: 'documents/:id',
+        loadComponent: () => import('./features/public/pages/document-detail/document-detail'),
+      },
     ],
   },
 ];

@@ -8,7 +8,7 @@
       </p>
     </header>
     <div class="mt-8">
-      <form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
         <p-panel [toggleable]="true">
           <ng-template #header>
             <span class="font-bold">Parametros busqueda</span>
@@ -58,6 +58,18 @@
                     optionValue="value"
                   />
                   <label for="status_txt">Estado legal</label>
+                </p-floatlabel>
+              </div>
+              <div class="sm:col-span-6">
+                <p-floatlabel class="w-full" variant="on">
+                  <p-select
+                    inputId="type_txt"
+                    [options]="docTypes()"
+                    [fluid]="true"
+                    formControlName="type"
+                    [showClear]="true"
+                  />
+                  <label for="type_txt">Tipo de documento</label>
                 </p-floatlabel>
               </div>
             </div>

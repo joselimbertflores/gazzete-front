@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  afterRenderEffect,
+  Component,
+  effect,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
@@ -16,9 +24,10 @@ import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { TagModule } from 'primeng/tag';
 
-import { map } from 'rxjs';
+import { finalize, map } from 'rxjs';
 
 import { DocumentPublicApi, GetPublicDocumentsParams } from '../../services';
+import { WindowScrollStore } from '../../../../shared';
 
 @Component({
   selector: 'app-documents-page',
@@ -26,26 +35,27 @@ import { DocumentPublicApi, GetPublicDocumentsParams } from '../../services';
     FormsModule,
     CommonModule,
     ReactiveFormsModule,
+    FloatLabelModule,
+    DatePickerModule,
     InputTextModule,
-    PanelModule,
+    IconFieldModule,
+    InputIconModule,
+    PaginatorModule,
+    SkeletonModule,
     ButtonModule,
     SelectModule,
     RouterModule,
+    PanelModule,
     TagModule,
-    FloatLabelModule,
-    IconFieldModule,
-    InputIconModule,
-    DatePickerModule,
-    PaginatorModule,
-    SkeletonModule,
   ],
   templateUrl: './documents-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class DocumentsPage {
+export default class DocumentsPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private documentPublicApi = inject(DocumentPublicApi);
+  private scrollStore = inject(WindowScrollStore);
 
   readonly documentStatuses = [
     { label: 'VIGENTE', value: 'VALID' },
@@ -54,7 +64,9 @@ export default class DocumentsPage {
     { label: 'MODIFICADA', value: 'MODIFIED' },
   ];
 
-  limit = 5;
+  private readonly scrollKey = this.router.url.split('?')[0];
+
+  limit = 10;
   offset = 0;
 
   filterForm: FormGroup = inject(FormBuilder).group({
@@ -71,53 +83,69 @@ export default class DocumentsPage {
         type: params['type'] || null,
         year: params['year'] ?? null,
         legalStatus: params['legalStatus'] ?? null,
-        limit: params['limit'] ? Number(params['limit']) : this.limit,
-        offset: params['offset'] ? Number(params['offset']) : this.offset,
+        limit: params['limit'] ? Number(params['limit']) : 10,
+        offset: params['offset'] ? Number(params['offset']) : 0,
       })),
     ),
   );
 
+  shouldRestoreScroll = signal(false);
+
+  docTypes = this.documentPublicApi.docTypes;
+
   dataResource = rxResource({
     params: () => this.queryParams(),
-    stream: ({ params }) => this.documentPublicApi.findAll(params),
+    stream: ({ params }) =>
+      this.documentPublicApi
+        .findAll(params)
+        .pipe(finalize(() => this.shouldRestoreScroll.set(true))),
   });
 
   constructor() {
-    effect(() => {
-      const params = this.queryParams();
-      this.limit = params?.limit ?? 5;
-      this.offset = params?.offset ?? 0;
-      this.filterForm.patchValue(params ?? {}, { emitEvent: false });
+   
+
+    afterRenderEffect(() => {
+      if (this.shouldRestoreScroll()) {
+        // * Resource ya terminó de cargar, cambia el shouldRestoreScroll a true en cada peticion, pero el effect solo detecta 1 cambio
+        this.scrollStore.restoreScroll(this.scrollKey);
+      }
     });
   }
 
-  onSubmit(): void {
+  ngOnInit(): void {
+    this.loadFilterParams();
+  }
+
+  applyFilters(): void {
     const { term, type, year, legalStatus } = this.filterForm.value;
+    this.setQueryParams({ term, type, year, legalStatus, offset: 0 });
+  }
+
+  onPageChange(event: PaginatorState) {
+    this.setQueryParams({ offset: event.first, limit: event.rows });
+    this.limit = event.rows ?? 10;
+    this.offset = event.first ?? 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  resetFilters(): void {
+    this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
+    this.filterForm.reset();
+  }
+
+  private setQueryParams(params: GetPublicDocumentsParams) {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: {
-        term: term || null,
-        type: type || null,
-        year: year || null,
-        legalStatus: legalStatus || null,
-      },
+      queryParams: params,
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
   }
 
-  onPageChange(event: PaginatorState) {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        offset: event.first,
-        limit: event.rows,
-      },
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  resetFilters(): void {
-    this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
+  private loadFilterParams() {
+    const { limit, offset, ...props }: GetPublicDocumentsParams = this.route.snapshot.queryParams;
+    this.filterForm.patchValue(props);
+    this.limit = limit ? Number(limit) : 10;
+    this.offset = offset ? Number(offset) : 0;
   }
 }
