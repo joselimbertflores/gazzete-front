@@ -8,7 +8,7 @@ import { filter } from 'rxjs';
   imports: [RouterModule],
   template: `
     <nav
-      class="border-b border-surface-200/90 bg-surface-0/95 supports-[backdrop-filter]:bg-surface-0/80 backdrop-blur-sm"
+      class="relative border-b border-surface-200/90 bg-surface-0/95 supports-[backdrop-filter]:bg-surface-0/80 backdrop-blur-sm"
       aria-label="Navegación principal"
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -73,9 +73,16 @@ import { filter } from 'rxjs';
       </div>
 
       @if (menuOpen()) {
+        <button
+          type="button"
+          class="fixed inset-0 top-16 z-40 bg-surface-950/25 md:hidden"
+          aria-label="Cerrar menú de navegación"
+          (click)="closeMenu()"
+        ></button>
+
         <div
           id="public-mobile-menu"
-          class="border-t border-surface-200 bg-surface-0 md:hidden"
+          class="absolute inset-x-0 top-full z-50 border-t border-surface-200 bg-surface-0 shadow-lg md:hidden"
         >
           <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6">
             <ul class="flex flex-col gap-1.5">
@@ -131,6 +138,13 @@ export class PublicNavbar {
   @HostListener('window:resize')
   handleResize(): void {
     if (window.innerWidth >= 768 && this.menuOpen()) {
+      this.closeMenu();
+    }
+  }
+
+  @HostListener('window:keydown.escape')
+  handleEscape(): void {
+    if (this.menuOpen()) {
       this.closeMenu();
     }
   }
