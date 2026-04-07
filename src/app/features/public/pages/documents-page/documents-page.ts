@@ -8,7 +8,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
@@ -21,7 +21,6 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { PanelModule } from 'primeng/panel';
 import { TagModule } from 'primeng/tag';
 
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
@@ -32,7 +31,6 @@ import { WindowScrollStore } from '../../../../shared';
 @Component({
   selector: 'app-documents-page',
   imports: [
-    FormsModule,
     CommonModule,
     ReactiveFormsModule,
     FloatLabelModule,
@@ -45,7 +43,6 @@ import { WindowScrollStore } from '../../../../shared';
     ButtonModule,
     SelectModule,
     RouterModule,
-    PanelModule,
     TagModule,
   ],
   templateUrl: './documents-page.html',
