@@ -1,49 +1,87 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'public-footer',
-  imports: [],
+  imports: [RouterModule],
   template: `
-    <footer class="border-t border-surface-200 bg-surface-0">
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p class="text-sm font-semibold text-slate-900">Gaceta Municipal</p>
-            <p class="mt-1 text-sm text-slate-600">
-              Publicación oficial del Gobierno Autónomo Municipal de Sacaba
+    <footer class="mt-12 border-t border-surface-200 bg-surface-0">
+      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="grid gap-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
+          <section aria-labelledby="footer-brand">
+            <h2
+              id="footer-brand"
+              class="text-xs font-semibold uppercase tracking-[0.14em] text-surface-600"
+            >
+              Gaceta Municipal
+            </h2>
+            <p class="mt-3 text-sm leading-6 text-surface-700">
+              Portal oficial para consulta pública de ordenanzas, decretos, resoluciones y normativa
+              municipal.
             </p>
-          </div>
+          </section>
 
-          <nav class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-600 md:justify-end">
-            <a
-              href="https://..."
-              target="_blank"
-              rel="noopener noreferrer"
-              class="transition hover:text-slate-900"
-            >
-              Sitio institucional
-            </a>
-            <a
-              href="https://facebook.com/..."
-              target="_blank"
-              rel="noopener noreferrer"
-              class="transition hover:text-slate-900"
-            >
-              Facebook
-            </a>
-            <a
-              href="https://instagram.com/..."
-              target="_blank"
-              rel="noopener noreferrer"
-              class="transition hover:text-slate-900"
-            >
-              Instagram
-            </a>
+          <nav aria-label="Enlaces internos">
+            <h3 class="text-sm font-semibold text-surface-900">Navegación</h3>
+            <ul class="mt-3 space-y-2 text-sm text-surface-700">
+              <li>
+                <a routerLink="/" class="transition hover:text-primary-700 focus-visible:text-primary-700">
+                  Inicio
+                </a>
+              </li>
+              <li>
+                <a
+                  routerLink="/documents"
+                  class="transition hover:text-primary-700 focus-visible:text-primary-700"
+                >
+                  Documentos
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          <nav aria-label="Canales oficiales">
+            <h3 class="text-sm font-semibold text-surface-900">Canales oficiales</h3>
+            <ul class="mt-3 space-y-2 text-sm text-surface-700">
+              <li>
+                <a
+                  href="https://..."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="transition hover:text-primary-700 focus-visible:text-primary-700"
+                >
+                  Sitio institucional
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://facebook.com/..."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="transition hover:text-primary-700 focus-visible:text-primary-700"
+                >
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://instagram.com/..."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="transition hover:text-primary-700 focus-visible:text-primary-700"
+                >
+                  Instagram
+                </a>
+              </li>
+            </ul>
           </nav>
         </div>
 
-        <div class="mt-6 border-t border-surface-200 pt-4">
-          <p class="text-xs leading-5 text-surface-500">© {{ currentYear }} Gobierno electronico.</p>
+        <div
+          class="mt-8 flex flex-col gap-2 border-t border-surface-200 pt-4 text-xs leading-5 text-surface-500 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p>© {{ currentYear }} Gobierno Autónomo Municipal de Sacaba.</p>
+          <p>Plataforma pública de consulta normativa.</p>
         </div>
       </div>
     </footer>

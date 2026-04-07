@@ -1,9 +1,16 @@
-<div class="min-h-screen flex flex-col bg-surface-50 text-surface-900">
-  <div class="sticky top-0 z-50 border-b border-surface-200 bg-surface-0">
-    <public-navbar />
-  </div>
+<div class="relative flex min-h-dvh flex-col bg-surface-50 text-surface-900 antialiased">
+  <a
+    href="#public-main-content"
+    class="sr-only z-[60] rounded-md bg-primary-600 px-3 py-2 text-sm font-medium text-primary-50 shadow-sm focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+  >
+    Saltar al contenido principal
+  </a>
 
-  <main class="flex-1">
+  <header class="sticky top-0 z-50">
+    <public-navbar />
+  </header>
+
+  <main id="public-main-content" class="flex-1">
     <router-outlet />
   </main>
 
