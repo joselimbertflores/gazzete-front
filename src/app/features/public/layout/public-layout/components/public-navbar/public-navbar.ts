@@ -43,8 +43,8 @@ import { RouterModule } from '@angular/router';
 
             <a
               routerLink="/documents"
-              routerLinkActive="bg-slate-100 text-slate-950"
-              class="rounded-md px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
+              routerLinkActive="bg-slate-100 text-primary-500"
+              class="rounded-md px-4 py-2 text-sm font-medium transition hover:bg-slate-50 hover:text-slate-950"
             >
               Documentos
             </a>
@@ -64,7 +64,10 @@ import { RouterModule } from '@angular/router';
       </div>
 
       @if (menuOpen()) {
-        <div id="public-mobile-menu" class="border-t border-slate-200 bg-white md:hidden">
+        <div
+          id="public-mobile-menu"
+          class="absolute left-0 top-full w-full border-t border-slate-200 bg-white shadow-lg md:hidden z-50 "
+        >
           <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6">
             <div class="flex flex-col gap-1">
               <a

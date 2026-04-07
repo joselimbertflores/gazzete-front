@@ -10,8 +10,6 @@ export class WindowScrollStore {
 
   private isPopState = false;
 
-  // Ruta anterior
-  // private currentRoute: string | null = null;
   private currentRoute = this.router.url.split('?')[0];
 
   constructor() {
@@ -26,12 +24,13 @@ export class WindowScrollStore {
    */
   restoreScroll(routeKey: string): void {
     const y = this.positions.get(routeKey);
-
+    
     if (!y || y <= 0) return;
-
+    
     if (!this.isPopState) return;
-
+    
     window.scrollTo({ top: y });
+    console.log("RESTORE ", y);
 
     // Remover data para evitar que algun effect de RxResource siga restableciendo scroll cuando paginacion cambia
     this.positions.delete(routeKey);

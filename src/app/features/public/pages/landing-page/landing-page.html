@@ -20,63 +20,58 @@
             [(ngModel)]="searchTerm"
             (keyup.enter)="search()"
           />
-          <label for="search-input"> Número de documento, título o tema.</label>
+          <label for="search-input"> Buscar documentos</label>
         </p-floatLabel>
-        <p-button label="Search" icon="pi pi-search" (onClick)="search()" />
+        <p-button label="Buscar" icon="pi pi-search" (onClick)="search()" />
       </p-inputgroup>
 
       <p class="mt-3 text-center text-sm text-slate-500">
-        Busque por número de documento, título o tema.
+        Busque por número de documento o resumen.
       </p>
     </div>
   </div>
 </section>
 
-<section class="bg-slate-50">
+<section class="bg-surface-50">
   <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-    <div class="mx-auto max-w-4xl text-center">
-      <p class="text-sm font-medium text-slate-500">Accesos rápidos</p>
+    <div class="mx-auto max-w-5xl">
+      <div class="text-center">
+        <p class="text-sm font-medium text-surface-500">Explorar documentos</p>
+        <h2 class="mt-1 text-2xl font-semibold tracking-tight text-surface-950">Accesos rápidos</h2>
+      </div>
 
-      <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
-        <a
-          routerLink="/documents"
-          [queryParams]="{ sort: 'recent' }"
-          class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900"
-        >
-          Últimas publicaciones
-        </a>
+      <div class="mt-8 space-y-6">
+        <div>
+          <p class="text-sm font-medium text-surface-600">Tipos de documento</p>
 
-        <a
-          routerLink="/documents"
-          [queryParams]="{ status: 'vigente' }"
-          class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900"
-        >
-          Vigentes
-        </a>
+          <div class="mt-3 flex flex-wrap justify-center gap-3">
+            @for (chip of typeChips(); track chip.label) {
+              <a
+                routerLink="/documents"
+                [queryParams]="chip.queryParams"
+                class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-white px-4 py-2.5 text-sm font-medium text-surface-700 transition hover:border-surface-400 hover:bg-surface-50 hover:text-surface-900"
+              >
+                {{ chip.label | uppercase }}
+              </a>
+            }
+          </div>
+        </div>
 
-        <a
-          routerLink="/documents"
-          [queryParams]="{ type: 'ordenanza' }"
-          class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900"
-        >
-          Ordenanzas
-        </a>
+        <div>
+          <p class="text-sm font-medium text-surface-600">Accesos rápidos</p>
 
-        <a
-          routerLink="/documents"
-          [queryParams]="{ type: 'decreto' }"
-          class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900"
-        >
-          Decretos
-        </a>
-
-        <a
-          routerLink="/documents"
-          [queryParams]="{ year: currentYear }"
-          class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900"
-        >
-          Gestión {{ currentYear }}
-        </a>
+          <div class="mt-3 flex flex-wrap justify-center gap-3">
+            @for (chip of quickChips; track chip.label) {
+              <a
+                routerLink="/documents"
+                [queryParams]="chip.queryParams"
+                class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-white px-4 py-2.5 text-sm font-medium text-surface-700 transition hover:border-surface-400 hover:bg-surface-50 hover:text-surface-900"
+              >
+                {{ chip.label }}
+              </a>
+            }
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -86,8 +81,8 @@
   <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="text-sm font-medium text-slate-500">Últimas publicaciones</p>
-        <h2 class="mt-1 text-2xl font-semibold tracking-tight text-slate-950">
+        <p class="text-sm font-medium text-surface-500">Últimas publicaciones</p>
+        <h2 class="mt-1 text-2xl font-semibold tracking-tight text-surface-950">
           Documentos recientes
         </h2>
       </div>
@@ -95,52 +90,67 @@
       <a
         routerLink="/documents"
         [queryParams]="{ sort: 'recent' }"
-        class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 transition hover:text-slate-950"
+        class="inline-flex items-center gap-2 text-sm font-medium text-surface-700 transition hover:text-surface-950"
       >
         Ver todas
         <i class="pi pi-arrow-right text-xs" aria-hidden="true"></i>
       </a>
     </div>
 
-    <div class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-      @for (document of documents; track document.code) {
-        <article class="border-b border-slate-200 last:border-b-0">
+    <div class="mt-8 overflow-hidden rounded-2xl border border-surface-200 bg-surface-0">
+      @for (document of recentDocuments(); track document.id) {
+        <article class="border-b border-surface-200 last:border-b-0">
           <div
-            class="flex flex-col gap-4 px-5 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-6"
+            class="flex flex-col gap-5 px-5 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-6"
           >
             <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span
-                  class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
-                  [ngClass]="statusClass(document.status)"
-                >
-                  {{ document.status }}
-                </span>
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                @switch (document.legalStatus) {
+                  @case ('VALID') {
+                    <p-tag severity="success" value="Vigente" [rounded]="true" />
+                  }
+                  @case ('ABROGATED') {
+                    <p-tag severity="danger" value="Abrogada" [rounded]="true" />
+                  }
+                  @case ('DEROGATED') {
+                    <p-tag severity="warn" value="Derogada" [rounded]="true" />
+                  }
+                  @case ('MODIFIED') {
+                    <p-tag severity="info" value="Modificada" [rounded]="true" />
+                  }
+                  @default {
+                    <p-tag severity="secondary" value="Desconocido" [rounded]="true" />
+                  }
+                }
 
-                <span class="text-sm text-slate-500">
-                  {{ document.code }}
-                </span>
-
-                <span class="hidden text-slate-300 sm:inline">•</span>
-
-                <span class="text-sm text-slate-500">
-                  {{ document.publicationDate | date: 'd MMM y' }}
+                <span class="text-surface-500">
+                  Publicado el {{ document.publicationDate | date: 'd MMM y' }}
                 </span>
               </div>
 
-              <h3 class="mt-3 text-base font-semibold leading-7 text-slate-950 sm:text-lg">
-                {{ document.title }}
+              <h3 class="mt-3 text-base font-semibold leading-7 text-surface-950 sm:text-lg">
+                {{ document.type }}
+                <span class="ml-1 text-surface-700">Nº {{ document.code }}</span>
               </h3>
 
-              <p class="mt-1 text-sm text-slate-600">
-                {{ document.type }}
+              <p class="mt-2 line-clamp-2 text-sm leading-6 text-surface-600">
+                {{ document.summary }}
               </p>
             </div>
 
-            <div class="flex shrink-0">
+            <div class="flex w-full shrink-0 flex-col gap-2 sm:flex-row lg:w-auto">
               <a
-                [routerLink]="['/documents', document.slug]"
-                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900"
+                [href]="document.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-lg bg-surface-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-surface-800"
+              >
+                Abrir PDF
+              </a>
+
+              <a
+                [routerLink]="['/documents', document.id]"
+                class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-surface-0 px-4 py-2.5 text-sm font-medium text-surface-700 transition hover:border-surface-400 hover:bg-surface-50 hover:text-surface-900"
               >
                 Ver detalle
               </a>
@@ -148,19 +158,6 @@
           </div>
         </article>
       }
-    </div>
-  </div>
-</section>
-
-<section class="bg-slate-50">
-  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-    <div class="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center sm:px-8">
-      <h2 class="text-base font-semibold text-slate-900 sm:text-lg">¿Cómo consultar la gaceta?</h2>
-
-      <p class="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-        Busque por número o tema, revise el estado del documento y abra el detalle para consultar la
-        publicación oficial.
-      </p>
     </div>
   </div>
 </section>

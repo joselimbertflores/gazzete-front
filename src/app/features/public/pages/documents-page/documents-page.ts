@@ -2,15 +2,15 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   afterRenderEffect,
+  DestroyRef,
   Component,
-  effect,
+  computed,
   inject,
-  signal,
   OnInit,
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -24,7 +24,7 @@ import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { TagModule } from 'primeng/tag';
 
-import { finalize, map } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { DocumentPublicApi, GetPublicDocumentsParams } from '../../services';
 import { WindowScrollStore } from '../../../../shared';
@@ -54,6 +54,8 @@ import { WindowScrollStore } from '../../../../shared';
 export default class DocumentsPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
+
   private documentPublicApi = inject(DocumentPublicApi);
   private scrollStore = inject(WindowScrollStore);
 
@@ -65,9 +67,6 @@ export default class DocumentsPage implements OnInit {
   ];
 
   private readonly scrollKey = this.router.url.split('?')[0];
-
-  limit = 10;
-  offset = 0;
 
   filterForm: FormGroup = inject(FormBuilder).group({
     term: [null],
@@ -81,32 +80,27 @@ export default class DocumentsPage implements OnInit {
       map((params) => ({
         term: params['term'] || null,
         type: params['type'] || null,
-        year: params['year'] ?? null,
-        legalStatus: params['legalStatus'] ?? null,
+        year: params['year'] || null,
+        legalStatus: params['legalStatus'] || null,
         limit: params['limit'] ? Number(params['limit']) : 10,
         offset: params['offset'] ? Number(params['offset']) : 0,
       })),
     ),
   );
 
-  shouldRestoreScroll = signal(false);
+  limit = computed(() => this.queryParams()?.limit ?? 10);
+  offset = computed(() => this.queryParams()?.offset ?? 0);
 
   docTypes = this.documentPublicApi.docTypes;
 
   dataResource = rxResource({
     params: () => this.queryParams(),
-    stream: ({ params }) =>
-      this.documentPublicApi
-        .findAll(params)
-        .pipe(finalize(() => this.shouldRestoreScroll.set(true))),
+    stream: ({ params }) => this.documentPublicApi.findAll(params),
   });
 
   constructor() {
-   
-
     afterRenderEffect(() => {
-      if (this.shouldRestoreScroll()) {
-        // * Resource ya terminó de cargar, cambia el shouldRestoreScroll a true en cada peticion, pero el effect solo detecta 1 cambio
+      if (!this.dataResource.isLoading()) {
         this.scrollStore.restoreScroll(this.scrollKey);
       }
     });
@@ -114,6 +108,14 @@ export default class DocumentsPage implements OnInit {
 
   ngOnInit(): void {
     this.loadFilterParams();
+
+    this.filterForm.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.applyFilters());
   }
 
   applyFilters(): void {
@@ -123,14 +125,12 @@ export default class DocumentsPage implements OnInit {
 
   onPageChange(event: PaginatorState) {
     this.setQueryParams({ offset: event.first, limit: event.rows });
-    this.limit = event.rows ?? 10;
-    this.offset = event.first ?? 0;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   resetFilters(): void {
+    if (this.route.snapshot.queryParamMap.keys.length === 0) return;
     this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
-    this.filterForm.reset();
+    this.filterForm.reset({}, { emitEvent: false });
   }
 
   private setQueryParams(params: GetPublicDocumentsParams) {
@@ -143,9 +143,6 @@ export default class DocumentsPage implements OnInit {
   }
 
   private loadFilterParams() {
-    const { limit, offset, ...props }: GetPublicDocumentsParams = this.route.snapshot.queryParams;
-    this.filterForm.patchValue(props);
-    this.limit = limit ? Number(limit) : 10;
-    this.offset = offset ? Number(offset) : 0;
+    this.filterForm.patchValue(this.route.snapshot.queryParams, { emitEvent: false });
   }
 }

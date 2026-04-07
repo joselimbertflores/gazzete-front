@@ -8,14 +8,14 @@
       </p>
     </header>
     <div class="mt-8">
-      <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <form [formGroup]="filterForm">
         <p-panel [toggleable]="true">
           <ng-template #header>
             <span class="font-bold">Parametros busqueda</span>
           </ng-template>
           <div class="mt-2">
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-              <div class="md:col-span-6">
+              <div class="md:col-span-4">
                 <p-floatlabel variant="on">
                   <p-iconfield>
                     <p-inputicon class="pi pi-search" />
@@ -30,7 +30,19 @@
                   <label for="search_txt">Buscar por número o título</label>
                 </p-floatlabel>
               </div>
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-4">
+                <p-floatlabel class="w-full" variant="on">
+                  <p-select
+                    inputId="type_txt"
+                    [options]="docTypes()"
+                    [fluid]="true"
+                    formControlName="type"
+                    [showClear]="true"
+                  />
+                  <label for="type_txt">Tipo de documento</label>
+                </p-floatlabel>
+              </div>
+              <div class="sm:col-span-2">
                 <p-floatlabel variant="on">
                   <p-datepicker
                     inputId="yearInput"
@@ -47,7 +59,7 @@
                   <label for="yearInput">Gestión</label>
                 </p-floatlabel>
               </div>
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-2">
                 <p-floatlabel class="w-full" variant="on">
                   <p-select
                     inputId="status_txt"
@@ -57,19 +69,7 @@
                     [showClear]="true"
                     optionValue="value"
                   />
-                  <label for="status_txt">Estado legal</label>
-                </p-floatlabel>
-              </div>
-              <div class="sm:col-span-6">
-                <p-floatlabel class="w-full" variant="on">
-                  <p-select
-                    inputId="type_txt"
-                    [options]="docTypes()"
-                    [fluid]="true"
-                    formControlName="type"
-                    [showClear]="true"
-                  />
-                  <label for="type_txt">Tipo de documento</label>
+                  <label for="status_txt">Estado</label>
                 </p-floatlabel>
               </div>
             </div>
@@ -82,9 +82,9 @@
                 size="small"
                 severity="secondary"
                 type="button"
+                icon="pi pi-filter-slash"
                 (onClick)="resetFilters()"
               />
-              <p-button label="Aplicar" size="small" type="submit" />
             </div>
           </ng-template>
         </p-panel>
@@ -106,9 +106,9 @@
             </div>
           </article>
         }
-      } @else if (dataResource.hasValue() && dataResource.value().documents.length > 0) {
+      } @else if (dataResource.hasValue()  && dataResource.value().documents.length > 0) {
         @for (document of dataResource.value().documents; track document.id) {
-          <article class="border-b border-surface-200 last:border-b-0">
+          <div class="border-b border-surface-200 last:border-b-0">
             <div
               class="flex flex-col gap-6 px-6 py-5 lg:flex-row lg:items-center lg:justify-between"
             >
@@ -167,7 +167,7 @@
                 </a>
               </div>
             </div>
-          </article>
+          </div>
         }
       } @else {
         <div class="px-6 py-14 text-center sm:px-8">
@@ -185,26 +185,20 @@
         </div>
       }
     </div>
-    <!-- PAGINATOR -->
-    @if (
-      !dataResource.isLoading() &&
-      dataResource.hasValue() &&
-      dataResource.value().documents.length > 0
-    ) {
+    @if (!dataResource.isLoading() && dataResource.hasValue() && dataResource.value().documents.length > 0) {
       <div class="flex flex-col items-center mt-2 gap-2">
         <p-paginator
-          [rows]="limit"
-          [first]="offset"
+          [rows]="limit()"
+          [first]="offset()"
           [totalRecords]="dataResource.value().total"
           (onPageChange)="onPageChange($event)"
         />
 
-        <!-- INFO OPCIONAL -->
         <p class="text-sm text-surface-500">
           Mostrando
-          {{ offset + 1 }}
+          {{ offset() + 1 }}
           -
-          {{ offset + dataResource.value().documents.length }}
+          {{ offset() + dataResource.value().documents.length }}
           de
           {{ dataResource.value().total }}
           resultados

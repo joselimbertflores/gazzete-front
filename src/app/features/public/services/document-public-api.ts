@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { map, of, tap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { PublicDocumentResponse } from '../types';
 
 export interface GetPublicDocumentsParams {
   term?: string | null;
@@ -22,12 +23,23 @@ export class DocumentPublicApi {
 
   private http = inject(HttpClient);
 
-  cache: Record<string, { documents: any[]; total: number }> = {};
+  documentListCache: Record<string, { documents: any[]; total: number }> = {};
+  documentCache: Record<string, any> = {};
 
   docTypes = toSignal(
     this.http
       .get<{ id: number; name: string }[]>(`${this.URL}/types`)
       .pipe(map((types) => types.map((t) => ({ value: t.id.toString(), label: t.name })))),
+    { initialValue: [] },
+  );
+
+  recentDocuments = toSignal(
+    this.http
+      .get<PublicDocumentResponse[]>(`${this.URL}/recent`)
+      .pipe(tap((resp) => console.log(resp))),
+    {
+      initialValue: [],
+    },
   );
 
   constructor() {}
@@ -51,17 +63,21 @@ export class DocumentPublicApi {
     const httpParams = new HttpParams({ fromObject: sortedParams });
     const key = httpParams.toString();
 
-    const cached = this.cache[key];
-    // if (cached) return of(cached);
+    const cached = this.documentListCache[key];
+    if (cached) return of(cached);
 
     return this.http
       .get<{ documents: any[]; total: number }>(`${this.URL}`, {
         params: new HttpParams({ fromObject: cleanParams }),
       })
-      .pipe(tap((data) => (this.cache[key] = data)));
+      .pipe(tap((data) => (this.documentListCache[key] = data)));
   }
 
   findOne(id: string) {
-    return this.http.get<any>(`${this.URL}/${id}`);
+    const cached = this.documentCache[id];
+    if (cached) return of(cached);
+    return this.http
+      .get<any>(`${this.URL}/${id}`)
+      .pipe(tap((doc) => (this.documentCache[id] = doc)));
   }
 }

@@ -1,19 +1,40 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { Component, inject, input } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
-import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 
+import { delay } from 'rxjs';
+
+import { FileSizePipe, SafePipe } from '../../../../shared';
 import { DocumentPublicApi } from '../../services';
-import { SafePipe } from '../../../../shared';
-import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-document-detail',
-  imports: [RouterLink, CommonModule, BreadcrumbModule, ButtonModule,TagModule, SafePipe],
+  imports: [
+    CommonModule,
+    SkeletonModule,
+    ButtonModule,
+    TagModule,
+    FileSizePipe,
+    SafePipe,
+  ],
   templateUrl: './document-detail.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    .fade-in {
+      animation: fadeIn 0.2s ease-in-out;
+    }
+  `,
 })
 export default class DocumentDetail {
   private documentApi = inject(DocumentPublicApi);
@@ -24,22 +45,11 @@ export default class DocumentDetail {
 
   docResource = rxResource({
     params: () => ({ id: this.id() }),
-    stream: ({ params }) => this.documentApi.findOne(params.id),
+    stream: ({ params }) => this.documentApi.findOne(params.id).pipe(delay(300)),
   });
 
-  readonly breadcrumbItems = [
-    { label: 'Inicio', routerLink: '/' },
-    {
-      label: 'Documentos',
-      routerLink: '/documents',
-    },
-    {
-      label: 'Detalle',
-    },
-  ];
-
   goBack() {
-    if (window.history.length > 1) {
+    if (window.history.length > 2) {
       this.location.back();
     } else {
       this.router.navigate(['/documents']);
