@@ -7,8 +7,8 @@ import { RouterModule } from '@angular/router';
   template: `
     <footer class="mt-12 border-t border-surface-200 bg-surface-0">
       <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div class="grid gap-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
-          <section aria-labelledby="footer-brand">
+        <div class="grid gap-8 md:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)]">
+          <section aria-labelledby="footer-brand" class="md:pr-8 lg:pr-12">
             <h2
               id="footer-brand"
               class="text-xs font-semibold uppercase tracking-[0.14em] text-surface-600"
@@ -41,15 +41,16 @@ import { RouterModule } from '@angular/router';
           </nav>
 
           <nav aria-label="Canales oficiales">
-            <h3 class="text-sm font-semibold text-surface-900">Canales oficiales</h3>
+            <h3 class="text-sm font-semibold text-surface-900">Enlaces Institucionales</h3>
             <ul class="mt-3 space-y-2 text-sm text-surface-700">
               <li>
                 <a
                   href="https://..."
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="transition hover:text-primary-700 focus-visible:text-primary-700"
+                  class="inline-flex items-center gap-2 transition hover:text-primary-700 focus-visible:text-primary-700"
                 >
+                  <i class="pi pi-globe text-xs" aria-hidden="true"></i>
                   Sitio institucional
                 </a>
               </li>
@@ -58,8 +59,9 @@ import { RouterModule } from '@angular/router';
                   href="https://facebook.com/..."
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="transition hover:text-primary-700 focus-visible:text-primary-700"
+                  class="inline-flex items-center gap-2 transition hover:text-primary-700 focus-visible:text-primary-700"
                 >
+                  <i class="pi pi-facebook text-xs" aria-hidden="true"></i>
                   Facebook
                 </a>
               </li>
@@ -68,8 +70,9 @@ import { RouterModule } from '@angular/router';
                   href="https://instagram.com/..."
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="transition hover:text-primary-700 focus-visible:text-primary-700"
+                  class="inline-flex items-center gap-2 transition hover:text-primary-700 focus-visible:text-primary-700"
                 >
+                  <i class="pi pi-instagram text-xs" aria-hidden="true"></i>
                   Instagram
                 </a>
               </li>

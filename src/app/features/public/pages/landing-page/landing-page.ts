@@ -1,13 +1,15 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 import { InputGroupModule } from 'primeng/inputgroup';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { FormsModule } from '@angular/forms';
-import { DocumentPublicApi } from '../../services';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
+
+import { DocumentPublicApi } from '../../services';
 
 @Component({
   selector: 'app-landing-page',
@@ -52,6 +54,4 @@ export default class LandingPage {
     if (!this.searchTerm().trim()) return;
     this.router.navigate(['/documents'], { queryParams: { term: this.searchTerm() } });
   }
-
-  
 }
