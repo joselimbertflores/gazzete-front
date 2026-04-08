@@ -1,16 +1,7 @@
-<section
-  class="relative overflow-hidden border-b border-surface-200 bg-linear-to-b from-primary-100 via-primary-50/70 to-surface-0"
->
-  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-    <div class="absolute -left-20 top-[-8rem] h-72 w-72 rounded-full bg-primary-300/35 blur-3xl"></div>
-    <div class="absolute -right-12 top-[-6rem] h-80 w-80 rounded-full bg-primary-200/50 blur-3xl"></div>
-    <div class="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-surface-0 to-transparent"></div>
-  </div>
-
-  <div class="relative mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
+<section class="border-b border-surface-200 bg-linear-to-b from-primary-200/80 via-primary-50/65 to-surface-0">
+  <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
     <div class="mx-auto max-w-4xl text-center">
-      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-primary-700">Portal oficial</p>
-      <h1 class="mt-3 text-3xl font-semibold tracking-tight text-surface-950 sm:text-4xl lg:text-5xl">
+      <h1 class="text-3xl font-semibold tracking-tight text-surface-950 sm:text-4xl lg:text-5xl">
         Consulta Pública de la Gaceta Municipal
       </h1>
 
@@ -44,64 +35,80 @@
 
 <section class="bg-surface-50">
   <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-    <div class="rounded-2xl border border-surface-200 bg-surface-0 p-6 sm:p-8">
-      <header class="mx-auto max-w-3xl text-center">
-        <p class="text-sm font-medium text-surface-500">Exploración rápida</p>
-        <h2 class="mt-1 text-2xl font-semibold tracking-tight text-surface-950">Accesos directos</h2>
-        <p class="mt-2 text-sm leading-6 text-surface-600 sm:text-base">
-          Navegue por tipo de documento o aplique filtros frecuentes con un solo clic.
+    <header class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl font-semibold tracking-tight text-surface-950">Tipos de documento</h2>
+      <p class="mt-2 text-sm leading-6 text-surface-600 sm:text-base">
+        Ingrese por categoría normativa para encontrar publicaciones oficiales de forma más directa.
+      </p>
+    </header>
+
+    <div class="mx-auto mt-7 grid max-w-6xl grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+      @for (chip of typeChips(); track chip.label) {
+        <a
+          routerLink="/documents"
+          [queryParams]="chip.queryParams"
+          class="group relative min-h-28 rounded-2xl border border-surface-200 bg-surface-0 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-300 hover:bg-primary-50/80 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 sm:p-5"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <span
+              class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary-200 bg-primary-100/80 text-primary-700 transition group-hover:border-primary-300 group-hover:bg-primary-100"
+            >
+              <i class="pi pi-file text-sm" aria-hidden="true"></i>
+            </span>
+
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-surface-300 bg-surface-0 text-surface-500 transition group-hover:border-primary-300 group-hover:bg-primary-100/70 group-hover:text-primary-700"
+            >
+              <i class="pi pi-arrow-up-right text-xs" aria-hidden="true"></i>
+            </span>
+          </div>
+
+          <h3 class="mt-4 text-lg font-semibold tracking-tight text-surface-900 transition group-hover:text-primary-900">
+            {{ chip.label }}
+          </h3>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="border-y border-surface-200/70 bg-surface-0">
+  <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+    <div class="rounded-2xl border border-surface-200 bg-surface-50 p-5 sm:p-6">
+      <div>
+        <h2 class="text-xl font-semibold tracking-tight text-surface-950">Filtros frecuentes</h2>
+        <p class="mt-1.5 text-sm text-surface-600">
+          Atajos para consultas recurrentes por estado legal y periodo de gestión.
         </p>
-      </header>
+      </div>
 
-      <div class="mx-auto mt-7 flex max-w-4xl flex-col gap-6">
-        <section class="text-center">
-          <h3 class="text-sm font-semibold uppercase tracking-[0.12em] text-surface-600">
-            Tipos de documento
-          </h3>
-
-          <div class="mt-3 flex flex-wrap justify-center gap-2.5">
-            @for (chip of typeChips(); track chip.label) {
-              <a
-                routerLink="/documents"
-                [queryParams]="chip.queryParams"
-                class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-surface-0 px-4 py-2.5 text-sm font-medium text-surface-700 transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700"
-              >
-                {{ chip.label }}
-              </a>
-            }
-          </div>
-        </section>
-
-        <section class="text-center">
-          <h3 class="text-sm font-semibold uppercase tracking-[0.12em] text-surface-600">
-            Filtros frecuentes
-          </h3>
-
-          <div class="mt-3 flex flex-wrap justify-center gap-2.5">
-            @for (chip of quickChips; track chip.label) {
-              <a
-                routerLink="/documents"
-                [queryParams]="chip.queryParams"
-                class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-surface-0 px-4 py-2.5 text-sm font-medium text-surface-700 transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700"
-              >
-                {{ chip.label }}
-              </a>
-            }
-          </div>
-        </section>
+      <div class="mt-4 flex flex-wrap gap-2.5">
+        @for (chip of quickChips; track chip.label; let i = $index) {
+          <a
+            routerLink="/documents"
+            [queryParams]="chip.queryParams"
+            [class]="
+              i === 0
+                ? 'inline-flex min-h-10 items-center justify-center rounded-full border border-primary-600 bg-primary-600 px-3.5 py-2 text-sm font-semibold text-primary-50 transition hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
+                : i === 1
+                  ? 'inline-flex min-h-10 items-center justify-center rounded-full border border-primary-300 bg-primary-50 px-3.5 py-2 text-sm font-medium text-primary-800 transition hover:border-primary-400 hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
+                  : 'inline-flex min-h-10 items-center justify-center rounded-full border border-surface-300 bg-surface-0 px-3.5 py-2 text-sm font-medium text-surface-700 transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
+            "
+          >
+            {{ chip.label }}
+          </a>
+        }
       </div>
     </div>
   </div>
 </section>
 
-<section class="bg-surface-0">
+<section class="bg-surface-50">
   <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="text-sm font-medium text-surface-500">Últimas publicaciones</p>
-        <h2 class="mt-1 text-2xl font-semibold tracking-tight text-surface-950">
-          Documentos recientes
-        </h2>
+        <h2 class="text-2xl font-semibold tracking-tight text-surface-950">Documentos recientes</h2>
+        <p class="mt-1.5 text-sm text-surface-600">Publicaciones más recientes de la Gaceta Municipal.</p>
       </div>
 
       <a
