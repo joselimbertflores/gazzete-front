@@ -108,7 +108,7 @@ export default class DocumentsPage implements OnInit {
 
     this.filterForm.valueChanges
       .pipe(
-        debounceTime(400),
+        debounceTime(350),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         takeUntilDestroyed(this.destroyRef),
       )

@@ -13,28 +13,8 @@ import { FileSizePipe, SafePipe } from '../../../../shared';
 import { DocumentPublicApi } from '../../services';
 @Component({
   selector: 'app-document-detail',
-  imports: [
-    CommonModule,
-    SkeletonModule,
-    ButtonModule,
-    TagModule,
-    FileSizePipe,
-    SafePipe,
-  ],
+  imports: [CommonModule, SkeletonModule, ButtonModule, TagModule, FileSizePipe, SafePipe],
   templateUrl: './document-detail.html',
-  styles: `
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-    .fade-in {
-      animation: fadeIn 0.2s ease-in-out;
-    }
-  `,
 })
 export default class DocumentDetail {
   private documentApi = inject(DocumentPublicApi);

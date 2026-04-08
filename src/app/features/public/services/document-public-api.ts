@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { environment } from '../../../../environments/environment';
 import { map, of, tap } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { PublicDocumentResponse } from '../types';
 
 export interface GetPublicDocumentsParams {
@@ -33,14 +33,17 @@ export class DocumentPublicApi {
     { initialValue: [] },
   );
 
-  recentDocuments = toSignal(
-    this.http
-      .get<PublicDocumentResponse[]>(`${this.URL}/recent`)
-      .pipe(tap((resp) => console.log(resp))),
-    {
-      initialValue: [],
-    },
-  );
+  docTypesResource = rxResource({
+    stream: () => this.http.get<{ id: number; name: string }[]>(`${this.URL}/types`),
+  });
+
+  recentDocsResource = rxResource({
+    stream: () => this.http.get<PublicDocumentResponse[]>(`${this.URL}/recent`),
+  });
+
+  recentDocuments = toSignal(this.http.get<PublicDocumentResponse[]>(`${this.URL}/recent`), {
+    initialValue: [],
+  });
 
   constructor() {}
 
