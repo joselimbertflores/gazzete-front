@@ -41,13 +41,16 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        title: 'Inicio',
         loadComponent: () => import('./features/public/pages/landing-page/landing-page'),
       },
       {
+        title: 'Normativa',
         path: 'documents',
         loadComponent: () => import('./features/public/pages/documents-page/documents-page'),
       },
       {
+        title: 'Detalle',
         path: 'documents/:id',
         loadComponent: () => import('./features/public/pages/document-detail/document-detail'),
       },

@@ -15,7 +15,7 @@ import { PublicDocumentResponse } from '../../../../types';
         <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-2xl font-semibold tracking-tight text-surface-950">
-              Documentos recientes
+              Normativas recientes
             </h2>
             <p class="mt-1.5 text-sm text-surface-600">
               Publicaciones más recientes de la Gaceta Municipal.
@@ -26,7 +26,7 @@ import { PublicDocumentResponse } from '../../../../types';
             routerLink="/documents"
             class="inline-flex items-center gap-2 text-sm font-medium text-surface-700 transition hover:text-primary-700"
           >
-            Ver todos los documentos
+            Ver todas las normativas
             <i class="pi pi-arrow-right text-xs" aria-hidden="true"></i>
           </a>
         </div>

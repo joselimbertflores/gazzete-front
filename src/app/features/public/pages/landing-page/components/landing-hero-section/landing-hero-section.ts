@@ -40,7 +40,7 @@ import { InputTextModule } from 'primeng/inputtext';
                 [(ngModel)]="searchTerm"
                 (keyup.enter)="search()"
               />
-              <label for="search-input">Buscar por número, tipo o resumen</label>
+              <label for="search-input">Buscar por número o resumen</label>
             </p-floatLabel>
             <p-button label="Buscar" icon="pi pi-search" (onClick)="search()" />
           </p-inputgroup>

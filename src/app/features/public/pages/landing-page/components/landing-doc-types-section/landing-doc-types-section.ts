@@ -11,7 +11,7 @@ import { DocTypeResponse } from '../../../../types';
     <section class="bg-surface-50">
       <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
         <header class="mx-auto max-w-3xl text-center">
-          <h2 class="text-2xl font-semibold tracking-tight text-surface-950">Tipos de documento</h2>
+          <h2 class="text-2xl font-semibold tracking-tight text-surface-950">Tipos de normativa</h2>
           <p class="mt-2 text-sm leading-6 text-surface-600 sm:text-base">
             Ingrese por categoría normativa para encontrar publicaciones oficiales de forma más
             directa.

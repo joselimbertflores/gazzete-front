@@ -1,4 +1,4 @@
 export const environment = {
-  baseUrl: '',
-  identityHubUrl: 'http://localhost:3000',
+  baseUrl: 'api',
+  identityHubUrl: 'http://localhost:8000',
 };

@@ -133,7 +133,7 @@ export class PublicNavbar {
   readonly menuOpen = signal(false);
   readonly navItems = [
     { label: 'Inicio', href: '/', exact: true, icon: 'pi pi-home' },
-    { label: 'Documentos', href: '/documents', exact: false, icon: 'pi pi-file' },
+    { label: 'Normativa', href: '/documents', exact: false, icon: 'pi pi-file' },
   ] as const;
 
   constructor() {
