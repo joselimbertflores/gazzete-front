@@ -19,7 +19,7 @@ export interface GetPublicDocumentsParams {
   providedIn: 'root',
 })
 export class DocumentPublicApi {
-  private readonly URL = `${environment.baseUrl}/documents-public`;
+  private readonly URL = `${environment.baseUrl}/api/documents-public`;
 
   private http = inject(HttpClient);
 

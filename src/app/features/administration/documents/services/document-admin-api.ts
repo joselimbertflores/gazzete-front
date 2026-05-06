@@ -34,7 +34,7 @@ interface GetDocumentsParams {
   providedIn: 'root',
 })
 export class DocumentAdminApi {
-  private readonly URL = `${environment.baseUrl}/documents`;
+  private readonly URL = `${environment.baseUrl}/api/documents`;
 
   private http = inject(HttpClient);
 

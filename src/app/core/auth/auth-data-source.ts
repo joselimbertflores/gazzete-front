@@ -9,7 +9,7 @@ import { AuthUser } from './auth.types';
   providedIn: 'root',
 })
 export class AuthDataSource {
-  private readonly URL = `${environment.baseUrl}/auth`;
+  private readonly URL = `${environment.baseUrl}`;
 
   private http = inject(HttpClient);
 
@@ -24,17 +24,17 @@ export class AuthDataSource {
     } else {
       localStorage.removeItem('login');
     }
-    return this.http.post(`${this.URL}/login`, { login, password }, { withCredentials: true });
+    return this.http.post(`${this.URL}/auth/login`, { login, password }, { withCredentials: true });
   }
 
   logout() {
     return this.http
-      .post(`${this.URL}/logout`, {}, { withCredentials: true })
+      .post(`${this.URL}/api/auth/logout`, {}, { withCredentials: true })
       .pipe(tap(() => this._user.set(null)));
   }
 
   checkAuthStatus() {
-    return this.http.get<{ user: AuthUser }>(`${this.URL}/status`, { withCredentials: true }).pipe(
+    return this.http.get<{ user: AuthUser }>(`${this.URL}/api/auth/me`, { withCredentials: true }).pipe(
       tap(({ user }) => this._user.set(user)),
       map(() => true),
       catchError(() => {
