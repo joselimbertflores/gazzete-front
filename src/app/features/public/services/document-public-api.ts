@@ -1,9 +1,9 @@
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { environment } from '../../../../environments/environment';
 import { map, of, tap } from 'rxjs';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { DocumentFileResponse, PublicDocumentResponse } from '../types';
 
 export interface GetPublicDocumentsParams {
@@ -23,8 +23,8 @@ export class DocumentPublicApi {
 
   private http = inject(HttpClient);
 
-  documentListCache: Record<string, { documents: any[]; total: number }> = {};
-  documentCache: Record<string, any> = {};
+  documentListCache: Record<string, { documents: PublicDocumentResponse[]; total: number }> = {};
+  documentCache: Record<string, PublicDocumentResponse> = {};
 
   docTypes = toSignal(
     this.http
@@ -70,7 +70,7 @@ export class DocumentPublicApi {
     if (cached) return of(cached);
 
     return this.http
-      .get<{ documents: DocumentFileResponse[]; total: number }>(`${this.URL}`, {
+      .get<{ documents: PublicDocumentResponse[]; total: number }>(`${this.URL}`, {
         params: new HttpParams({ fromObject: cleanParams }),
       })
       .pipe(tap((data) => (this.documentListCache[key] = data)));
