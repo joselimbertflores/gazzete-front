@@ -18,7 +18,7 @@ import { httpErrorInterceptor } from './core/http/http-error-interceptor';
 import { authInterceptor } from './core/auth/auth-interceptor';
 import { routes } from './app.routes';
 
-const primaryColor = palette('{sky}');
+const primaryColor = palette('{emerald}');
 const AuraSky = definePreset(theme, {
   semantic: {
     primary: primaryColor,

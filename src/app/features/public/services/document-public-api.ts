@@ -4,7 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { map, of, tap } from 'rxjs';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { PublicDocumentResponse } from '../types';
+import { DocumentFileResponse, PublicDocumentResponse } from '../types';
 
 export interface GetPublicDocumentsParams {
   term?: string | null;
@@ -70,7 +70,7 @@ export class DocumentPublicApi {
     if (cached) return of(cached);
 
     return this.http
-      .get<{ documents: any[]; total: number }>(`${this.URL}`, {
+      .get<{ documents: DocumentFileResponse[]; total: number }>(`${this.URL}`, {
         params: new HttpParams({ fromObject: cleanParams }),
       })
       .pipe(tap((data) => (this.documentListCache[key] = data)));
