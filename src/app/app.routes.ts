@@ -5,10 +5,16 @@ import { UserRole } from './core/auth/auth.types';
 export const routes: Routes = [
   {
     path: 'admin',
-    canActivate: [isAuthenticatedGuard],
+    canActivateChild: [isAuthenticatedGuard],
     title: 'Administracion',
-    loadComponent: () => import('./layouts/admin-layout/admin-layout.component'),
+    loadComponent: () =>
+      import('./features/administration/layout/admin-layout/admin-layout.component'),
     children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/administration/workspace/pages/admin-home-page/admin-home-page'),
+      },
       {
         data: { role: UserRole.USER },
         canActivate: [roleGuard],
@@ -28,6 +34,10 @@ export const routes: Routes = [
         data: { role: UserRole.ADMIN },
         canActivate: [roleGuard],
         loadComponent: () => import('./features/administration/users/pages/user-admin/user-admin'),
+      },
+      {
+        path: '**',
+        redirectTo: '',
       },
     ],
   },

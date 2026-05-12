@@ -12,7 +12,7 @@ import { DocumentTypeResponse } from '../interfaces';
 export class DocumentTypeAdminApi {
   private http = inject(HttpClient);
 
-  private readonly URL = `${environment.baseUrl}/document-types`;
+  private readonly URL = `${environment.baseUrl}/api/document-types`;
 
   resource = toSignal(this.http.get<DocumentTypeResponse[]>(this.URL), {
     initialValue: [],

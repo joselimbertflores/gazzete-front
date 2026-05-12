@@ -2,9 +2,10 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { environment } from '../../../../environments/environment';
 import { map, of, tap } from 'rxjs';
-import { DocumentFileResponse, PublicDocumentResponse } from '../types';
+
+import { environment } from '../../../../environments/environment';
+import { PublicDocumentResponse } from '../types';
 
 export interface GetPublicDocumentsParams {
   term?: string | null;
@@ -19,7 +20,7 @@ export interface GetPublicDocumentsParams {
   providedIn: 'root',
 })
 export class DocumentPublicApi {
-  private readonly URL = `${environment.baseUrl}/api/documents-public`;
+  private readonly URL = `${environment.baseUrl}/api/public-documents`;
 
   private http = inject(HttpClient);
 

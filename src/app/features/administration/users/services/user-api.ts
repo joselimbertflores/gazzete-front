@@ -9,7 +9,7 @@ import { UserResponse } from '../interfaces';
 })
 export class UserApi {
   private http = inject(HttpClient);
-  private readonly URL = `${environment.baseUrl}/users`;
+  private readonly URL = `${environment.baseUrl}/api/users`;
 
   findAll(limit: number, offset: number, term?: string) {
     const params = new HttpParams({ fromObject: { limit, offset, ...(term && { term }) } });

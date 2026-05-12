@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem } from 'primeng/api';
 
-import { AuthDataSource } from '../../../../core/auth/auth-data-source';
-import { UserRole } from '../../../../core/auth/auth.types';
+import { AuthDataSource } from '../../../../../../core/auth/auth-data-source';
+import { UserRole } from '../../../../../../core/auth/auth.types';
 
 interface SidebarItem {
   label: string;

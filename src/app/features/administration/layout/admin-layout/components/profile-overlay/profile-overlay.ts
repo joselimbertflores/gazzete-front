@@ -14,7 +14,7 @@ import { RippleModule } from 'primeng/ripple';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
 
-import { AuthDataSource } from '../../../../core/auth/auth-data-source';
+import { AuthDataSource } from '../../../../../../core/auth/auth-data-source';
 
 @Component({
   selector: 'profile-overlay',
