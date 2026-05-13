@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, linkedSignal, Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe, UpperCasePipe } from '@angular/common';
 
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -34,6 +34,9 @@ import { DocumentAdminApi } from '../../services';
     MenuModule,
     TagModule,
     SearchInput,
+
+    UpperCasePipe,
+    TitleCasePipe,
   ],
   templateUrl: './documents-admin.html',
   providers: [DialogService],
@@ -126,10 +129,6 @@ export default class DocumentsAdmin {
     });
   }
 
-  openFile(item: any) {
-    window.open(item.file.url, '_blank');
-  }
-
   search(term: string) {
     this.searchTerm.set(term);
   }
@@ -143,6 +142,11 @@ export default class DocumentsAdmin {
             label: 'Editar',
             icon: 'pi pi-fw pi-pencil',
             command: () => this.openEditorDialog(row),
+          },
+          {
+            label: 'Ver documento',
+            icon: 'pi pi-eye',
+            command: () => this.openFile(row),
           },
           {
             label: 'Cambiar estado',
@@ -182,5 +186,9 @@ export default class DocumentsAdmin {
     if (this.offset() === 0) {
       this.dataSource.update((values) => [newItem, ...values].slice(0, this.limit()));
     }
+  }
+
+  private openFile(item: DocumentResponse) {
+    window.open(item.file.url, '_blank');
   }
 }

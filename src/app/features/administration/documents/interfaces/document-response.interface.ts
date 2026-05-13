@@ -12,13 +12,13 @@ export interface DocumentResponse {
   numberingScope: string;
   status: string;
   legalStatus: string;
-  promulgationDate: string;
+  promulgationDate: string | null;
   publicationDate: string;
-  validUntil: string;
+  validUntil: string | null;
   createdAt: string;
   updatedAt: string;
   code: string;
-  file: File;
+  file: DocumentFile;
 }
 
 export interface DocumentFile {

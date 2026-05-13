@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import {
-  FormBuilder,
-  Validators,
   FormGroup,
+  Validators,
+  FormBuilder,
   ValidatorFn,
   AbstractControl,
   ValidationErrors,
@@ -56,15 +56,15 @@ function isAfter(targetControlName: string): ValidatorFn {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ButtonModule,
-    FloatLabelModule,
     InputNumberModule,
     DatePickerModule,
     FileUploadModule,
+    FloatLabelModule,
     InputTextModule,
     TextareaModule,
-    SelectModule,
     MessageModule,
+    SelectModule,
+    ButtonModule,
     FileSizePipe,
   ],
   templateUrl: './document-editor.html',
@@ -79,13 +79,19 @@ export class DocumentEditor implements OnInit {
 
   readonly currentDate = new Date();
 
+  readonly documentStatusOptions = [
+    { value: 'PUBLISHED', label: 'Publicado' },
+    { value: 'DISABLED', label: 'Deshabilitado' },
+  ];
+
   file: File | null = null;
   form: FormGroup = this.formBuilder.group({
     summary: ['', Validators.required],
     typeId: ['', Validators.required],
+    status: ['PUBLISHED'],
     correlativeNumber: [null, [Validators.required, Validators.min(1)]],
     year: [this.currentDate.getFullYear().toString(), Validators.required],
-    promulgationDate: [null, [Validators.required, isBefore('publicationDate')]],
+    promulgationDate: [null, [isBefore('publicationDate')]],
     publicationDate: [this.currentDate, Validators.required],
     validUntil: [null, isAfter('publicationDate')],
   });
@@ -130,8 +136,8 @@ export class DocumentEditor implements OnInit {
     const { year, publicationDate, promulgationDate, validUntil, ...props } = this.data;
     this.form.patchValue({
       ...props,
-      promulgationDate: new Date(promulgationDate),
       publicationDate: new Date(publicationDate),
+      promulgationDate: promulgationDate ? new Date(promulgationDate) : null,
       validUntil: validUntil ? new Date(validUntil) : null,
     });
   }

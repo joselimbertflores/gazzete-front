@@ -1,5 +1,5 @@
 <div class="flex items-center justify-between mb-2">
-  <h2 class="text-2xl font-semibold">Documentos</h2>
+  <h2 class="text-2xl font-semibold">Publicaciones</h2>
   <div class="flex gap-x-2">
     @let isFiltering = activeFiltersCount > 0;
     <p-button
@@ -99,76 +99,83 @@
   currentPageReportTemplate="{first} - {last} de {totalRecords}"
   [rowsPerPageOptions]="[10, 25, 40, 50]"
   [loading]="resource.isLoading()"
+  [showPageLinks]="false"
 >
   <ng-template #caption>
     <div class="flex sm:justify-end">
       <div class="w-full sm:w-1/4">
-        <search-input label="Numero o titulo" (search)="search($event)" />
+        <search-input label="Codigo / Resumen" (search)="search($event)" />
       </div>
     </div>
   </ng-template>
   <ng-template #header>
     <tr>
-      <th style="width: 100px">Numero</th>
+      <th style="width: 100px">Codigo</th>
       <th>Tipo</th>
       <th>Resumen</th>
-      <th>Publicacion</th>
-      <th>Estado</th>
-      <th style="width: 5rem"></th>
+      <th>Estado legal</th>
+      <th>Fecha publicación</th>
+      <th>Visibilidad</th>
+      <th style="width: 2.5rem"></th>
     </tr>
   </ng-template>
   <ng-template #body let-item>
     <tr>
       <td>{{ item.code }}</td>
-      <td>{{ item.type.name }}</td>
-      <td class="max-w-100 truncate">{{ item.summary }}</td>
-      <td>{{ item.publicationDate | date: 'dd/MM/yyyy' }}</td>
+      <td>{{ item.type.name | titlecase }}</td>
+      <td class="max-w-sm">
+        <p class="truncate text-sm" title="{{ item.summary }}">
+          {{ item.summary | uppercase }}
+        </p>
+      </td>
       <td>
         @switch (item.legalStatus) {
           @case ('VALID') {
-            <p-tag severity="success">Vigente</p-tag>
+            <span>Vigente</span>
           }
           @case ('ABROGATED') {
-            <p-tag severity="danger">Abrogado</p-tag>
+            <span>Abrogado</span>
           }
           @case ('DEROGATED') {
-            <p-tag severity="warn">Abrogado</p-tag>
+            <span>Derrogado</span>
           }
           @case ('MODIFIED') {
-            <p-tag severity="info">Modificado</p-tag>
+            <span>Modificado</span>
           }
           @default {
-            <p-tag severity="secondary" value="Si estado" />
+            <span> ----- </span>
+          }
+        }
+      </td>
+      <td>{{ item.publicationDate | date: 'dd/MM/yyyy' }}</td>
+      <td>
+        @switch (item.status) {
+          @case ('PUBLISHED') {
+            <p-tag [style]="{ 'font-size': '12px' }" severity="success" value="Publicado" />
+          }
+          @case ('DISABLED') {
+            <p-tag [style]="{ 'font-size': '12px' }" severity="danger" value="Deshabilitado" />
+          }
+          @default {
+            <p-tag [style]="{ 'font-size': '12px' }" severity="secondary" value="Sin estado" />
           }
         }
       </td>
       <td>
-        <div class="flex gap-x-1">
-          <p-button
-            severity="secondary"
-            icon="pi pi-eye"
-            size="small"
-            [rounded]="true"
-            (click)="openFile(item)"
-            pTooltip="Ver documento"
-            tooltipPosition="bottom"
-            showDelay="500"
-          />
-          <p-menu
-            #menu
-            [model]="menuItems"
-            [popup]="true"
-            appendTo="body"
-            (onShow)="setMenuItems(item)"
-          />
-          <p-button
-            severity="secondary"
-            [rounded]="true"
-            size="small"
-            (click)="menu.toggle($event)"
-            icon="pi pi-ellipsis-v"
-          />
-        </div>
+        <p-menu
+          #menu
+          [model]="menuItems"
+          [popup]="true"
+          appendTo="body"
+          (onShow)="setMenuItems(item)"
+        />
+        <p-button
+          severity="secondary"
+          [rounded]="true"
+          size="small"
+          (click)="menu.toggle($event)"
+          icon="pi pi-ellipsis-v"
+        />
       </td>
     </tr>
   </ng-template>

@@ -53,7 +53,6 @@ export class DocumentAdminApi {
   }
 
   create(dto: DocumentDto, pdf: File) {
-    console.log(dto);
     return this.uploadDocument(pdf, +dto.year).pipe(
       switchMap((fileUploaded) =>
         this.http.post<DocumentResponse>(`${this.URL}`, {
@@ -79,6 +78,8 @@ export class DocumentAdminApi {
       ),
     );
   }
+
+  // getD
 
   searchRelationCandidates(term: string, targetDocumentId?: string) {
     return this.http.get<any[]>(`${this.URL}/search-for-relation`, {

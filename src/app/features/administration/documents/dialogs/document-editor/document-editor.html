@@ -11,8 +11,8 @@
             optionLabel="name"
             optionValue="id"
             [fluid]="true"
-            formControlName="typeId"
             appendTo="body"
+            formControlName="typeId"
             [invalid]="formUtils.isInvalid(form.get('typeId'))"
           />
           <label for="typeTxt">Tipo de documento</label>
@@ -128,6 +128,21 @@
           {{ formUtils.getErrorMessage(form.get('publicationDate')) }}
         </p-message>
       }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <p-floatlabel variant="on">
+        <p-select
+          inputId="status_select"
+          [options]="documentStatusOptions"
+          formControlName="status"
+          optionValue="value"
+          optionLabel="label"
+          placeholder="Estado"
+          class="w-full"
+        />
+        <label for="status_select">Estado de publicación</label>
+      </p-floatlabel>
     </div>
 
     <div class="flex flex-col gap-1">
