@@ -15,7 +15,7 @@
             formControlName="typeId"
             [invalid]="formUtils.isInvalid(form.get('typeId'))"
           />
-          <label for="typeTxt">Tipo de documento</label>
+          <label for="typeTxt">Tipo de documento *</label>
         </p-floatlabel>
         @if (formUtils.isInvalid(form.get('typeId'))) {
           <p-message severity="error" size="small" variant="simple">
@@ -35,7 +35,7 @@
             formControlName="summary"
             [invalid]="formUtils.isInvalid(form.get('summary'))"
           ></textarea>
-          <label for="summary_txt">Resumen</label>
+          <label for="summary_txt">Resumen *</label>
         </p-floatlabel>
         @if (formUtils.isInvalid(form.get('summary'))) {
           <p-message severity="error" size="small" variant="simple">
@@ -57,7 +57,7 @@
           [invalid]="formUtils.isInvalid(form.get('correlativeNumber'))"
         />
 
-        <label for="correlativeTxt">Correlativo</label>
+        <label for="correlativeTxt">Correlativo *</label>
       </p-floatlabel>
       @if (formUtils.isInvalid(form.get('correlativeNumber'))) {
         <p-message severity="error" size="small" variant="simple">
@@ -87,6 +87,21 @@
           {{ formUtils.getErrorMessage(form.get('year')) }}
         </p-message>
       }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <p-floatlabel variant="on">
+        <p-select
+          inputId="status_select"
+          [options]="documentStatusOptions"
+          formControlName="status"
+          optionValue="value"
+          optionLabel="label"
+          placeholder="Estado"
+          class="w-full"
+        />
+        <label for="status_select">Estado de publicación</label>
+      </p-floatlabel>
     </div>
 
     <div class="flex flex-col gap-1">
@@ -121,28 +136,13 @@
           formControlName="publicationDate"
           [invalid]="formUtils.isInvalid(form.get('publicationDate'))"
         />
-        <label for="publicationTxt">Fecha publicacion</label>
+        <label for="publicationTxt">Fecha publicacion *</label>
       </p-floatlabel>
       @if (formUtils.isInvalid(form.get('publicationDate'))) {
         <p-message severity="error" size="small" variant="simple">
           {{ formUtils.getErrorMessage(form.get('publicationDate')) }}
         </p-message>
       }
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <p-floatlabel variant="on">
-        <p-select
-          inputId="status_select"
-          [options]="documentStatusOptions"
-          formControlName="status"
-          optionValue="value"
-          optionLabel="label"
-          placeholder="Estado"
-          class="w-full"
-        />
-        <label for="status_select">Estado de publicación</label>
-      </p-floatlabel>
     </div>
 
     <div class="flex flex-col gap-1">
@@ -203,7 +203,7 @@
             </span>
           </div>
         </div>
-      } @else if (data?.file) {
+      } @else if (data?.file?.url) {
         @let file = data!.file;
         <div class="flex items-center gap-x-4 p-2">
           <i class="pi pi-file-pdf text-red-500" style="font-size: 1.5rem"></i>

@@ -1,14 +1,14 @@
 <div class="flex items-center justify-between mb-2">
   <h2 class="text-2xl font-semibold">Publicaciones</h2>
   <div class="flex gap-x-2">
-    @let isFiltering = activeFiltersCount > 0;
+    @let isFiltering = activeFiltersCount() > 0;
     <p-button
       (click)="filterPopover.toggle($event)"
       [icon]="isFiltering ? 'pi pi-filter-fill' : 'pi pi-filter'"
       label="Filtros"
       size="small"
       [severity]="isFiltering ? 'primary' : 'secondary'"
-      [badge]="isFiltering ? activeFiltersCount.toString() : undefined"
+      [badge]="isFiltering ? activeFiltersCount().toString() : undefined"
     />
     <p-button label="Agregar" icon="pi pi-plus" size="small" (onClick)="openEditorDialog()" />
   </div>
@@ -30,7 +30,7 @@
     <form [formGroup]="filterForm" class="flex flex-col gap-y-4">
       <p-floatlabel class="w-full" variant="on">
         <p-select
-          inputId="type"
+          inputId="type_txt"
           optionLabel="name"
           optionValue="id"
           class="w-full"
@@ -39,7 +39,7 @@
           formControlName="typeId"
           [options]="documentTypes()"
         />
-        <label for="type">Tipo documento</label>
+        <label for="type_txt">Tipo documento</label>
       </p-floatlabel>
       <p-floatlabel class="w-full" variant="on">
         <p-select
@@ -77,7 +77,7 @@
         (onClick)="clearFilters(); filterPopover.hide()"
       />
       <p-button
-        label="Aplicar filtros"
+        label="Aplicar"
         size="small"
         (onClick)="applyFilters(); filterPopover.hide()"
       />
@@ -92,7 +92,7 @@
   [paginator]="true"
   [value]="dataSource()"
   [totalRecords]="dataSize()"
-  (onPage)="chagePage($event)"
+  (onPage)="changePage($event)"
   [first]="offset()"
   [rows]="limit()"
   [showCurrentPageReport]="true"
@@ -181,7 +181,7 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="6">
+      <td colspan="7">
         <div class="py-1">Sin resultados</div>
       </td>
     </tr>

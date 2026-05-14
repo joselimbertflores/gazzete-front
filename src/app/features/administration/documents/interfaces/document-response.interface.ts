@@ -26,3 +26,34 @@ export interface DocumentFile {
   name: string;
   size: string;
 }
+
+export interface DocumentDetailResponse {
+  id: string;
+  summary: string;
+  typeId: number;
+  correlativeNumber: number;
+  suffix: null;
+  year: number;
+  code: string;
+  numberingScope: string;
+  status: string;
+  legalStatus: string;
+  downloadCount: number;
+  publicationDate: string;
+  promulgationDate: null;
+  validUntil: null;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string | null;
+  updatedBy: string | null;
+  fileId: string;
+  file: DocumentFileDetail;
+  type: string;
+}
+
+export interface DocumentFileDetail {
+  url: string;
+  size: string;
+  originalName: string;
+  mimeType: string;
+}

@@ -1,7 +1,14 @@
-import { ChangeDetectionStrategy, linkedSignal, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  linkedSignal,
+  Component,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -15,9 +22,9 @@ import { MenuModule } from 'primeng/menu';
 import { TagModule } from 'primeng/tag';
 import { MenuItem } from 'primeng/api';
 
-import { DocumentEditor, DocumentStateSwitcher } from '../../dialogs';
-import { DocumentResponse } from '../../interfaces';
+import { DocumentDetail, DocumentEditor, DocumentStateSwitcher } from '../../dialogs';
 import { SearchInput } from '../../../../../shared';
+import { DocumentResponse } from '../../interfaces';
 import { DocumentAdminApi } from '../../services';
 @Component({
   selector: 'app-documents-admin',
@@ -68,7 +75,6 @@ export default class DocumentsAdmin {
     this.resource.hasValue() ? this.resource.value().documents : [],
   );
   dataSize = linkedSignal(() => (this.resource.hasValue() ? this.resource.value().total : 0));
-
   menuItems: MenuItem[] = [];
 
   readonly documentTypes = this.documentApi.documentTypes;
@@ -85,7 +91,16 @@ export default class DocumentsAdmin {
     legalStatus: [null],
   });
 
-  chagePage(event: TablePageEvent) {
+  readonly filtersValue = toSignal(this.filterForm.valueChanges, {
+    initialValue: this.filterForm.getRawValue(),
+  });
+
+  readonly activeFiltersCount = computed(() => {
+    const value = this.filtersValue();
+    return Object.values(value).filter((v) => v !== null && v !== undefined && v !== '').length;
+  });
+
+  changePage(event: TablePageEvent) {
     this.limit.set(event.rows);
     this.offset.set(event.first);
   }
@@ -129,6 +144,20 @@ export default class DocumentsAdmin {
     });
   }
 
+  openDetailDialog(item: DocumentResponse) {
+    this.dialogService.open(DocumentDetail, {
+      header: 'Detalle del documento',
+      modal: true,
+      closable: true,
+      draggable: false,
+      data: item.id,
+      width: '40vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw',
+      },
+    });
+  }
   search(term: string) {
     this.searchTerm.set(term);
   }
@@ -144,9 +173,9 @@ export default class DocumentsAdmin {
             command: () => this.openEditorDialog(row),
           },
           {
-            label: 'Ver documento',
+            label: 'Ver detalle',
             icon: 'pi pi-eye',
-            command: () => this.openFile(row),
+            command: () => this.openDetailDialog(row),
           },
           {
             label: 'Cambiar estado',
@@ -159,18 +188,20 @@ export default class DocumentsAdmin {
   }
 
   applyFilters() {
-    this.offset.set(0);
-    this.resource.reload();
+    this.reloadFromFirstPage();
   }
 
   clearFilters() {
     this.filterForm.reset();
-    this.offset.set(0);
-    this.resource.reload();
+    this.reloadFromFirstPage();
   }
 
-  get activeFiltersCount(): number {
-    return Object.values(this.filterForm.value).filter((v) => v !== null && v !== undefined).length;
+  private reloadFromFirstPage() {
+    if (this.offset() === 0) {
+      this.resource.reload();
+    } else {
+      this.offset.set(0);
+    }
   }
 
   private upsertItem(newItem: DocumentResponse) {
@@ -186,9 +217,5 @@ export default class DocumentsAdmin {
     if (this.offset() === 0) {
       this.dataSource.update((values) => [newItem, ...values].slice(0, this.limit()));
     }
-  }
-
-  private openFile(item: DocumentResponse) {
-    window.open(item.file.url, '_blank');
   }
 }

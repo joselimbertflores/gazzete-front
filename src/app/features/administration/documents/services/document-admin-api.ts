@@ -5,7 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, switchMap, tap } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
-import { DocumentResponse } from '../interfaces';
+import { DocumentDetailResponse, DocumentResponse } from '../interfaces';
 export interface UploadResult {
   id: string;
   name: string;
@@ -79,7 +79,9 @@ export class DocumentAdminApi {
     );
   }
 
-  // getD
+  getDocumentDetail(id: string) {
+    return this.http.get<DocumentDetailResponse>(`${this.URL}/${id}`);
+  }
 
   searchRelationCandidates(term: string, targetDocumentId?: string) {
     return this.http.get<any[]>(`${this.URL}/search-for-relation`, {
@@ -106,7 +108,7 @@ export class DocumentAdminApi {
     formData.append('file', pdf);
     const params = new HttpParams({ fromObject: { ...(year && { year: year.toString() }) } });
 
-    return this.http.post<UploadResult>(`${environment.baseUrl}/files/documents`, formData, {
+    return this.http.post<UploadResult>(`${environment.baseUrl}/api/files/documents`, formData, {
       params,
     });
   }

@@ -19,6 +19,7 @@ export const routes: Routes = [
         data: { role: UserRole.USER },
         canActivate: [roleGuard],
         path: 'documents',
+        title: 'Publicaciones',
         loadComponent: () =>
           import('./features/administration/documents/pages/documents-admin/documents-admin'),
       },
