@@ -1,0 +1,133 @@
+<div class="space-y-5">
+  <div class="rounded-xl border border-surface-200 bg-surface-50 p-4">
+    <p class="text-sm text-surface-500">Documento afectado</p>
+
+    <p class="font-semibold text-surface-900">
+      {{ targetDocument.type.name }} {{ targetDocument.code }}
+    </p>
+
+    <p class="mt-1 line-clamp-2 text-sm text-surface-600">
+      {{ targetDocument.summary }}
+    </p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="space-y-3">
+      <p-skeleton height="4rem" styleClass="rounded-xl" />
+      <p-skeleton height="2.5rem" />
+      <p-skeleton height="2.5rem" />
+    </div>
+  }
+
+  @if (isLoading() && currentRelation()) {
+    <div class="rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm text-primary-700">Relación legal actual</p>
+
+      <p class="mt-1 font-semibold text-surface-900">
+        <!-- Norma {{ incomingRelationLabel(relation.type) }} por {{ relation.sourceDocument.typeName }} -->
+        {{ currentRelation().sourceDocument.code }}
+      </p>
+
+      @if (currentRelation().note) {
+        <p class="mt-2 text-sm text-surface-600">
+          {{ currentRelation().note }}
+        </p>
+      }
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <p-button
+        label="Quitar relación"
+        icon="pi pi-trash"
+        severity="danger"
+        outlined
+        (onClick)="confirmRemove()"
+      />
+
+      <p-button label="Cambiar relación" icon="pi pi-pencil" />
+    </div>
+  }
+
+  @if (currentRelation() === null) {
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Tipo de relación</label>
+
+        <p-select
+          formControlName="type"
+          [options]="relationTypeOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccione el tipo de relación"
+          class="w-full"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Documento que produce el cambio</label>
+
+        <p-autoComplete
+          formControlName="sourceDocumentId"
+          [suggestions]="documentSuggestions()"
+          (completeMethod)="searchDocuments($event)"
+          [dropdown]="true"
+          [forceSelection]="true"
+          appendTo="body"
+          optionLabel="displayName"
+          optionValue="id"
+          placeholder="Ej: Ley 112, 112/2025, Decreto 020"
+          class="w-full"
+        >
+          <ng-template let-document pTemplate="item">
+            <span> {{ document.typeName }} {{ document.code }} </span>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+
+      <!-- @if (form.controls.sourceDocument.value; as selectedDocument) {
+        <div class="rounded-xl border border-surface-200 bg-surface-50 p-3">
+          <p class="text-sm text-surface-500">Documento seleccionado</p>
+
+          <p class="font-medium text-surface-900">
+            {{ selectedDocument.typeName }} {{ selectedDocument.code }}
+          </p>
+        </div>
+      } -->
+
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Observación</label>
+
+        <textarea
+          pTextarea
+          rows="3"
+          formControlName="note"
+          placeholder="Observación opcional"
+          class="w-full"
+        ></textarea>
+      </div>
+
+      <div class="p-dialog-footer">
+        <p-button type="button" label="Cancelar" severity="secondary" (onClick)="close()" />
+        <p-button type="submit" label="Guardar" />
+      </div>
+
+      <!-- <div class="flex justify-end gap-2 pt-2">
+        <p-button
+          type="button"
+          label="Cancelar"
+          severity="secondary"
+          outlined
+          (onClick)="cancelForm()"
+        />
+
+        <p-button
+          type="submit"
+          label="Guardar"
+          icon="pi pi-save"
+          [loading]="saving"
+          [disabled]="form.invalid || saving"
+        />
+      </div> -->
+    </form>
+  }
+</div>

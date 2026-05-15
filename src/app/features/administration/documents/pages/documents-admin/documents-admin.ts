@@ -22,7 +22,7 @@ import { MenuModule } from 'primeng/menu';
 import { TagModule } from 'primeng/tag';
 import { MenuItem } from 'primeng/api';
 
-import { DocumentDetail, DocumentEditor, DocumentStateSwitcher } from '../../dialogs';
+import { DocumentDetail, DocumentEditor, DocumentRelationEditor } from '../../dialogs';
 import { SearchInput } from '../../../../../shared';
 import { DocumentResponse } from '../../interfaces';
 import { DocumentAdminApi } from '../../services';
@@ -125,25 +125,6 @@ export default class DocumentsAdmin {
     });
   }
 
-  openStateSwicherDialog(item: DocumentResponse) {
-    const diagloRef = this.dialogService.open(DocumentStateSwitcher, {
-      header: 'Cambiar estado',
-      modal: true,
-      focusOnShow: false,
-      closable: true,
-      draggable: false,
-      data: item,
-      width: '40vw',
-      breakpoints: {
-        '960px': '75vw',
-        '640px': '90vw',
-      },
-    });
-    diagloRef?.onClose.subscribe((result?: DocumentResponse) => {
-      if (!result) return;
-    });
-  }
-
   openDetailDialog(item: DocumentResponse) {
     this.dialogService.open(DocumentDetail, {
       header: 'Detalle del documento',
@@ -158,6 +139,23 @@ export default class DocumentsAdmin {
       },
     });
   }
+
+  openRelationDialog(item: DocumentResponse) {
+    this.dialogService.open(DocumentRelationEditor, {
+      header: 'Relación legal',
+      modal: true,
+      closable: true,
+      draggable: false,
+      dismissableMask: true,
+      data: item,
+      width: '36rem',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw',
+      },
+    });
+  }
+
   search(term: string) {
     this.searchTerm.set(term);
   }
@@ -178,9 +176,9 @@ export default class DocumentsAdmin {
             command: () => this.openDetailDialog(row),
           },
           {
-            label: 'Cambiar estado',
-            icon: 'pi pi-arrow-right-arrow-left',
-            command: () => this.openStateSwicherDialog(row),
+            label: 'Relación legal',
+            icon: 'pi pi-link',
+            command: () => this.openRelationDialog(row),
           },
         ],
       },

@@ -57,3 +57,23 @@ export interface DocumentFileDetail {
   originalName: string;
   mimeType: string;
 }
+
+export enum DocumentLegalStatus {
+  VALID = 'VALID',
+  MODIFIED = 'MODIFIED',
+  ABROGATED = 'ABROGATED',
+  DEROGATED = 'DEROGATED',
+}
+
+export enum DocumentRelationType {
+  MODIFIES = 'MODIFIES',
+  ABROGATES = 'ABROGATES',
+  DEROGATES = 'DEROGATES',
+}
+
+export interface DocumentSearchOptionResponse {
+  id: string;
+  code: string;
+  summary: string;
+  typeName: string;
+}
