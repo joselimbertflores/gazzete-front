@@ -70,10 +70,3 @@ export enum DocumentRelationType {
   ABROGATES = 'ABROGATES',
   DEROGATES = 'DEROGATES',
 }
-
-export interface DocumentSearchOptionResponse {
-  id: string;
-  code: string;
-  summary: string;
-  typeName: string;
-}

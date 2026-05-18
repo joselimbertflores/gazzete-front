@@ -41,7 +41,6 @@ import { DocumentAdminApi } from '../../services';
     MenuModule,
     TagModule,
     SearchInput,
-
     UpperCasePipe,
     TitleCasePipe,
   ],
@@ -141,18 +140,27 @@ export default class DocumentsAdmin {
   }
 
   openRelationDialog(item: DocumentResponse) {
-    this.dialogService.open(DocumentRelationEditor, {
+    const dialogRef = this.dialogService.open(DocumentRelationEditor, {
       header: 'Relación legal',
       modal: true,
       closable: true,
       draggable: false,
       dismissableMask: true,
+      focusOnShow: false,
       data: item,
-      width: '36rem',
+      width: '45vw',
       breakpoints: {
         '960px': '75vw',
         '640px': '90vw',
       },
+    });
+    dialogRef?.onClose.subscribe((targetLegalStatus?: string) => {
+      if (!targetLegalStatus) return;
+      this.dataSource.update((values) => {
+        const index = values.findIndex((value) => value.id === item.id);
+        values[index].legalStatus = targetLegalStatus;
+        return [...values];
+      });
     });
   }
 
@@ -176,8 +184,8 @@ export default class DocumentsAdmin {
             command: () => this.openDetailDialog(row),
           },
           {
-            label: 'Relación legal',
-            icon: 'pi pi-link',
+            label: 'Cambiar estado legal',
+            icon: 'pi pi-wrench',
             command: () => this.openRelationDialog(row),
           },
         ],

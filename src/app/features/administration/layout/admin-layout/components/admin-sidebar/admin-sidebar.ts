@@ -73,6 +73,12 @@ export class AdminSidebar {
 
   readonly menu: SidebarItem[] = [
     {
+      label: 'Publicaciones',
+      icon: 'pi pi-file',
+      routerLink: 'documents',
+      role: UserRole.USER,
+    },
+    {
       label: 'Documentos',
       icon: 'pi pi-folder',
       expanded: true,
@@ -82,13 +88,6 @@ export class AdminSidebar {
           icon: 'pi pi-list',
           routerLink: 'document-types',
           role: UserRole.ADMIN,
-        },
-
-        {
-          label: 'Publicaciones',
-          icon: 'pi pi-file',
-          routerLink: 'documents',
-          role: UserRole.USER,
         },
       ],
     },

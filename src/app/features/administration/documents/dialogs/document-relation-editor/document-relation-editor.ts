@@ -1,166 +1,194 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { JsonPipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { UpperCasePipe } from '@angular/common';
 
 import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { MessageModule } from 'primeng/message';
+import { SkeletonModule } from 'primeng/skeleton';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
+import { finalize } from 'rxjs';
 
+import { FormUtils } from '../../../../../helpers';
 import {
-  DocumentSearchOptionResponse,
-  DocumentRelationType,
   DocumentResponse,
+  DocumentRelationType,
+  DocumentRelationResponse,
+  DocumentSearchOptionResponse,
 } from '../../interfaces';
+import { DocumentRelationApi } from '../../services';
 
-import { DocumentAdminApi, DocumentRelationApi } from '../../services';
-import { SkeletonModule } from 'primeng/skeleton';
+interface DocumentRelationOption extends DocumentSearchOptionResponse {
+  displayName: string;
+}
 
 @Component({
   selector: 'app-document-relation-editor',
   imports: [
     ReactiveFormsModule,
     AutoCompleteModule,
-    AutoCompleteModule,
-    InputTextModule,
+    FloatLabelModule,
+    MessageModule,
+    SkeletonModule,
     TextareaModule,
     ButtonModule,
     SelectModule,
-    JsonPipe,
-    SkeletonModule,
+    UpperCasePipe,
   ],
   templateUrl: './document-relation-editor.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentRelationEditor implements OnInit {
-  targetDocument: DocumentResponse = inject(DynamicDialogConfig).data;
-  private formBuilder = inject(FormBuilder);
-  private docRelationApi = inject(DocumentRelationApi);
-  private diagloRef = inject(DynamicDialogRef);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly relationApi = inject(DocumentRelationApi);
+  private readonly dialogRef = inject(DynamicDialogRef);
 
-  readonly relationTypeOptions = [
-    {
-      label: 'Modificada por',
-      value: DocumentRelationType.MODIFIES,
-    },
-    {
-      label: 'Abrogada por',
-      value: DocumentRelationType.ABROGATES,
-    },
-    {
-      label: 'Derogada por',
-      value: DocumentRelationType.DEROGATES,
-    },
-  ];
+  readonly targetDocument: DocumentResponse = inject(DynamicDialogConfig).data;
+  readonly formUtils = FormUtils;
 
-  documentSuggestions = signal<DocumentSearchOptionResponse[]>([]);
-
-  form: FormGroup = this.formBuilder.group({
+  readonly form: FormGroup = this.formBuilder.group({
     type: [null, Validators.required],
-    sourceDocumentId: [null, Validators.required],
+    sourceDocument: [null, Validators.required],
     note: [null],
   });
 
-  isLoading = signal(false);
+  readonly isLoadingRelation = signal(true);
+  readonly currentRelation = signal<DocumentRelationResponse | null>(null);
+  readonly isMarkedForDelete = signal(false);
+  readonly isSaving = signal(false);
+  readonly candidates = signal<DocumentRelationOption[]>([]);
 
-  currentRelation = signal<any>(null);
+  private readonly formStatus = toSignal(this.form.statusChanges, {
+    initialValue: this.form.status,
+  });
+
+  readonly canSave = computed(() => {
+    this.formStatus();
+
+    if (this.isSaving() || this.isLoadingRelation()) return false;
+    if (this.isMarkedForDelete()) return true;
+    return this.form.valid;
+  });
+
+  readonly relationTypeOptions = [
+    { label: 'Modificada', value: DocumentRelationType.MODIFIES },
+    { label: 'Abrogada', value: DocumentRelationType.ABROGATES },
+    { label: 'Derogada', value: DocumentRelationType.DEROGATES },
+  ];
 
   ngOnInit(): void {
-    this.docRelationApi.findByTarget(this.targetDocument.id).subscribe({
-      next: (relation) => {
-        this.currentRelation.set(relation);
-
-        if (relation) {
-          this.form.patchValue(relation);
-          return;
-        }
-      },
-      error: (err) => {
-        console.log(err);
-        // this.ref.close(false);
-      },
-    });
+    this.loadRelation();
   }
 
-  searchDocuments(event: AutoCompleteCompleteEvent) {
+  markForDelete(): void {
+    this.isMarkedForDelete.set(true);
+  }
+
+  cancelDelete(): void {
+    this.isMarkedForDelete.set(false);
+  }
+
+  searchDocuments(event: AutoCompleteCompleteEvent): void {
     const term = event.query?.trim();
+
     if (!term) {
-      this.documentSuggestions.set([]);
+      this.candidates.set([]);
       return;
     }
 
-    this.docRelationApi.findCandidates(term, this.targetDocument.id).subscribe({
-      next: (documents) => {
-        this.documentSuggestions.set(
-          documents.map((doc) => ({
-            ...doc,
-            displayName: `${doc.typeName} ${doc.code}`,
-          })),
-        );
-      },
+    this.relationApi.findCandidates(term, this.targetDocument.id).subscribe((documents) => {
+      this.candidates.set(documents.map((document) => this.toDocumentOption(document)));
     });
   }
 
-  save() {
-    if (!this.targetDocument.id || this.form.invalid) return;
-    console.log('calll');
-    this.docRelationApi
-      .create({
-        targetDocumentId: this.targetDocument.id,
-        ...this.form.value,
+  save(): void {
+    if (this.isMarkedForDelete()) {
+      this.deleteRelation();
+      return;
+    }
+
+    if (!this.canSave()) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const { sourceDocument, type, note } = this.form.getRawValue() as {
+      sourceDocument: DocumentRelationOption;
+      type: DocumentRelationType;
+      note?: string | null;
+    };
+
+    this.isSaving.set(true);
+    this.relationApi
+      .save(this.targetDocument.id, {
+        sourceDocumentId: sourceDocument.id,
+        type,
+        note: note?.trim() || null,
       })
-      .subscribe({
-        next: () => {
-          // this.messageService.add({
-          //   severity: 'success',
-          //   summary: 'Relación legal guardada',
-          // });
-        },
-        error: (errr) => {
-          console.log(errr);
-        },
-        complete: () => {},
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe(({ targetLegalStatus }) => {
+        this.dialogRef.close(targetLegalStatus);
       });
   }
 
-  confirmRemove() {
-    // this.confirmationService.confirm({
-    //   header: 'Quitar relación legal',
-    //   message: 'El documento volverá al estado Vigente. ¿Desea continuar?',
-    //   icon: 'pi pi-exclamation-triangle',
-    //   acceptLabel: 'Sí, quitar',
-    //   rejectLabel: 'Cancelar',
-    //   acceptButtonStyleClass: 'p-button-danger',
-    //   accept: () => this.remove(),
-    // });
+  close(): void {
+    this.dialogRef.close();
   }
 
-  private remove() {
-    // if (!this.targetDocument) return;
-    // this.removing = true;
-    // this.documentRelationsService.removeForTarget(this.targetDocument.id).subscribe({
-    //   next: () => {
-    //     this.messageService.add({
-    //       severity: 'success',
-    //       summary: 'Relación legal eliminada',
-    //     });
-    //     this.visible = false;
-    //     this.saved.emit();
-    //   },
-    //   error: () => {
-    //     this.removing = false;
-    //   },
-    //   complete: () => {
-    //     this.removing = false;
-    //   },
-    // });
+  relationTypeLabel(type: DocumentRelationType | string | null | undefined): string {
+    const labels: Record<DocumentRelationType, string> = {
+      [DocumentRelationType.MODIFIES]: 'Modificada',
+      [DocumentRelationType.ABROGATES]: 'Abrogada',
+      [DocumentRelationType.DEROGATES]: 'Derogada',
+    };
+    return labels[type as DocumentRelationType] ?? 'Sin relacion';
   }
 
-  close() {
-    // this.visible = false;
-    // this.targetDocument = null;
-    // this.existingRelation = null;
-    // this.form.reset();
+  private loadRelation(): void {
+    this.isLoadingRelation.set(true);
+    this.relationApi
+      .findByTarget(this.targetDocument.id)
+      .pipe(finalize(() => this.isLoadingRelation.set(false)))
+      .subscribe((relation) => {
+        this.currentRelation.set(relation);
+        this.patchFormFromCurrentRelation();
+      });
+  }
+
+  private patchFormFromCurrentRelation(): void {
+    const relation = this.currentRelation();
+    this.form.reset({
+      type: relation?.type ?? null,
+      sourceDocument: relation ? this.toDocumentOption(relation.sourceDocument) : null,
+      note: relation?.note ?? null,
+    });
+  }
+
+  private deleteRelation(): void {
+    this.isSaving.set(true);
+    this.relationApi
+      .remove(this.targetDocument.id)
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe(({ targetLegalStatus }) => {
+        this.dialogRef.close(targetLegalStatus);
+      });
+  }
+
+  private toDocumentOption(document: DocumentSearchOptionResponse): DocumentRelationOption {
+    return {
+      ...document,
+      displayName: `${document.typeName} ${document.code}`,
+    };
   }
 }
