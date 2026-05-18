@@ -22,12 +22,22 @@ import { ProfileOverlay, AdminSidebar } from './components';
   ],
   templateUrl: './admin-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles:`
-  ::ng-deep .p-drawer-content {
-    padding: 10px !important; /* Removes all padding */
-}
+  styles: `
+    :host {
+      display: block;
+      height: 100dvh;
+    }
 
-  `
+    :host ::ng-deep .admin-mobile-drawer .p-drawer-header {
+      border-bottom: 1px solid var(--p-surface-100);
+      min-height: 4rem;
+      padding: 0 1rem;
+    }
+
+    :host ::ng-deep .admin-mobile-drawer .p-drawer-content {
+      padding: 0;
+    }
+  `,
 })
 export default class AdminLayoutComponent {
   isMobile = signal(false);

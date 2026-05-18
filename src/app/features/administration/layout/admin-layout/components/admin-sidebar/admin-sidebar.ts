@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
 
-import { PanelMenuModule } from 'primeng/panelmenu';
-import { MenuItem } from 'primeng/api';
+import { RippleModule } from 'primeng/ripple';
 
 import { AuthDataSource } from '../../../../../../core/auth/auth-data-source';
 import { UserRole } from '../../../../../../core/auth/auth.types';
@@ -11,52 +9,56 @@ import { UserRole } from '../../../../../../core/auth/auth.types';
 interface SidebarItem {
   label: string;
   icon: string;
-  expanded?: boolean;
-  routerLink?: string;
-  role?: UserRole;
-  items?: SidebarItem[];
+  routerLink: string;
+  roles?: UserRole[];
+  badge?: string;
 }
 @Component({
   selector: 'app-admin-sidebar',
-  imports: [RouterModule, PanelMenuModule, CommonModule],
+  imports: [RouterModule, RippleModule],
+  host: {
+    class: 'block h-full',
+  },
   template: `
-    <div class="h-full flex flex-col bg-surface-0">
-      <a routerLink="/admin" class="flex items-center gap-3 h-14 sm:px-4">
-        <img src="images/icons/app.webp" alt="Gaceta" class="h-10 w-10 object-contain" />
-        <div class="flex flex-col leading-tight">
-          <span class="font-semibold text-surface-900">Gaceta</span>
-          <span class="text-xs text-surface-500">Administración</span>
+    <div class="flex h-full flex-col bg-surface-0">
+      <a
+        routerLink="/admin"
+        class="flex min-h-16 items-center gap-3 border-b border-surface-100 px-4 outline-none transition-colors hover:bg-surface-50 focus-visible:ring-2 focus-visible:ring-primary-300"
+      >
+        <span
+          class="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-surface-200 bg-surface-50"
+        >
+          <img src="images/icons/app.webp" alt="Gaceta" class="h-7 w-7 object-contain" />
+        </span>
+
+        <div class="min-w-0 leading-tight">
+          <span class="block truncate text-sm font-semibold text-surface-950">Gaceta</span>
+          <span class="block truncate text-xs text-surface-500">Panel administrativo</span>
         </div>
       </a>
 
-      <div class="flex-1 overflow-y-auto py-2 sm:px-2">
-        <p-panelMenu [model]="filteredMenu()" class="w-full" [multiple]="true">
-          <ng-template #item let-item>
+      <nav class="flex-1 overflow-y-auto p-3" aria-label="Menu administrativo">
+        <div class="space-y-1">
+          @for (item of visibleMenu(); track item.routerLink) {
             <a
               pRipple
               [routerLink]="item.routerLink"
-              routerLinkActive="bg-primary-100 !text-primary-700 rounded-lg"
-              class="flex items-center gap-x-3 px-2 py-2 text-surface-700 hover:bg-surface-100 hover:rounded-lg transition-colors mb-1"
+              routerLinkActive="bg-primary-50 text-primary-700 border-primary-200"
+              class="flex min-h-10 items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-100 hover:text-surface-950"
             >
-              @if (item.icon) {
-                <i [class]="item.icon"></i>
-              }
-
-              <span [ngClass]="{ 'font-medium': item.items }">
-                {{ item.label }}
-              </span>
-
-              @if (item.items) {
-                <i
-                  class="pi pi-chevron-down ml-auto transition-transform duration-200"
-                  [ngClass]="{ 'rotate-180': item.expanded }"
-                  style="font-size: 12px;"
-                ></i>
+              <i [class]="item.icon + ' text-base'"></i>
+              <span class="min-w-0 flex-1 truncate">{{ item.label }}</span>
+              @if (item.badge) {
+                <span
+                  class="rounded-full bg-surface-100 px-2 py-0.5 text-[11px] font-semibold text-surface-500"
+                >
+                  {{ item.badge }}
+                </span>
               }
             </a>
-          </ng-template>
-        </p-panelMenu>
-      </div>
+          }
+        </div>
+      </nav>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,63 +66,30 @@ interface SidebarItem {
 export class AdminSidebar {
   private authDataSource = inject(AuthDataSource);
 
-  // Si el padre tiene items → se ignora su resource.
-  // Si no tiene items, entonces sí se usa resource.
-
-  // Esto evita inconsistencias como:
-  // - El padre permitido pero todos los hijos prohibidos.
-  // - O el padre bloqueando hijos que sí deberían mostrarse.
+  readonly userRoles = computed(() => this.authDataSource.user()?.roles ?? []);
 
   readonly menu: SidebarItem[] = [
     {
       label: 'Publicaciones',
       icon: 'pi pi-file',
-      routerLink: 'documents',
-      role: UserRole.USER,
+      routerLink: '/admin/documents',
+      roles: [UserRole.USER],
     },
     {
-      label: 'Documentos',
-      icon: 'pi pi-folder',
-      expanded: true,
-      items: [
-        {
-          label: 'Tipos',
-          icon: 'pi pi-list',
-          routerLink: 'document-types',
-          role: UserRole.ADMIN,
-        },
-      ],
+      label: 'Tipos de documentos',
+      icon: 'pi pi-list',
+      routerLink: '/admin/document-types',
+      roles: [UserRole.ADMIN],
     },
     {
-      label: 'Accesos',
-      icon: 'pi pi-folder',
-      expanded: true,
-      items: [
-        {
-          label: 'Usuarios',
-          icon: 'pi pi-users',
-          routerLink: 'users',
-          role: UserRole.ADMIN,
-        },
-      ],
+      label: 'Usuarios',
+      icon: 'pi pi-users',
+      routerLink: '/admin/users',
+      roles: [UserRole.ADMIN],
     },
   ];
 
-  filteredMenu = computed<MenuItem[]>(() => this.filterMenu(this.menu));
-
-  private filterMenu(items: SidebarItem[]): MenuItem[] {
-    return items
-      .map(({ role, items, ...props }) => {
-        if (items) {
-          const children = this.filterMenu(items);
-          return children.length ? { ...props, items: children } : null;
-        }
-        if (!role) return props;
-
-        return this.authDataSource.user()?.roles.some((userRole) => userRole === role)
-          ? props
-          : null;
-      })
-      .filter((item) => item !== null);
-  }
+  readonly visibleMenu = computed(() =>
+    this.menu.filter((item) => item.roles?.some((role) => this.userRoles().includes(role)) ?? true),
+  );
 }

@@ -1,3 +1,16 @@
+export enum DocumentLegalStatus {
+  VALID = 'VALID',
+  MODIFIED = 'MODIFIED',
+  ABROGATED = 'ABROGATED',
+  DEROGATED = 'DEROGATED',
+}
+
+export enum DocumentRelationType {
+  MODIFIES = 'MODIFIES',
+  ABROGATES = 'ABROGATES',
+  DEROGATES = 'DEROGATES',
+}
+
 export interface DocumentResponse {
   id: string;
   title: string;
@@ -47,26 +60,35 @@ export interface DocumentDetailResponse {
   createdBy: string | null;
   updatedBy: string | null;
   fileId: string;
-  file: DocumentFileDetail;
+  file: DocumentDetailFile;
   type: string;
+  incomingRelation: IncomingDocumentRelation | null;
+  outgoingRelations: OutgoingDocumentRelation[];
 }
-
-export interface DocumentFileDetail {
+interface DocumentDetailFile {
   url: string;
-  size: string;
+  size: number;
   originalName: string;
   mimeType: string;
 }
 
-export enum DocumentLegalStatus {
-  VALID = 'VALID',
-  MODIFIED = 'MODIFIED',
-  ABROGATED = 'ABROGATED',
-  DEROGATED = 'DEROGATED',
+interface IncomingDocumentRelation {
+  id: string;
+  type: DocumentRelationType;
+  note: string | null;
+  sourceDocument: RelatedDocument;
 }
 
-export enum DocumentRelationType {
-  MODIFIES = 'MODIFIES',
-  ABROGATES = 'ABROGATES',
-  DEROGATES = 'DEROGATES',
+interface OutgoingDocumentRelation {
+  id: string;
+  type: DocumentRelationType;
+  note: string | null;
+  targetDocument: RelatedDocument;
+}
+
+interface RelatedDocument {
+  id: string;
+  code: string;
+  typeName: string;
+  summary: string;
 }
