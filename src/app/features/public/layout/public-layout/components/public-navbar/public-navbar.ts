@@ -10,8 +10,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 
+interface PublicNavItem {
+  readonly label: string;
+  readonly href: string;
+  readonly exact: boolean;
+  readonly icon: string;
+  readonly fragment?: string;
+}
+
 @Component({
   selector: 'public-navbar',
+  standalone: true,
   imports: [RouterModule],
   template: `
     <nav
@@ -34,32 +43,30 @@ import { filter } from 'rxjs';
 
             <div class="min-w-0 leading-tight">
               <p
-                class="hidden truncate text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-surface-500 xl:block"
+                class="hidden truncate text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-surface-500 lg:block"
               >
                 Gobierno Autónomo Municipal de Sacaba
               </p>
 
-              <p class="text-sm font-semibold tracking-tight text-surface-950 sm:hidden">GACETA</p>
+              <p class="text-sm font-semibold tracking-tight text-surface-950 sm:hidden">Gaceta</p>
 
               <p
                 class="hidden text-sm font-semibold tracking-tight text-surface-950 sm:block sm:text-base"
               >
-                Gaceta Municipal
+                Gaceta Municipal de Sacaba
               </p>
             </div>
           </a>
 
           <ul class="hidden items-center gap-1 md:flex">
-            @for (item of navItems; track item.href) {
+            @for (item of navItems; track item.label) {
               <li>
                 <a
                   [routerLink]="item.href"
-                  routerLinkActive
-                  #desktopRla="routerLinkActive"
-                  [routerLinkActiveOptions]="{ exact: item.exact }"
-                  [attr.aria-current]="desktopRla.isActive ? 'page' : null"
+                  [fragment]="item.fragment"
+                  [attr.aria-current]="isItemActive(item) ? 'page' : null"
                   [class]="
-                    desktopRla.isActive
+                    isItemActive(item)
                       ? 'inline-flex items-center rounded-lg border border-primary-200 bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700 transition'
                       : 'inline-flex items-center rounded-lg border border-transparent px-4 py-2 text-sm font-medium text-surface-700 transition hover:border-surface-200 hover:bg-surface-100 hover:text-surface-950'
                   "
@@ -99,16 +106,14 @@ import { filter } from 'rxjs';
         >
           <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6">
             <ul class="flex flex-col gap-1.5">
-              @for (item of navItems; track item.href) {
+              @for (item of navItems; track item.label) {
                 <li>
                   <a
                     [routerLink]="item.href"
-                    routerLinkActive
-                    #mobileRla="routerLinkActive"
-                    [routerLinkActiveOptions]="{ exact: item.exact }"
-                    [attr.aria-current]="mobileRla.isActive ? 'page' : null"
+                    [fragment]="item.fragment"
+                    [attr.aria-current]="isItemActive(item) ? 'page' : null"
                     [class]="
-                      mobileRla.isActive
+                      isItemActive(item)
                         ? 'inline-flex w-full items-center gap-2 rounded-lg border border-primary-200 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary-700'
                         : 'inline-flex w-full items-center gap-2 rounded-lg border border-transparent px-4 py-3 text-sm font-medium text-surface-700 transition hover:border-surface-200 hover:bg-surface-100 hover:text-surface-950'
                     "
@@ -131,10 +136,19 @@ export class PublicNavbar {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly menuOpen = signal(false);
-  readonly navItems = [
+  readonly activeUrl = signal(this.router.url);
+  readonly navItems: PublicNavItem[] = [
     { label: 'Inicio', href: '/', exact: true, icon: 'pi pi-home' },
-    { label: 'Normativa', href: '/documents', exact: false, icon: 'pi pi-file' },
-  ] as const;
+    { label: 'Documentos', href: '/documents', exact: false, icon: 'pi pi-file' },
+    {
+      label: 'Normativas',
+      href: '/',
+      exact: true,
+      icon: 'pi pi-book',
+      fragment: 'normativas',
+    },
+    { label: 'Ayuda', href: '/', exact: true, icon: 'pi pi-question-circle', fragment: 'ayuda' },
+  ];
 
   constructor() {
     this.router.events
@@ -142,7 +156,10 @@ export class PublicNavbar {
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => this.closeMenu());
+      .subscribe((event) => {
+        this.activeUrl.set(event.urlAfterRedirects);
+        this.closeMenu();
+      });
   }
 
   toggleMenu(): void {
@@ -165,5 +182,16 @@ export class PublicNavbar {
 
   closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  isItemActive(item: PublicNavItem): boolean {
+    const activeUrl = this.activeUrl();
+    const expectedUrl = item.fragment ? `${item.href}#${item.fragment}` : item.href;
+
+    if (!item.exact) {
+      return activeUrl.startsWith(expectedUrl);
+    }
+
+    return activeUrl === expectedUrl;
   }
 }
