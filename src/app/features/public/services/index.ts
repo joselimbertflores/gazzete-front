@@ -1,1 +1,1 @@
-export * from './document-public-api';
+export * from './public-documents-api';

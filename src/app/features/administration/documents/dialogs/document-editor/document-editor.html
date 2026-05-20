@@ -166,6 +166,10 @@
       }
     </div>
   </div>
+  <div class="flex items-center mt-6 px-2">
+    <p-checkbox inputId="featured" name="featured" [binary]="true" formControlName="isFeatured" />
+    <label for="featured" class="ml-2"> Destacado </label>
+  </div>
 
   <p-fileUpload
     [auto]="false"

@@ -25,7 +25,7 @@ import { TagModule } from 'primeng/tag';
 
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
-import { DocumentPublicApi, GetPublicDocumentsParams } from '../../services';
+import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
 import { WindowScrollStore } from '../../../../shared';
 
 @Component({
@@ -53,7 +53,7 @@ export default class DocumentsPage implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  private documentPublicApi = inject(DocumentPublicApi);
+  private documentPublicApi = inject(PublicDocumentsApi);
   private scrollStore = inject(WindowScrollStore);
 
   readonly documentStatuses = [

@@ -35,6 +35,7 @@ export class DocumentTypeEditor {
 
   form: FormGroup = inject(FormBuilder).nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    description: ['', Validators.maxLength(120)],
     numberingMode: ['', Validators.required],
     isActive: [true, Validators.required],
   });

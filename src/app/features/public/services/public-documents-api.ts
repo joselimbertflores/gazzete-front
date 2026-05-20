@@ -4,8 +4,8 @@ import { inject, Injectable } from '@angular/core';
 
 import { map, of, tap } from 'rxjs';
 
+import { PublicDocumentResponse, PublicLandingResponse } from '../types';
 import { environment } from '../../../../environments/environment';
-import { PublicDocumentResponse } from '../types';
 
 export interface GetPublicDocumentsParams {
   term?: string | null;
@@ -19,7 +19,7 @@ export interface GetPublicDocumentsParams {
 @Injectable({
   providedIn: 'root',
 })
-export class DocumentPublicApi {
+export class PublicDocumentsApi {
   private readonly URL = `${environment.baseUrl}/api/public-documents`;
 
   private http = inject(HttpClient);
@@ -47,6 +47,10 @@ export class DocumentPublicApi {
   });
 
   constructor() {}
+
+  getLandingData() {
+    return this.http.get<PublicLandingResponse>(`${this.URL}/landing`).pipe();
+  }
 
   findAll(params: GetPublicDocumentsParams) {
     const cleanParams = Object.fromEntries(

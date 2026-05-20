@@ -10,14 +10,14 @@ import { TagModule } from 'primeng/tag';
 import { delay } from 'rxjs';
 
 import { FileSizePipe, SafePipe } from '../../../../shared';
-import { DocumentPublicApi } from '../../services';
+import { PublicDocumentsApi } from '../../services';
 @Component({
   selector: 'app-document-detail',
   imports: [CommonModule, SkeletonModule, ButtonModule, TagModule, FileSizePipe, SafePipe],
   templateUrl: './document-detail.html',
 })
 export default class DocumentDetail {
-  private documentApi = inject(DocumentPublicApi);
+  private documentApi = inject(PublicDocumentsApi);
   private location = inject(Location);
   private router = inject(Router);
 

@@ -16,6 +16,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
 import { TextareaModule } from 'primeng/textarea';
 import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
@@ -62,6 +63,7 @@ function isAfter(targetControlName: string): ValidatorFn {
     FloatLabelModule,
     InputTextModule,
     TextareaModule,
+    CheckboxModule,
     MessageModule,
     SelectModule,
     ButtonModule,
@@ -94,6 +96,7 @@ export class DocumentEditor implements OnInit {
     promulgationDate: [null, [isBefore('publicationDate')]],
     publicationDate: [this.currentDate, Validators.required],
     validUntil: [null, isAfter('publicationDate')],
+    isFeatured: [false],
   });
 
   types = this.documentApi.documentTypes;
