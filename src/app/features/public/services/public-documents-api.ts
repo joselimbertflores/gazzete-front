@@ -9,9 +9,10 @@ import { environment } from '../../../../environments/environment';
 
 export interface GetPublicDocumentsParams {
   term?: string | null;
-  type?: number | null;
-  year?: number | null;
+  type?: number | string | null;
+  year?: number | string | null;
   legalStatus?: string | null;
+  sort?: string | null;
   limit?: number;
   offset?: number;
 }

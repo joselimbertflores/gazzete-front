@@ -32,7 +32,7 @@ export default class DocumentDetail {
     if (window.history.length > 2) {
       this.location.back();
     } else {
-      this.router.navigate(['/documents']);
+      this.router.navigate(['/normativas']);
     }
   }
 }

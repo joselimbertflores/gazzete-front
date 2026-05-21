@@ -61,6 +61,6 @@ export class LandingHeroSection {
 
   search(): void {
     if (!this.searchTerm().trim()) return;
-    this.router.navigate(['/documents'], { queryParams: { term: this.searchTerm() } });
+    this.router.navigate(['/normativas'], { queryParams: { term: this.searchTerm() } });
   }
 }

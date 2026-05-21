@@ -56,14 +56,23 @@ export const routes: Routes = [
         loadComponent: () => import('./features/public/pages/landing-page/landing-page'),
       },
       {
-        title: 'Normativa',
-        path: 'documents',
+        title: 'Normativas',
+        path: 'normativas',
         loadComponent: () => import('./features/public/pages/documents-page/documents-page'),
       },
       {
         title: 'Detalle',
-        path: 'documents/:id',
+        path: 'normativas/:id',
         loadComponent: () => import('./features/public/pages/document-detail/document-detail'),
+      },
+      {
+        path: 'documents',
+        redirectTo: 'normativas',
+        pathMatch: 'full',
+      },
+      {
+        path: 'documents/:id',
+        redirectTo: 'normativas/:id',
       },
     ],
   },

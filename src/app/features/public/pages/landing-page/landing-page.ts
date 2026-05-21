@@ -1,9 +1,10 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
+  PLATFORM_ID,
   ViewChild,
   afterNextRender,
   computed,
@@ -52,6 +53,7 @@ export default class LandingPage {
   private readonly publicDocumentApi = inject(PublicDocumentsApi);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly numberFormatter = new Intl.NumberFormat('es-BO');
   private featuredAutoplayId: ReturnType<typeof setInterval> | null = null;
 
@@ -101,9 +103,9 @@ export default class LandingPage {
   });
 
   constructor() {
-    afterNextRender(() => {
-      this.featuredAutoplayId = setInterval(() => this.advanceFeaturedAutoplay(), 5500);
-    });
+    if (this.isBrowser) {
+      afterNextRender(() => this.startFeaturedAutoplay());
+    }
 
     this.destroyRef.onDestroy(() => this.clearFeaturedAutoplay());
   }
@@ -111,7 +113,7 @@ export default class LandingPage {
   search(): void {
     const term = this.searchTerm().trim();
 
-    this.router.navigate(['/documents'], {
+    this.router.navigate(['/normativas'], {
       queryParams: term ? { term } : undefined,
     });
   }
@@ -178,6 +180,8 @@ export default class LandingPage {
   }
 
   private advanceFeaturedAutoplay(): void {
+    if (!this.isBrowser) return;
+
     const count = this.featuredDocuments().length;
     if (count <= 1 || this.isFeaturedAutoplayPaused()) return;
 
@@ -195,14 +199,22 @@ export default class LandingPage {
     const nextIndex = Math.max(0, Math.min(index, count - 1));
     this.activeFeaturedIndex.set(nextIndex);
 
+    if (!this.isBrowser) return;
+
     const carousel = this.featuredCarousel?.nativeElement;
     const slide = carousel?.children.item(nextIndex) as HTMLElement | null | undefined;
+    if (!carousel || !slide) return;
 
-    slide?.scrollIntoView({
+    carousel.scrollTo({
+      left: slide.offsetLeft,
       behavior: 'smooth',
-      block: 'nearest',
-      inline: 'start',
     });
+  }
+
+  private startFeaturedAutoplay(): void {
+    if (this.featuredAutoplayId) return;
+
+    this.featuredAutoplayId = setInterval(() => this.advanceFeaturedAutoplay(), 5500);
   }
 
   private clearFeaturedAutoplay(): void {

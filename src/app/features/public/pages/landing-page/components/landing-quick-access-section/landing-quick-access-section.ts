@@ -20,7 +20,7 @@ import { RouterLink } from '@angular/router';
           <div class="mt-4 flex flex-wrap gap-2.5">
             @for (chip of quickChips; track chip.label; let i = $index) {
               <a
-                routerLink="/documents"
+                routerLink="/normativas"
                 [queryParams]="chip.queryParams"
                 [class]="
                   i === 0

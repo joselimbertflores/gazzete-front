@@ -15,7 +15,6 @@ interface PublicNavItem {
   readonly href: string;
   readonly exact: boolean;
   readonly icon: string;
-  readonly fragment?: string;
 }
 
 @Component({
@@ -24,53 +23,51 @@ interface PublicNavItem {
   imports: [RouterModule],
   template: `
     <nav
-      class="relative border-b border-surface-200/90 bg-surface-0/95 supports-backdrop-filter:bg-surface-0/80 backdrop-blur-sm"
+      class="sticky top-0 z-50 border-b border-surface-200/80 bg-surface-0/90 shadow-sm shadow-surface-950/5 backdrop-blur-md"
       aria-label="Navegación principal"
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between gap-4">
+        <div class="flex items-center justify-between gap-4 py-2">
           <a
             routerLink="/"
-            class="flex min-w-0 items-center gap-2 rounded-lg px-1 py-1 outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary-600 sm:gap-3"
+            class="flex min-w-0 items-center gap-3.5 rounded-lg outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:gap-4"
             (click)="closeMenu()"
             aria-label="Ir al inicio de la Gaceta Municipal"
           >
             <img
-              src="/images/branding/escudo-municipal-48.png"
-              alt="Escudo del Gobierno Autónomo Municipal de Sacaba"
-              class="h-9 w-9 shrink-0 object-contain sm:h-10 sm:w-10"
+              src="/images/gaceta/gaceta-logo-mark.webp"
+              alt="Marca de la Gaceta Municipal"
+              class="h-12 w-12 shrink-0 rounded-2xl object-cover sm:h-14 sm:w-14 lg:h-16 lg:w-16"
+              width="48"
+              height="48"
             />
 
             <div class="min-w-0 leading-tight">
-              <p
-                class="hidden truncate text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-surface-500 lg:block"
-              >
-                Gobierno Autónomo Municipal de Sacaba
+              <p class="truncate text-lg font-semibold tracking-tight text-primary-800 sm:text-2xl">
+                Gaceta Municipal
               </p>
 
-              <p class="text-sm font-semibold tracking-tight text-surface-950 sm:hidden">Gaceta</p>
-
-              <p
-                class="hidden text-sm font-semibold tracking-tight text-surface-950 sm:block sm:text-base"
-              >
-                Gaceta Municipal de Sacaba
+              <p class="hidden max-w-64 truncate text-xs font-medium text-surface-500 sm:block sm:text-sm lg:max-w-none">
+                Gobierno Autónomo Municipal de Sacaba
               </p>
             </div>
           </a>
 
-          <ul class="hidden items-center gap-1 md:flex">
+          <ul
+            class="hidden items-center gap-1.5 rounded-full border border-surface-200 bg-surface-0/90 p-1.5 shadow-sm shadow-surface-950/5 md:flex"
+          >
             @for (item of navItems; track item.label) {
               <li>
                 <a
                   [routerLink]="item.href"
-                  [fragment]="item.fragment"
                   [attr.aria-current]="isItemActive(item) ? 'page' : null"
                   [class]="
                     isItemActive(item)
-                      ? 'inline-flex items-center rounded-lg border border-primary-200 bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700 transition'
-                      : 'inline-flex items-center rounded-lg border border-transparent px-4 py-2 text-sm font-medium text-surface-700 transition hover:border-surface-200 hover:bg-surface-100 hover:text-surface-950'
+                      ? 'inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-4 py-2.5 text-[0.95rem] font-semibold text-primary-700 shadow-sm shadow-primary-950/5 transition'
+                      : 'inline-flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-[0.95rem] font-semibold text-surface-600 transition hover:bg-primary-50 hover:text-primary-700'
                   "
                 >
+                  <i [class]="item.icon + ' text-[0.8rem] leading-none'" aria-hidden="true"></i>
                   {{ item.label }}
                 </a>
               </li>
@@ -79,7 +76,7 @@ interface PublicNavItem {
 
           <button
             type="button"
-            class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-surface-300 bg-surface-0 text-surface-700 transition hover:bg-surface-100 md:hidden"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-surface-200 bg-surface-0 text-surface-700 shadow-sm shadow-surface-950/5 transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 md:hidden"
             [attr.aria-expanded]="menuOpen()"
             aria-controls="public-mobile-menu"
             [attr.aria-label]="
@@ -95,27 +92,26 @@ interface PublicNavItem {
       @if (menuOpen()) {
         <button
           type="button"
-          class="fixed inset-0 top-16 z-40 bg-surface-950/25 md:hidden"
+          class="fixed inset-0 top-16 z-40 bg-surface-950/25 backdrop-blur-[1px] sm:top-[4.5rem] md:hidden"
           aria-label="Cerrar menú de navegación"
           (click)="closeMenu()"
         ></button>
 
         <div
           id="public-mobile-menu"
-          class="absolute inset-x-0 top-full z-50 border-t border-surface-200 bg-surface-0 shadow-lg md:hidden"
+          class="absolute inset-x-0 top-full z-50 border-t border-surface-200 bg-surface-0/95 shadow-xl shadow-surface-950/10 backdrop-blur-md md:hidden"
         >
-          <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6">
-            <ul class="flex flex-col gap-1.5">
+          <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6">
+            <ul class="grid gap-2">
               @for (item of navItems; track item.label) {
                 <li>
                   <a
                     [routerLink]="item.href"
-                    [fragment]="item.fragment"
                     [attr.aria-current]="isItemActive(item) ? 'page' : null"
                     [class]="
                       isItemActive(item)
-                        ? 'inline-flex w-full items-center gap-2 rounded-lg border border-primary-200 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary-700'
-                        : 'inline-flex w-full items-center gap-2 rounded-lg border border-transparent px-4 py-3 text-sm font-medium text-surface-700 transition hover:border-surface-200 hover:bg-surface-100 hover:text-surface-950'
+                        ? 'inline-flex w-full items-center gap-3 rounded-lg border border-primary-100 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary-700 shadow-sm shadow-primary-950/5'
+                        : 'inline-flex w-full items-center gap-3 rounded-lg border border-surface-100 bg-surface-0 px-4 py-3 text-sm font-semibold text-surface-600 transition hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700'
                     "
                     (click)="closeMenu()"
                   >
@@ -139,15 +135,7 @@ export class PublicNavbar {
   readonly activeUrl = signal(this.router.url);
   readonly navItems: PublicNavItem[] = [
     { label: 'Inicio', href: '/', exact: true, icon: 'pi pi-home' },
-    { label: 'Documentos', href: '/documents', exact: false, icon: 'pi pi-file' },
-    {
-      label: 'Normativas',
-      href: '/',
-      exact: true,
-      icon: 'pi pi-book',
-      fragment: 'normativas',
-    },
-    { label: 'Ayuda', href: '/', exact: true, icon: 'pi pi-question-circle', fragment: 'ayuda' },
+    { label: 'Normativas', href: '/normativas', exact: false, icon: 'pi pi-book' },
   ];
 
   constructor() {
@@ -186,12 +174,11 @@ export class PublicNavbar {
 
   isItemActive(item: PublicNavItem): boolean {
     const activeUrl = this.activeUrl();
-    const expectedUrl = item.fragment ? `${item.href}#${item.fragment}` : item.href;
 
     if (!item.exact) {
-      return activeUrl.startsWith(expectedUrl);
+      return activeUrl.startsWith(item.href);
     }
 
-    return activeUrl === expectedUrl;
+    return activeUrl === item.href;
   }
 }

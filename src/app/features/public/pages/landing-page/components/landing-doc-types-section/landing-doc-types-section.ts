@@ -41,7 +41,7 @@ import { DocTypeResponse } from '../../../../types';
           } @else {
             @for (item of items(); track item.id) {
               <a
-                routerLink="/documents"
+                routerLink="/normativas"
                 [queryParams]="{ type: item.id }"
                 class="group relative min-h-28 rounded-2xl border border-surface-200 bg-surface-0 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-300 hover:bg-primary-50/80 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 sm:p-5"
               >

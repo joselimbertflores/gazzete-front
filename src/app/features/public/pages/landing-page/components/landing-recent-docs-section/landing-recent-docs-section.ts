@@ -23,7 +23,7 @@ import { PublicDocumentResponse } from '../../../../types';
           </div>
 
           <a
-            routerLink="/documents"
+            routerLink="/normativas"
             class="inline-flex items-center gap-2 text-sm font-medium text-surface-700 transition hover:text-primary-700"
           >
             Ver todas las normativas
@@ -109,7 +109,7 @@ import { PublicDocumentResponse } from '../../../../types';
                     </a>
 
                     <a
-                      [routerLink]="['/documents', document.id]"
+                      [routerLink]="['/normativas', document.id]"
                       class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-surface-0 px-4 py-2.5 text-sm font-medium text-surface-700 transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700"
                     >
                       Ver detalle

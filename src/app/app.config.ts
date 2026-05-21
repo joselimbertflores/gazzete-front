@@ -1,10 +1,10 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
-  provideRouter,
   withComponentInputBinding,
   withInMemoryScrolling,
   withViewTransitions,
+  provideRouter,
 } from '@angular/router';
 
 import { definePreset, palette } from '@primeuix/themes';
@@ -18,7 +18,7 @@ import { httpErrorInterceptor } from './core/http/http-error-interceptor';
 import { authInterceptor } from './core/auth/auth-interceptor';
 import { routes } from './app.routes';
 
-const primaryColor = palette('{emerald}');
+const primaryColor = palette('{green}');
 const AuraSky = definePreset(theme, {
   semantic: {
     primary: primaryColor,
