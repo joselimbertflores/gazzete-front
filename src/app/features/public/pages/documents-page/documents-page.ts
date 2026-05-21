@@ -7,34 +7,31 @@ import {
   computed,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { DatePickerModule } from 'primeng/datepicker';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
-import { WindowScrollStore } from '../../../../shared';
+import { PublicDocumentResponse } from '../../types';
+import { FileSizePipe, WindowScrollStore } from '../../../../shared';
 
 @Component({
   selector: 'app-documents-page',
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FloatLabelModule,
-    DatePickerModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
@@ -43,7 +40,7 @@ import { WindowScrollStore } from '../../../../shared';
     ButtonModule,
     SelectModule,
     RouterModule,
-    TagModule,
+    FileSizePipe,
   ],
   templateUrl: './documents-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,13 +54,15 @@ export default class DocumentsPage implements OnInit {
   private scrollStore = inject(WindowScrollStore);
 
   readonly documentStatuses = [
-    { label: 'VIGENTE', value: 'VALID' },
-    { label: 'ABROGADA', value: 'ABROGATED' },
-    { label: 'DEROGADA', value: 'DEROGATED' },
-    { label: 'MODIFICADA', value: 'MODIFIED' },
+    { label: 'Vigente', value: 'VALID' },
+    { label: 'Abrogada', value: 'ABROGATED' },
+    { label: 'Derogada', value: 'DEROGATED' },
+    { label: 'Modificada', value: 'MODIFIED' },
   ];
 
   private readonly scrollKey = this.router.url.split('?')[0];
+  readonly rowsPerPageOptions = [10, 20, 30, 50];
+  readonly yearOptions = this.buildYearOptions();
 
   filterForm: FormGroup = inject(FormBuilder).group({
     term: [null],
@@ -72,21 +71,22 @@ export default class DocumentsPage implements OnInit {
     legalStatus: [null],
   });
 
-  queryParams = toSignal<GetPublicDocumentsParams>(
-    this.route.queryParams.pipe(
-      map((params) => ({
-        term: params['term'] || null,
-        type: params['type'] || null,
-        year: params['year'] || null,
-        legalStatus: params['legalStatus'] || null,
-        limit: params['limit'] ? Number(params['limit']) : 10,
-        offset: params['offset'] ? Number(params['offset']) : 0,
-      })),
-    ),
+  queryParams = toSignal(
+    this.route.queryParams.pipe(map((params) => this.mapQueryParams(params))),
+    { initialValue: this.mapQueryParams(this.route.snapshot.queryParams) },
   );
 
   limit = computed(() => this.queryParams()?.limit ?? 10);
   offset = computed(() => this.queryParams()?.offset ?? 0);
+  hasActiveFilters = computed(() => {
+    const params = this.queryParams();
+    return Boolean(params?.term || params?.type || params?.year || params?.legalStatus);
+  });
+  activeAdvancedFiltersCount = computed(() => {
+    const params = this.queryParams();
+    return [params?.type, params?.year, params?.legalStatus].filter(Boolean).length;
+  });
+  showMobileAdvancedFilters = signal(false);
 
   docTypes = this.documentPublicApi.docTypes;
 
@@ -106,28 +106,91 @@ export default class DocumentsPage implements OnInit {
   ngOnInit(): void {
     this.loadFilterParams();
 
-    this.filterForm.valueChanges
-      .pipe(
+    this.filterForm
+      .get('term')
+      ?.valueChanges.pipe(
         debounceTime(350),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => this.applyFilters());
+
+    for (const controlName of ['type', 'year', 'legalStatus']) {
+      this.filterForm
+        .get(controlName)
+        ?.valueChanges.pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.applyFilters());
+    }
   }
 
   applyFilters(): void {
     const { term, type, year, legalStatus } = this.filterForm.value;
-    this.setQueryParams({ term, type, year, legalStatus, offset: 0 });
+    this.setQueryParams({
+      term: this.normalizeFilterValue(term),
+      type: this.normalizeFilterValue(type),
+      year: this.normalizeFilterValue(year),
+      legalStatus: this.normalizeFilterValue(legalStatus),
+      offset: 0,
+    });
   }
 
   onPageChange(event: PaginatorState) {
     this.setQueryParams({ offset: event.first, limit: event.rows });
   }
 
+  toggleMobileAdvancedFilters(): void {
+    this.showMobileAdvancedFilters.update((value) => !value);
+  }
+
   resetFilters(): void {
-    if (this.route.snapshot.queryParamMap.keys.length === 0) return;
-    this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
     this.filterForm.reset({}, { emitEvent: false });
+    this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
+  }
+
+  documentIdentity(document: PublicDocumentResponse): string {
+    return `${document.type} ${document.code}`.trim();
+  }
+
+  documentYear(document: PublicDocumentResponse): string {
+    if (document.year) return String(document.year);
+    if (!document.publicationDate) return 'No registrada';
+
+    const year = new Date(document.publicationDate).getFullYear();
+    return Number.isFinite(year) ? String(year) : 'No registrada';
+  }
+
+  fileSize(document: PublicDocumentResponse): string | number | null {
+    return document.file.sizeBytes ?? document.file.size ?? null;
+  }
+
+  legalStatusLabel(status: string | null | undefined): string {
+    switch (status) {
+      case 'VALID':
+        return 'Vigente';
+      case 'ABROGATED':
+        return 'Abrogada';
+      case 'DEROGATED':
+        return 'Derogada';
+      case 'MODIFIED':
+        return 'Modificada';
+      default:
+        return 'No registrado';
+    }
+  }
+
+  legalStatusBadgeClass(status: string | null | undefined): string {
+    switch (status) {
+      case 'VALID':
+        return 'border-primary-100 bg-primary-50 text-primary-700';
+      case 'ABROGATED':
+        return 'border-surface-300 bg-surface-100 text-surface-700';
+      case 'DEROGATED':
+        return 'border-surface-300 bg-surface-100 text-surface-700';
+      case 'MODIFIED':
+        return 'border-primary-200 bg-primary-50 text-primary-800';
+      default:
+        return 'border-surface-200 bg-surface-50 text-surface-600';
+    }
   }
 
   private setQueryParams(params: GetPublicDocumentsParams) {
@@ -141,5 +204,34 @@ export default class DocumentsPage implements OnInit {
 
   private loadFilterParams() {
     this.filterForm.patchValue(this.route.snapshot.queryParams, { emitEvent: false });
+  }
+
+  private mapQueryParams(params: Record<string, string | undefined>): GetPublicDocumentsParams {
+    return {
+      term: params['term'] || null,
+      type: params['type'] || null,
+      year: params['year'] || null,
+      legalStatus: params['legalStatus'] || null,
+      limit: params['limit'] ? Number(params['limit']) : 10,
+      offset: params['offset'] ? Number(params['offset']) : 0,
+    };
+  }
+
+  private normalizeFilterValue(value: unknown): string | null {
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      return trimmed.length ? trimmed : null;
+    }
+
+    if (typeof value === 'number') return String(value);
+    return value === undefined ? null : (value as string | null);
+  }
+
+  private buildYearOptions() {
+    const currentYear = new Date().getFullYear();
+    return Array.from({ length: 80 }, (_, index) => {
+      const year = currentYear - index;
+      return { label: String(year), value: String(year) };
+    });
   }
 }

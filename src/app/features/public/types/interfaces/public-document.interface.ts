@@ -8,12 +8,15 @@ export interface PublicDocumentResponse {
   validUntil: string | null;
   downloadCount: number;
   type: string;
+  year?: number | string;
   file: DocumentFileResponse;
 }
 
 export interface DocumentFileResponse {
   url: string;
-  name: string;
+  name?: string;
+  originalName?: string;
   mimeType: string;
-  sizeBytes: string;
+  sizeBytes?: string | number;
+  size?: string | number;
 }
