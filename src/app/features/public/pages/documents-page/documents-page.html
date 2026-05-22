@@ -134,46 +134,53 @@
     </form>
 
     <section class="mt-6" aria-live="polite" [attr.aria-busy]="dataResource.isLoading()">
-      @if (dataResource.hasValue()) {
-        @let data = dataResource.value();
+      @let data = visibleData();
 
-        <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p class="text-sm font-semibold text-surface-900">
-              {{ data.total }}
-              {{ data.total === 1 ? 'documento encontrado' : 'documentos encontrados' }}
-            </p>
-          </div>
-
-          @if (data.total > limit()) {
-            <div class="hidden md:block" [class.pointer-events-none]="dataResource.isLoading()">
-              <p-paginator
-                [styleClass]="
-                  'compact-public-paginator bg-transparent p-0 ' +
-                  (dataResource.isLoading() ? 'opacity-60' : '')
-                "
-                [first]="offset()"
-                [rows]="limit()"
-                [totalRecords]="data.total"
-                [rowsPerPageOptions]="rowsPerPageOptions"
-                [showPageLinks]="false"
-                [showCurrentPageReport]="true"
-                [showFirstLastIcon]="true"
-                currentPageReportTemplate="{first}–{last} de {totalRecords}"
-                appendTo="body"
-                (onPageChange)="onPageChange($event)"
-              />
-            </div>
-          }
+      <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-surface-900">
+            {{ data.total }}
+            {{ data.total === 1 ? 'documento encontrado' : 'documentos encontrados' }}
+          </p>
         </div>
 
+        <div
+          class="w-full overflow-x-auto pb-1 md:w-auto md:overflow-visible md:pb-0"
+          [class.pointer-events-none]="dataResource.isLoading()"
+          [class.opacity-60]="dataResource.isLoading()"
+          [attr.inert]="dataResource.isLoading() ? '' : null"
+          [attr.aria-disabled]="dataResource.isLoading() ? 'true' : null"
+        >
+          <p-paginator
+            styleClass="compact-public-paginator min-w-max bg-transparent p-0"
+            [alwaysShow]="true"
+            [first]="offset()"
+            [rows]="limit()"
+            [totalRecords]="data.total"
+            [rowsPerPageOptions]="rowsPerPageOptions"
+            [showPageLinks]="false"
+            [showCurrentPageReport]="true"
+            [showFirstLastIcon]="true"
+            currentPageReportTemplate="{first}–{last} de {totalRecords}"
+            appendTo="body"
+            (onPageChange)="onPageChange($event)"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-3">
         @if (dataResource.isLoading()) {
-          <div class="space-y-3">
-            @for (item of [1, 2, 3, 4, 5]; track item) {
-              <article class="rounded-lg border border-surface-200 bg-surface-0 p-4 sm:p-5">
-                <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          @for (item of resultSkeletonItems(); track item) {
+            <article class="rounded-lg border border-surface-200 bg-surface-0 p-4 sm:p-5">
+              <div
+                class="grid grid-cols-[4rem_minmax(0,1fr)] gap-4 sm:gap-5 lg:grid-cols-[5rem_minmax(0,1fr)_12rem] lg:items-center"
+              >
+                <div class="flex w-16 shrink-0 flex-col items-center gap-1.5 lg:w-20">
+                  <p-skeleton width="64px" height="64px" borderRadius="0.5rem" />
+                  <p-skeleton width="56px" height="0.75rem" />
+                </div>
+                <div class="min-w-0">
                   <div class="flex min-w-0 flex-1 gap-3 sm:gap-4">
-                    <p-skeleton width="64px" height="64px" borderRadius="0.5rem" />
                     <div class="min-w-0 flex-1">
                       <div class="flex items-center gap-3">
                         <p-skeleton width="45%" height="1.5rem" />
@@ -181,17 +188,21 @@
                       </div>
                       <p-skeleton width="96%" height="0.9rem" styleClass="mt-4" />
                       <p-skeleton width="72%" height="0.9rem" styleClass="mt-2" />
-                      <p-skeleton width="55%" height="0.85rem" styleClass="mt-4" />
+                      <div class="mt-4 flex flex-wrap gap-3">
+                        <p-skeleton width="132px" height="0.85rem" />
+                        <p-skeleton width="96px" height="0.85rem" />
+                        <p-skeleton width="88px" height="0.85rem" />
+                      </div>
                     </div>
                   </div>
-                  <div class="flex w-full gap-2 lg:w-48 lg:flex-col">
-                    <p-skeleton width="100%" height="2.5rem" />
-                    <p-skeleton width="100%" height="2.5rem" />
-                  </div>
                 </div>
-              </article>
-            }
-          </div>
+                <div class="col-span-2 grid gap-2 sm:grid-cols-2 lg:col-span-1 lg:grid-cols-1">
+                  <p-skeleton width="100%" height="2.5rem" />
+                  <p-skeleton width="100%" height="2.5rem" />
+                </div>
+              </div>
+            </article>
+          }
         } @else if (data.documents.length === 0) {
           <div class="rounded-lg border border-surface-200 bg-surface-0 px-5 py-12 text-center">
             <span
@@ -214,139 +225,119 @@
             />
           </div>
         } @else {
-          <div class="space-y-3">
-            @for (document of data.documents; track document.id) {
-              <article
-                class="group rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:border-primary-300 hover:shadow-md hover:shadow-surface-950/10 sm:p-5"
+          @for (document of data.documents; track document.id) {
+            <article
+              class="group rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:border-primary-300 hover:shadow-md hover:shadow-surface-950/10 sm:p-5"
+            >
+              <div
+                class="grid grid-cols-[4rem_minmax(0,1fr)] gap-4 sm:gap-5 lg:grid-cols-[5rem_minmax(0,1fr)_12rem] lg:items-center"
               >
-                <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                  <div class="flex min-w-0 flex-1 gap-3 sm:gap-4">
-                    <div class="flex w-16 shrink-0 flex-col items-center gap-1.5">
-                      <span
-                        class="flex h-14 w-14 items-center justify-center rounded-lg border border-primary-200 bg-primary-50 text-primary-700"
-                      >
-                        <i class="pi pi-file-pdf text-3xl" aria-hidden="true"></i>
+                <div class="flex w-16 shrink-0 flex-col items-center gap-1.5 lg:w-20">
+                  <span
+                    class="flex h-14 w-14 items-center justify-center rounded-lg border border-primary-200 bg-primary-50 text-primary-700 shadow-sm shadow-primary-950/5 transition group-hover:border-primary-300 group-hover:bg-primary-100 sm:h-16 sm:w-16"
+                  >
+                    <i class="pi pi-file-pdf text-3xl" aria-hidden="true"></i>
+                  </span>
+
+                  @if (fileSize(document); as size) {
+                    <span class="text-center text-xs font-semibold leading-4 text-surface-500">
+                      {{ size | fileSize }}
+                    </span>
+                  }
+                </div>
+
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-start gap-x-3 gap-y-2 sm:items-center">
+                    <h2
+                      class="text-xl font-semibold leading-7 tracking-tight text-surface-950 sm:text-2xl"
+                    >
+                      {{ documentIdentity(document) }}
+                    </h2>
+
+                    <p-tag
+                      [severity]="legalStatusSeverity(document.legalStatus)"
+                      [value]="legalStatusLabel(document.legalStatus)"
+                      [rounded]="true"
+                      styleClass="!px-3 !py-1 !text-xs !font-semibold !leading-none"
+                    />
+                  </div>
+
+                  <p class="mt-2 line-clamp-3 text-sm leading-6 text-surface-700 sm:line-clamp-2">
+                    {{ document.summary || 'Sin resumen registrado.' }}
+                  </p>
+
+                  <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-surface-500">
+                    <span class="inline-flex items-center gap-1.5">
+                      <i class="pi pi-calendar text-xs text-surface-400" aria-hidden="true"></i>
+                      <span>
+                        <span class="font-medium text-surface-600">Publicado:</span>
+                        {{ publicationDateLabel(document) }}
                       </span>
+                    </span>
 
-                      @if (fileSize(document); as size) {
-                        <span class="text-center text-xs font-semibold leading-4 text-surface-500">
-                          {{ size | fileSize }}
-                        </span>
-                      }
-                    </div>
+                    <span class="inline-flex items-center gap-1.5">
+                      <i
+                        class="pi pi-calendar-clock text-xs text-surface-400"
+                        aria-hidden="true"
+                      ></i>
+                      Gestión {{ documentYear(document) }}
+                    </span>
 
-                    <div class="min-w-0 flex-1">
-                      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                        <h2
-                          class="text-xl font-semibold leading-7 tracking-tight text-surface-950 sm:text-2xl"
-                        >
-                          {{ documentIdentity(document) }}
-                        </h2>
-
-                        <span
-                          class="inline-flex shrink-0 items-center rounded-full border px-2.5 py-1 text-xs font-semibold"
-                          [ngClass]="legalStatusBadgeClass(document.legalStatus)"
-                        >
-                          {{ legalStatusLabel(document.legalStatus) }}
-                        </span>
-                      </div>
-
-                      <p class="mt-2 line-clamp-3 text-sm leading-6 text-surface-700 sm:line-clamp-2">
-                        {{ document.summary || 'Sin resumen registrado.' }}
-                      </p>
-
-                      <div class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-surface-500">
-                        <span class="inline-flex items-center gap-1.5">
-                          <i class="pi pi-calendar text-xs text-surface-400" aria-hidden="true"></i>
-                          @if (document.publicationDate) {
-                            <time [attr.datetime]="document.publicationDate">
-                              {{ document.publicationDate | date: 'd MMM y' }}
-                            </time>
-                          } @else {
-                            Publicación no registrada
-                          }
-                        </span>
-                        <span aria-hidden="true">·</span>
-                        <span class="inline-flex items-center gap-1.5">
-                          <i class="pi pi-calendar-clock text-xs text-surface-400" aria-hidden="true"></i>
-                          Gestión {{ documentYear(document) }}
-                        </span>
-
-                        @if (document.downloadCount !== null && document.downloadCount !== undefined) {
-                          <span aria-hidden="true">·</span>
-                          <span class="inline-flex items-center gap-1.5">
-                            <i class="pi pi-download text-xs text-surface-400" aria-hidden="true"></i>
-                            {{ document.downloadCount }}
-                            {{ document.downloadCount === 1 ? 'descarga' : 'descargas' }}
-                          </span>
-                        }
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="flex w-full shrink-0 flex-col gap-2 sm:flex-row lg:w-48 lg:flex-col">
-                    <a
-                      pButton
-                      [routerLink]="['/normativas', document.id]"
-                      icon="pi pi-arrow-right"
-                      label="Ver detalle"
-                      class="w-full justify-center"
-                    ></a>
-
-                    <a
-                      pButton
-                      severity="secondary"
-                      [outlined]="true"
-                      icon="pi pi-download"
-                      label="Descargar"
-                      [href]="document.file.url + '?download=true'"
-                      rel="noopener noreferrer"
-                      class="w-full justify-center"
-                    ></a>
+                    @if (document.downloadCount !== null && document.downloadCount !== undefined) {
+                      <span class="inline-flex items-center gap-1.5">
+                        <i class="pi pi-download text-xs text-surface-400" aria-hidden="true"></i>
+                        {{ document.downloadCount }}
+                        {{ document.downloadCount === 1 ? 'descarga' : 'descargas' }}
+                      </span>
+                    }
                   </div>
                 </div>
-              </article>
-            }
-          </div>
 
-          @if (data.total > limit()) {
-            <div class="mt-5 flex justify-center" [class.pointer-events-none]="dataResource.isLoading()">
-              <p-paginator
-                [styleClass]="'bg-transparent p-0 ' + (dataResource.isLoading() ? 'opacity-60' : '')"
-                [first]="offset()"
-                [rows]="limit()"
-                [totalRecords]="data.total"
-                [rowsPerPageOptions]="rowsPerPageOptions"
-                appendTo="body"
-                (onPageChange)="onPageChange($event)"
-              />
-            </div>
-          }
-        }
-      } @else if (dataResource.isLoading()) {
-        <div class="space-y-3">
-          @for (item of [1, 2, 3, 4, 5]; track item) {
-            <article class="rounded-lg border border-surface-200 bg-surface-0 p-4 sm:p-5">
-              <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                <div class="flex min-w-0 flex-1 gap-3 sm:gap-4">
-                  <p-skeleton width="64px" height="64px" borderRadius="0.5rem" />
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-3">
-                      <p-skeleton width="45%" height="1.5rem" />
-                      <p-skeleton width="82px" height="1.5rem" borderRadius="999px" />
-                    </div>
-                    <p-skeleton width="96%" height="0.9rem" styleClass="mt-4" />
-                    <p-skeleton width="72%" height="0.9rem" styleClass="mt-2" />
-                    <p-skeleton width="55%" height="0.85rem" styleClass="mt-4" />
-                  </div>
-                </div>
-                <div class="flex w-full gap-2 lg:w-48 lg:flex-col">
-                  <p-skeleton width="100%" height="2.5rem" />
-                  <p-skeleton width="100%" height="2.5rem" />
+                <div
+                  class="col-span-2 grid gap-2 sm:grid-cols-2 lg:col-span-1 lg:grid-cols-1 lg:justify-self-end"
+                >
+                  <a
+                    pButton
+                    [routerLink]="['/normativas', document.id]"
+                    icon="pi pi-arrow-right"
+                    label="Ver detalle"
+                    class="w-full justify-center"
+                  ></a>
+
+                  <a
+                    pButton
+                    severity="secondary"
+                    [outlined]="true"
+                    icon="pi pi-download"
+                    label="Descargar"
+                    [href]="document.file.url + '?download=true'"
+                    rel="noopener noreferrer"
+                    class="w-full justify-center"
+                  ></a>
                 </div>
               </div>
             </article>
           }
+        }
+      </div>
+
+      @if (data.total > limit()) {
+        <div
+          class="mt-5 flex justify-center overflow-x-auto pb-1"
+          [class.pointer-events-none]="dataResource.isLoading()"
+          [class.opacity-60]="dataResource.isLoading()"
+          [attr.inert]="dataResource.isLoading() ? '' : null"
+          [attr.aria-disabled]="dataResource.isLoading() ? 'true' : null"
+        >
+          <p-paginator
+            styleClass="min-w-max bg-transparent p-0"
+            [first]="offset()"
+            [rows]="limit()"
+            [totalRecords]="data.total"
+            [rowsPerPageOptions]="rowsPerPageOptions"
+            appendTo="body"
+            (onPageChange)="onPageChange($event)"
+          />
         </div>
       }
     </section>

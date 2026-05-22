@@ -6,6 +6,7 @@ import {
   Component,
   computed,
   inject,
+  linkedSignal,
   OnInit,
   signal,
 } from '@angular/core';
@@ -20,12 +21,25 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
 
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
 import { PublicDocumentResponse } from '../../types';
 import { FileSizePipe, WindowScrollStore } from '../../../../shared';
+
+type PublicDocumentsData = {
+  documents: PublicDocumentResponse[];
+  total: number;
+};
+
+type LegalStatusSeverity = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast';
+
+const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
+  documents: [],
+  total: 0,
+};
 
 @Component({
   selector: 'app-documents-page',
@@ -39,6 +53,7 @@ import { FileSizePipe, WindowScrollStore } from '../../../../shared';
     SkeletonModule,
     ButtonModule,
     SelectModule,
+    TagModule,
     RouterModule,
     FileSizePipe,
   ],
@@ -52,6 +67,11 @@ export default class DocumentsPage implements OnInit {
 
   private documentPublicApi = inject(PublicDocumentsApi);
   private scrollStore = inject(WindowScrollStore);
+  private readonly publicationDateFormatter = new Intl.DateTimeFormat('es-BO', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
 
   readonly documentStatuses = [
     { label: 'Vigente', value: 'VALID' },
@@ -90,9 +110,20 @@ export default class DocumentsPage implements OnInit {
 
   docTypes = this.documentPublicApi.docTypes;
 
-  dataResource = rxResource({
+  dataResource = rxResource<PublicDocumentsData, GetPublicDocumentsParams>({
     params: () => this.queryParams(),
     stream: ({ params }) => this.documentPublicApi.findAll(params),
+  });
+
+  visibleData = linkedSignal<PublicDocumentsData | undefined, PublicDocumentsData>({
+    source: () => this.dataResource.value(),
+    computation: (data, previous) => data ?? previous?.value ?? EMPTY_DOCUMENTS_DATA,
+  });
+
+  resultSkeletonItems = computed(() => {
+    const documentCount = this.visibleData().documents.length;
+    const count = documentCount || this.limit();
+    return Array.from({ length: Math.max(1, count) }, (_, index) => index);
   });
 
   constructor() {
@@ -135,7 +166,13 @@ export default class DocumentsPage implements OnInit {
   }
 
   onPageChange(event: PaginatorState) {
-    this.setQueryParams({ offset: event.first, limit: event.rows });
+    if (this.dataResource.isLoading()) return;
+
+    const offset = event.first ?? 0;
+    const limit = event.rows ?? this.limit();
+    if (offset === this.offset() && limit === this.limit()) return;
+
+    this.setQueryParams({ offset, limit });
   }
 
   toggleMobileAdvancedFilters(): void {
@@ -163,6 +200,15 @@ export default class DocumentsPage implements OnInit {
     return document.file.sizeBytes ?? document.file.size ?? null;
   }
 
+  publicationDateLabel(document: PublicDocumentResponse): string {
+    if (!document.publicationDate) return 'No registrada';
+
+    const date = new Date(document.publicationDate);
+    if (Number.isNaN(date.getTime())) return 'No registrada';
+
+    return this.publicationDateFormatter.format(date).replace(/\./g, '');
+  }
+
   legalStatusLabel(status: string | null | undefined): string {
     switch (status) {
       case 'VALID':
@@ -178,18 +224,18 @@ export default class DocumentsPage implements OnInit {
     }
   }
 
-  legalStatusBadgeClass(status: string | null | undefined): string {
+  legalStatusSeverity(status: string | null | undefined): LegalStatusSeverity {
     switch (status) {
       case 'VALID':
-        return 'border-primary-100 bg-primary-50 text-primary-700';
+        return 'success';
       case 'ABROGATED':
-        return 'border-surface-300 bg-surface-100 text-surface-700';
+        return 'danger';
       case 'DEROGATED':
-        return 'border-surface-300 bg-surface-100 text-surface-700';
+        return 'warn';
       case 'MODIFIED':
-        return 'border-primary-200 bg-primary-50 text-primary-800';
+        return 'info';
       default:
-        return 'border-surface-200 bg-surface-50 text-surface-600';
+        return 'secondary';
     }
   }
 
