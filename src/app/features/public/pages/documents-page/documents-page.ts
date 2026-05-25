@@ -25,8 +25,8 @@ import { TagModule } from 'primeng/tag';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
-import { PublicDocumentResponse } from '../../types';
 import { FileSizePipe, WindowScrollStore } from '../../../../shared';
+import { PublicDocumentResponse } from '../../types';
 
 type PublicDocumentsData = {
   documents: PublicDocumentResponse[];
