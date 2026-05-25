@@ -108,11 +108,7 @@ export default class DocumentsPage implements OnInit {
     const params = this.queryParams();
     return Boolean(params?.term || params?.type || params?.year || params?.legalStatus);
   });
-  activeAdvancedFiltersCount = computed(() => {
-    const params = this.queryParams();
-    return [params?.type, params?.year, params?.legalStatus].filter(Boolean).length;
-  });
-  showMobileAdvancedFilters = signal(false);
+  showAdvancedFilters = signal(false);
 
   docTypes = this.documentPublicApi.docTypes;
 
@@ -181,8 +177,8 @@ export default class DocumentsPage implements OnInit {
     this.setQueryParams({ offset, limit });
   }
 
-  toggleMobileAdvancedFilters(): void {
-    this.showMobileAdvancedFilters.update((value) => !value);
+  toggleAdvancedFilters(): void {
+    this.showAdvancedFilters.update((value) => !value);
   }
 
   resetFilters(): void {
@@ -263,6 +259,32 @@ export default class DocumentsPage implements OnInit {
 
   relationDocumentIdentity(relation: PublicDocumentRelation): string {
     return `${relation.document.typeName} ${relation.document.code}`.trim();
+  }
+
+  selectDocumentType(type: string | null): void {
+    const control = this.filterForm.get('type');
+    if (!control) return;
+
+    const currentValue = this.normalizeFilterValue(control.value);
+    if (currentValue === type) return;
+
+    control.setValue(type);
+  }
+
+  isDocumentTypeSelected(type: string | null): boolean {
+    const currentValue = this.normalizeFilterValue(this.filterForm.get('type')?.value);
+    return type === null ? !currentValue : currentValue === type;
+  }
+
+  documentTypeChipClass(type: string | null): string {
+    const baseClass =
+      'inline-flex h-10 shrink-0 items-center justify-center rounded-full border px-4 text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600';
+
+    if (this.isDocumentTypeSelected(type)) {
+      return `${baseClass} border-primary-300 bg-primary-50 font-medium text-primary-700 shadow-sm shadow-primary-950/5`;
+    }
+
+    return `${baseClass} border-surface-200 bg-surface-0 text-surface-600 hover:border-primary-200 hover:text-primary-700`;
   }
 
   private setQueryParams(params: GetPublicDocumentsParams) {

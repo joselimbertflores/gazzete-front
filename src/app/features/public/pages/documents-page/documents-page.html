@@ -11,9 +11,7 @@
       class="rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 sm:p-5"
       aria-label="Filtros de normativas"
     >
-      <div
-        class="grid gap-4 md:grid-cols-[minmax(18rem,1.4fr)_minmax(10rem,0.95fr)_minmax(8rem,0.7fr)_minmax(10rem,0.95fr)] md:items-start"
-      >
+      <div class="grid gap-4 md:grid-cols-[minmax(18rem,1fr)_10rem_12rem] md:items-end">
         <div>
           <label for="term" class="mb-2 block text-sm font-medium text-surface-700">Búsqueda</label>
           <p-iconfield class="block">
@@ -29,58 +27,25 @@
           </p-iconfield>
         </div>
 
-        <div class="flex items-center justify-between gap-2 md:hidden">
+        <div class="md:hidden">
           <p-button
             type="button"
             severity="secondary"
             [outlined]="true"
-            [icon]="showMobileAdvancedFilters() ? 'pi pi-chevron-up' : 'pi pi-sliders-h'"
-            [label]="
-              activeAdvancedFiltersCount()
-                ? 'Filtros (' + activeAdvancedFiltersCount() + ')'
-                : 'Filtros'
-            "
-            (onClick)="toggleMobileAdvancedFilters()"
-            styleClass="h-10"
+            [icon]="showAdvancedFilters() ? 'pi pi-chevron-up' : 'pi pi-sliders-h'"
+            [label]="showAdvancedFilters() ? 'Ocultar filtros' : 'Mostrar filtros'"
+            (onClick)="toggleAdvancedFilters()"
+            styleClass="h-11 w-full justify-center"
             ariaControls="advancedFilters"
-            [ariaExpanded]="showMobileAdvancedFilters()"
-          />
-
-          <p-button
-            type="button"
-            label="Limpiar"
-            icon="pi pi-filter-slash"
-            severity="secondary"
-            [text]="true"
-            [disabled]="!hasActiveFilters()"
-            (onClick)="resetFilters()"
-            styleClass="h-10"
+            [ariaExpanded]="showAdvancedFilters()"
           />
         </div>
 
         <div
           id="advancedFilters"
-          class="grid gap-4 rounded-lg border border-surface-200 bg-surface-50 p-3 md:contents"
-          [class.hidden]="!showMobileAdvancedFilters()"
+          class="space-y-4 rounded-lg border border-surface-200 bg-surface-50 p-3 md:contents md:space-y-0 md:rounded-none md:border-0 md:bg-transparent md:p-0"
+          [class.hidden]="!showAdvancedFilters()"
         >
-          <div>
-            <label for="type" class="mb-2 block text-sm font-medium text-surface-700">Tipo</label>
-            <p-select
-              inputId="type"
-              formControlName="type"
-              [options]="docTypes()"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Todos los tipos"
-              [showClear]="true"
-              [filter]="true"
-              filterBy="label"
-              appendTo="body"
-              styleClass="w-full h-11"
-              class="block w-full"
-            />
-          </div>
-
           <div>
             <label for="year" class="mb-2 block text-sm font-medium text-surface-700">Gestión</label>
             <p-select
@@ -116,19 +81,57 @@
               class="block w-full"
             />
           </div>
-        </div>
 
-        <div class="hidden justify-end border-t border-surface-100 pt-4 md:col-span-4 md:flex">
-          <p-button
-            type="button"
-            label="Limpiar filtros"
-            icon="pi pi-filter-slash"
-            severity="secondary"
-            [text]="true"
-            [disabled]="!hasActiveFilters()"
-            (onClick)="resetFilters()"
-            styleClass="h-10 w-full justify-center whitespace-nowrap sm:w-auto"
-          />
+          <div
+            class="border-t border-surface-100 pt-4 md:col-span-3 md:flex md:items-start md:justify-between md:gap-4"
+          >
+            <div class="min-w-0 flex-1">
+              <p id="documentTypeFilterLabel" class="mb-3 text-sm font-medium text-surface-700">
+                Tipo de documento
+              </p>
+
+              <div
+                role="group"
+                aria-labelledby="documentTypeFilterLabel"
+                class="-mx-3 overflow-x-auto px-3 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:overflow-visible md:px-0 md:pb-0"
+              >
+                <div class="flex w-max gap-2 md:w-full md:flex-wrap">
+                  <button
+                    type="button"
+                    [class]="documentTypeChipClass(null)"
+                    [attr.aria-pressed]="isDocumentTypeSelected(null)"
+                    (click)="selectDocumentType(null)"
+                  >
+                    Todos
+                  </button>
+
+                  @for (type of docTypes(); track type.value) {
+                    <button
+                      type="button"
+                      [class]="documentTypeChipClass(type.value)"
+                      [attr.aria-pressed]="isDocumentTypeSelected(type.value)"
+                      (click)="selectDocumentType(type.value)"
+                    >
+                      {{ type.label }}
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex md:mt-0 md:shrink-0 md:justify-end">
+              <p-button
+                type="button"
+                label="Limpiar filtros"
+                icon="pi pi-filter-slash"
+                severity="secondary"
+                [text]="true"
+                [disabled]="!hasActiveFilters()"
+                (onClick)="resetFilters()"
+                styleClass="h-11 w-full justify-center whitespace-nowrap md:w-auto"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </form>
