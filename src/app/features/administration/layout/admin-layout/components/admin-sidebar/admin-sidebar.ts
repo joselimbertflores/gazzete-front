@@ -25,11 +25,11 @@ interface SidebarItem {
         routerLink="/admin"
         class="flex min-h-16 items-center gap-3 border-b border-surface-100 px-4 outline-none transition-colors hover:bg-surface-50 focus-visible:ring-2 focus-visible:ring-primary-300"
       >
-        <span
-          class="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-surface-200 bg-surface-50"
-        >
-          <img src="images/icons/app.webp" alt="Gaceta" class="h-7 w-7 object-contain" />
-        </span>
+        <img
+          src="images/gaceta/gaceta-logo-mark.webp"
+          alt="Gaceta"
+          class="h-12 w-12 object-contain"
+        />
 
         <div class="min-w-0 leading-tight">
           <span class="block truncate text-sm font-semibold text-surface-950">Gaceta</span>

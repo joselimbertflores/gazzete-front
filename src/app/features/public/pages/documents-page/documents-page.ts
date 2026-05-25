@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   afterRenderEffect,
+  linkedSignal,
   DestroyRef,
   Component,
   computed,
   inject,
-  linkedSignal,
   OnInit,
   signal,
 } from '@angular/core';
@@ -26,7 +25,7 @@ import { TagModule } from 'primeng/tag';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
-import { PublicDocumentRelation, PublicDocumentResponse } from '../../types';
+import { PublicDocumentResponse } from '../../types';
 import { FileSizePipe, WindowScrollStore } from '../../../../shared';
 
 type PublicDocumentsData = {
@@ -64,20 +63,20 @@ const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
     FileSizePipe,
   ],
   templateUrl: './documents-page.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    p-paginator {
+      --p-paginator-background: transparent;
+      --p-paginator-padding: 0.2rem 0.4rem;
+    }
+  `,
 })
 export default class DocumentsPage implements OnInit {
-  private readonly router = inject(Router);
+  private router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  private documentPublicApi = inject(PublicDocumentsApi);
   private scrollStore = inject(WindowScrollStore);
-  private readonly publicationDateFormatter = new Intl.DateTimeFormat('es-BO', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  private documentPublicApi = inject(PublicDocumentsApi);
 
   readonly documentStatuses = [
     { label: 'Vigente', value: 'VALID' },
@@ -97,20 +96,26 @@ export default class DocumentsPage implements OnInit {
     legalStatus: [null],
   });
 
-  queryParams = toSignal(
-    this.route.queryParams.pipe(map((params) => this.mapQueryParams(params))),
-    { initialValue: this.mapQueryParams(this.route.snapshot.queryParams) },
-  );
-
   limit = computed(() => this.queryParams()?.limit ?? 10);
   offset = computed(() => this.queryParams()?.offset ?? 0);
+
   hasActiveFilters = computed(() => {
     const params = this.queryParams();
     return Boolean(params?.term || params?.type || params?.year || params?.legalStatus);
   });
+
+  activeAdvancedFiltersCount = computed(() => {
+    const params = this.queryParams();
+    return [params?.type, params?.year, params?.legalStatus].filter(Boolean).length;
+  });
   showAdvancedFilters = signal(false);
 
   docTypes = this.documentPublicApi.docTypes;
+
+  queryParams = toSignal(
+    this.route.queryParams.pipe(map((params) => this.mapQueryParams(params))),
+    { initialValue: this.mapQueryParams(this.route.snapshot.queryParams) },
+  );
 
   dataResource = rxResource<PublicDocumentsData, GetPublicDocumentsParams>({
     params: () => this.queryParams(),
@@ -186,39 +191,12 @@ export default class DocumentsPage implements OnInit {
     this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
   }
 
-  documentIdentity(document: PublicDocumentResponse): string {
-    return `${document.type} ${document.code}`.trim();
-  }
-
   documentYear(document: PublicDocumentResponse): string {
     if (document.year) return String(document.year);
     if (!document.publicationDate) return 'No registrada';
 
     const year = new Date(document.publicationDate).getFullYear();
     return Number.isFinite(year) ? String(year) : 'No registrada';
-  }
-
-  fileSize(document: PublicDocumentResponse): string | number | null {
-    return document.file.sizeBytes ?? document.file.size ?? null;
-  }
-
-  publicationDateLabel(document: PublicDocumentResponse): string {
-    if (!document.publicationDate) return 'No registrada';
-
-    return this.dateLabel(document.publicationDate);
-  }
-
-  validUntilLabel(document: PublicDocumentResponse): string {
-    return this.dateLabel(document.validUntil);
-  }
-
-  private dateLabel(value: string | null | undefined): string {
-    if (!value) return 'No registrada';
-
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return value;
-
-    return this.publicationDateFormatter.format(date).replace(/\./g, '');
   }
 
   legalStatusLabel(status: string | null | undefined): string {
@@ -257,36 +235,6 @@ export default class DocumentsPage implements OnInit {
     return INCOMING_RELATION_LABELS[relationType.trim().toUpperCase()] ?? 'afectada';
   }
 
-  relationDocumentIdentity(relation: PublicDocumentRelation): string {
-    return `${relation.document.typeName} ${relation.document.code}`.trim();
-  }
-
-  selectDocumentType(type: string | null): void {
-    const control = this.filterForm.get('type');
-    if (!control) return;
-
-    const currentValue = this.normalizeFilterValue(control.value);
-    if (currentValue === type) return;
-
-    control.setValue(type);
-  }
-
-  isDocumentTypeSelected(type: string | null): boolean {
-    const currentValue = this.normalizeFilterValue(this.filterForm.get('type')?.value);
-    return type === null ? !currentValue : currentValue === type;
-  }
-
-  documentTypeChipClass(type: string | null): string {
-    const baseClass =
-      'inline-flex h-10 shrink-0 items-center justify-center rounded-full border px-4 text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600';
-
-    if (this.isDocumentTypeSelected(type)) {
-      return `${baseClass} border-primary-300 bg-primary-50 font-medium text-primary-700 shadow-sm shadow-primary-950/5`;
-    }
-
-    return `${baseClass} border-surface-200 bg-surface-0 text-surface-600 hover:border-primary-200 hover:text-primary-700`;
-  }
-
   private setQueryParams(params: GetPublicDocumentsParams) {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -300,7 +248,7 @@ export default class DocumentsPage implements OnInit {
     this.filterForm.patchValue(this.route.snapshot.queryParams, { emitEvent: false });
   }
 
-  private mapQueryParams(params: Record<string, string | undefined>): GetPublicDocumentsParams {
+  private mapQueryParams(params: Record<string, string | undefined>) {
     return {
       term: params['term'] || null,
       type: params['type'] || null,
@@ -323,7 +271,7 @@ export default class DocumentsPage implements OnInit {
 
   private buildYearOptions() {
     const currentYear = new Date().getFullYear();
-    return Array.from({ length: 80 }, (_, index) => {
+    return Array.from({ length: 15 }, (_, index) => {
       const year = currentYear - index;
       return { label: String(year), value: String(year) };
     });

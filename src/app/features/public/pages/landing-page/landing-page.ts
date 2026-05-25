@@ -15,8 +15,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
+import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ButtonModule } from 'primeng/button';
@@ -38,8 +37,7 @@ interface LandingStatistic {
     FormsModule,
     RouterLink,
     ButtonModule,
-    IconFieldModule,
-    InputIconModule,
+    InputGroupModule,
     InputTextModule,
     SkeletonModule,
     TagModule,

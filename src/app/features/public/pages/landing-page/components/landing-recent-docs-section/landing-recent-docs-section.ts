@@ -89,7 +89,7 @@ import { PublicDocumentResponse } from '../../../../types';
                     </div>
 
                     <h3 class="mt-3 text-base font-semibold leading-7 text-surface-950 sm:text-lg">
-                      {{ document.type }}
+                      {{ document.typeName }}
                       <span class="text-surface-700">Nº {{ document.code }}</span>
                     </h3>
 

@@ -13,7 +13,6 @@ export interface GetPublicDocumentsParams {
   type?: number | string | null;
   year?: number | string | null;
   legalStatus?: string | null;
-  sort?: string | null;
   limit?: number;
   offset?: number;
 }

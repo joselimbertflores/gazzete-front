@@ -4,23 +4,20 @@ export interface PublicDocumentResponse {
   summary: string;
   legalStatus: string;
   publicationDate: string;
-  promulgationDate: string;
+  promulgationDate: string | null;
   validUntil: string | null;
   downloadCount: number;
-  type: string;
-  year?: number | string;
-  file: DocumentFileResponse;
+  typeName: string;
+  year: number;
+  file: {
+    url: string;
+    name: string;
+    mimeType: string;
+    sizeBytes: number;
+  };
   incomingRelation: PublicDocumentRelation | null;
 }
 
-export interface DocumentFileResponse {
-  url: string;
-  name?: string;
-  originalName?: string;
-  mimeType: string;
-  sizeBytes?: string | number;
-  size?: string | number;
-}
 export interface PublicDocumentDetail {
   id: string;
   code: string;
@@ -41,17 +38,15 @@ interface PublicDocumentFile {
   sizeBytes: number;
 }
 
-export interface PublicRelatedDocument {
-  id: string;
-  code: string;
-  summary?: string;
-  typeName: string;
-}
-
 export interface PublicDocumentRelation {
   relationType: string;
   note: string | null;
-  document: PublicRelatedDocument;
+  document: {
+    id: string;
+    code: string;
+    summary?: string;
+    typeName: string;
+  };
 }
 
 export interface PublicDocumentRelations {

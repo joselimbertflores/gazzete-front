@@ -42,36 +42,23 @@
       </p>
 
       <form
-        class="mx-auto mt-7 max-w-3xl sm:mt-9"
+        class="mx-auto mt-7 w-full max-w-3xl sm:mt-9"
         role="search"
         aria-label="Buscar normativa municipal"
         (ngSubmit)="search()"
       >
-        <div
-          class="flex flex-col gap-2 rounded-lg border border-surface-0/80 bg-surface-0 p-2 shadow-2xl shadow-surface-950/35 sm:flex-row sm:gap-3"
-        >
-          <label for="landing-search" class="sr-only">Buscar por código, título o resumen</label>
-          <p-iconfield class="min-w-0 flex-1">
-            <p-inputicon styleClass="pi pi-search text-primary-600" />
-            <input
-              pInputText
-              id="landing-search"
-              name="landing-search"
-              type="search"
-              autocomplete="off"
-              class="h-12! w-full rounded-md border-0 bg-surface-0 pl-11! pr-4 text-sm text-surface-900 shadow-none placeholder:text-surface-500 focus:ring-2 focus:ring-primary-500 sm:h-14! sm:text-base"
-              placeholder="Buscar por código, tipo de documento o tema"
-              [ngModel]="searchTerm()"
-              (ngModelChange)="searchTerm.set($event)"
-            />
-          </p-iconfield>
-          <p-button
-            type="submit"
-            label="Buscar"
-            icon="pi pi-arrow-right"
-            styleClass="h-11 w-full sm:h-14 sm:w-auto px-5 sm:px-6"
+        <p-inputgroup class="mx-auto w-full max-w-3xl">
+          <input
+            pInputText
+            type="search"
+            name="landing-search"
+            autocomplete="off"
+            placeholder="Buscar por código o descripción"
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
           />
-        </div>
+          <p-button type="submit" label="Buscar" />
+        </p-inputgroup>
       </form>
     </div>
   </div>
@@ -164,8 +151,7 @@
 }
 
 @if (
-  landingResource.isLoading() ||
-  (landingResource.hasValue() && featuredDocuments().length > 0)
+  landingResource.isLoading() || (landingResource.hasValue() && featuredDocuments().length > 0)
 ) {
   <section
     class="border-b border-primary-900 bg-linear-to-br from-primary-950 via-primary-900 to-primary-950"
@@ -209,7 +195,9 @@
                   <p-skeleton width="100%" height="16px" styleClass="mt-7" />
                   <p-skeleton width="92%" height="16px" styleClass="mt-2" />
                   <p-skeleton width="72%" height="16px" styleClass="mt-2" />
-                  <div class="mt-8 flex items-center justify-between border-t border-surface-200 pt-5">
+                  <div
+                    class="mt-8 flex items-center justify-between border-t border-surface-200 pt-5"
+                  >
                     <p-skeleton width="132px" height="16px" />
                     <p-skeleton width="104px" height="18px" />
                   </div>
@@ -231,7 +219,9 @@
             @for (document of featuredDocuments(); track document.id; let i = $index) {
               <article
                 class="group flex min-h-[20rem] w-[calc(100%-1rem)] flex-none snap-start flex-col justify-between overflow-hidden rounded-lg border border-surface-200 bg-surface-0 shadow-xl shadow-primary-950/20 transition duration-200 hover:-translate-y-1 hover:border-primary-300 hover:bg-surface-0 hover:shadow-2xl hover:shadow-primary-950/25 focus-within:border-primary-300 sm:min-h-[22rem] sm:w-[82%] lg:w-[70%]"
-                [attr.aria-label]="'Documento destacado ' + (i + 1) + ' de ' + featuredDocuments().length"
+                [attr.aria-label]="
+                  'Documento destacado ' + (i + 1) + ' de ' + featuredDocuments().length
+                "
               >
                 <div class="h-1.5 bg-primary-500 transition group-hover:bg-primary-600"></div>
                 <div class="flex flex-1 flex-col justify-between p-6 sm:p-8 lg:p-9">
@@ -271,7 +261,10 @@
                       <span class="font-medium text-surface-500">Gestión {{ document.year }}</span>
                       @if (document.publicationDate) {
                         <span class="text-surface-400" aria-hidden="true">·</span>
-                        <time class="font-medium text-surface-500" [attr.datetime]="document.publicationDate">
+                        <time
+                          class="font-medium text-surface-500"
+                          [attr.datetime]="document.publicationDate"
+                        >
                           Publicado el {{ document.publicationDate | date: 'd MMM y' }}
                         </time>
                       }
