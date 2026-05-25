@@ -10,6 +10,7 @@ export interface PublicDocumentResponse {
   type: string;
   year?: number | string;
   file: DocumentFileResponse;
+  incomingRelation: PublicDocumentRelation | null;
 }
 
 export interface DocumentFileResponse {
@@ -20,7 +21,7 @@ export interface DocumentFileResponse {
   sizeBytes?: string | number;
   size?: string | number;
 }
-export interface PublicDocumentDetailResp {
+export interface PublicDocumentDetail {
   id: string;
   code: string;
   summary: string;
@@ -29,33 +30,31 @@ export interface PublicDocumentDetailResp {
   downloadCount: number;
   publicationDate: string;
   promulgationDate: string | null;
-  year?: number | string | null;
   typeName: string;
-  file: PublicDocumentDetailFile;
-  relations: Relations;
+  file: PublicDocumentFile;
+  relations: PublicDocumentRelations;
 }
 
-interface PublicDocumentDetailFile {
+interface PublicDocumentFile {
   url: string;
-  downloadUrl?: string | null;
-  mimeType?: string | null;
-  sizeBytes?: string | number | null;
+  mimeType: string;
+  sizeBytes: number;
 }
 
-export interface PublicDocumentRelationDocument {
+export interface PublicRelatedDocument {
   id: string;
   code: string;
+  summary?: string;
   typeName: string;
-  legalStatus?: string | null;
 }
 
 export interface PublicDocumentRelation {
   relationType: string;
-  note?: string | null;
-  document: PublicDocumentRelationDocument;
+  note: string | null;
+  document: PublicRelatedDocument;
 }
 
-interface Relations {
+export interface PublicDocumentRelations {
   outgoing: PublicDocumentRelation[];
-  incoming: PublicDocumentRelation | PublicDocumentRelation[] | null;
+  incoming: PublicDocumentRelation | null;
 }

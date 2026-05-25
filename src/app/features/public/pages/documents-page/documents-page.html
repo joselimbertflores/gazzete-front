@@ -227,7 +227,7 @@
         } @else {
           @for (document of data.documents; track document.id) {
             <article
-              class="group rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:border-primary-300 hover:shadow-md hover:shadow-surface-950/10 sm:p-5"
+              class="group overflow-hidden rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:border-primary-300 hover:shadow-md hover:shadow-surface-950/10 sm:p-5"
             >
               <div
                 class="grid grid-cols-[4rem_minmax(0,1fr)] gap-4 sm:gap-5 lg:grid-cols-[5rem_minmax(0,1fr)_12rem] lg:items-center"
@@ -299,6 +299,7 @@
                   <a
                     pButton
                     [routerLink]="['/normativas', document.id]"
+                    [state]="{ from: 'documents-list' }"
                     icon="pi pi-arrow-right"
                     label="Ver detalle"
                     class="w-full justify-center"
@@ -316,6 +317,53 @@
                   ></a>
                 </div>
               </div>
+
+              @if (document.validUntil || document.incomingRelation) {
+                <footer
+                  class="-mx-4 -mb-4 mt-4 border-t border-primary-200 bg-primary-50/50 px-4 py-3.5 text-sm leading-6 text-surface-700 sm:-mx-5 sm:-mb-5 sm:px-5 sm:py-4"
+                >
+                  <div class="space-y-1.5">
+                    @if (document.validUntil) {
+                      <p>
+                        <span class="font-medium text-surface-800">Vigencia:</span>
+                        hasta
+                        <span class="font-semibold text-surface-900">
+                          {{ validUntilLabel(document) }}
+                        </span>
+                      </p>
+                    }
+
+                    @if (document.incomingRelation; as relation) {
+                      <div>
+                        <p>
+                          <span class="font-medium text-surface-800">Relación jurídica:</span>
+                          esta normativa fue
+                          <span class="font-semibold text-surface-800">
+                            {{ incomingRelationLabel(relation.relationType) }}
+                          </span>
+                          por
+                          <a
+                            [routerLink]="['/normativas', relation.document.id]"
+                            [state]="{ from: 'documents-list' }"
+                            class="font-semibold text-primary-700 underline decoration-primary-300/80 underline-offset-4 transition hover:text-primary-800 hover:decoration-primary-600"
+                          >
+                            {{ relationDocumentIdentity(relation) }}
+                            <span aria-hidden="true">→</span>
+                          </a>
+                          .
+                        </p>
+
+                        @if (relation.note) {
+                          <p class="mt-1 line-clamp-2 text-sm text-surface-500">
+                            <span class="font-medium text-surface-600">Nota:</span>
+                            {{ relation.note }}
+                          </p>
+                        }
+                      </div>
+                    }
+                  </div>
+                </footer>
+              }
             </article>
           }
         }

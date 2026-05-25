@@ -1,232 +1,160 @@
-import { CommonModule, Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, PLATFORM_ID } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Router, RouterModule } from '@angular/router';
+import { DatePipe, isPlatformBrowser, Location } from '@angular/common';
 
-import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 
-import { PublicDocumentDetailResp, PublicDocumentRelation } from '../../types';
-import { environment } from '../../../../../environments/environment';
 import { PublicDocumentsApi } from '../../services';
 import { FileSizePipe } from '../../../../shared';
+import { PublicDocumentDetail } from '../../types';
 
-type LegalStatusSeverity = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast';
+type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary';
+
+interface RelationLabels {
+  incoming: string;
+  outgoing: string;
+}
+
+const LEGAL_STATUS_UI: Record<string, { label: string; severity: TagSeverity }> = {
+  VALID: { label: 'Vigente', severity: 'success' },
+  MODIFIED: { label: 'Modificada', severity: 'info' },
+  DEROGATED: { label: 'Derogada', severity: 'warn' },
+  ABROGATED: { label: 'Abrogada', severity: 'danger' },
+};
+
+const RELATION_TYPE_UI: Record<string, RelationLabels> = {
+  MODIFIES: {
+    incoming: 'modificada',
+    outgoing: 'modifica',
+  },
+  DEROGATES: {
+    incoming: 'derogada',
+    outgoing: 'deroga',
+  },
+  ABROGATES: {
+    incoming: 'abrogada',
+    outgoing: 'abroga',
+  },
+} as const;
 
 @Component({
   selector: 'app-document-detail',
-  imports: [CommonModule, RouterModule, SkeletonModule, ButtonModule, TagModule, FileSizePipe],
+  imports: [TagModule, RouterModule, ButtonModule, FileSizePipe, SkeletonModule, DatePipe],
   templateUrl: './document-detail.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class DocumentDetail {
-  private documentApi = inject(PublicDocumentsApi);
-  private location = inject(Location);
-  private router = inject(Router);
-  private readonly dateFormatter = new Intl.DateTimeFormat('es-BO', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly documentApi = inject(PublicDocumentsApi);
+  private readonly platformId = inject(PLATFORM_ID);
 
   id = input.required<string>();
 
-  readonly skeletonItems = Array.from({ length: 3 }, (_, index) => index);
-
-  docResource = rxResource({
+  readonly docResource = rxResource({
     params: () => ({ id: this.id() }),
-    stream: ({ params }) => this.documentApi.getPublicDocumentDetail(params.id),
+    stream: ({ params }) => this.documentApi.getDocumentDetail(params.id),
   });
 
-  document = computed(() => this.docResource.value());
-  outgoingRelations = computed(() => this.document()?.relations?.outgoing ?? []);
-  incomingRelations = computed(() => this.normalizeIncoming(this.document()?.relations?.incoming));
-  hasRelations = computed(
-    () => this.outgoingRelations().length > 0 || this.incomingRelations().length > 0,
-  );
+  readonly viewState = computed(() => {
+    if (this.docResource.isLoading()) {
+      return { state: 'loading' };
+    }
+
+    if (this.docResource.hasValue()) {
+      return {
+        state: 'ready',
+        document: this.toViewModel(this.docResource.value()),
+      };
+    }
+
+    const error = this.docResource.error();
+
+    return {
+      state: 'error',
+      error: this.mapErrorToDetailState(error),
+    };
+  });
+
+  readonly skeletonItems = Array.from({ length: 3 }, (_, index) => index);
+  readonly metadataSkeletonItems = Array.from({ length: 5 }, (_, index) => index);
 
   goBack(): void {
-    if (window.history.length > 2) {
+    if (this.canUseBrowserBack()) {
       this.location.back();
-    } else {
-      this.router.navigate(['/normativas']);
-    }
-  }
-
-  documentIdentity(document: PublicDocumentDetailResp): string {
-    return `${document.typeName} ${document.code}`.trim();
-  }
-
-  legalStatusLabel(status: string | null | undefined): string {
-    switch (status) {
-      case 'VALID':
-        return 'Vigente';
-      case 'ABROGATED':
-        return 'Abrogada';
-      case 'DEROGATED':
-        return 'Derogada';
-      case 'MODIFIED':
-        return 'Modificada';
-      default:
-        return 'No registrado';
-    }
-  }
-
-  legalStatusSeverity(status: string | null | undefined): LegalStatusSeverity {
-    switch (status) {
-      case 'VALID':
-        return 'success';
-      case 'ABROGATED':
-        return 'danger';
-      case 'DEROGATED':
-        return 'warn';
-      case 'MODIFIED':
-        return 'info';
-      default:
-        return 'secondary';
-    }
-  }
-
-  formatDate(value: string | null | undefined): string {
-    if (!value) return 'No registrada';
-
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return 'No registrada';
-
-    return this.dateFormatter.format(date);
-  }
-
-  documentYear(document: PublicDocumentDetailResp): string {
-    if (document.year) return String(document.year);
-    if (!document.publicationDate) return 'No registrada';
-
-    const year = new Date(document.publicationDate).getFullYear();
-    return Number.isFinite(year) ? String(year) : 'No registrada';
-  }
-
-  fileViewUrl(document: PublicDocumentDetailResp): string | null {
-    return this.absoluteBackendUrl(document.file?.url);
-  }
-
-  fileDownloadUrl(document: PublicDocumentDetailResp): string | null {
-    const downloadUrl = this.absoluteBackendUrl(document.file?.downloadUrl);
-    if (downloadUrl) return downloadUrl;
-
-    const viewUrl = this.fileViewUrl(document);
-    if (!viewUrl) return null;
-
-    return `${viewUrl}${viewUrl.includes('?') ? '&' : '?'}download=true`;
-  }
-
-  downloadCountLabel(count: number | null | undefined): string {
-    const value = count ?? 0;
-    return `${value} ${value === 1 ? 'descarga' : 'descargas'}`;
-  }
-
-  mimeTypeLabel(mimeType: string | null | undefined): string | null {
-    if (!mimeType || mimeType === 'application/pdf') return null;
-    return mimeType;
-  }
-
-  relationTargetIdentity(relation: PublicDocumentRelation): string {
-    return `${relation.document.typeName} ${relation.document.code}`.trim();
-  }
-
-  outgoingRelationVerb(relationType: string | null | undefined): string {
-    switch (this.normalizeRelationType(relationType)) {
-      case 'MODIFIES':
-      case 'MODIFICA':
-        return 'MODIFICA';
-      case 'DEROGATES':
-      case 'DEROGA':
-      case 'REPEALS':
-        return 'DEROGA';
-      case 'ABROGATES':
-      case 'ABROGA':
-        return 'ABROGA';
-      case 'REPLACES':
-      case 'REEMPLAZA':
-        return 'REEMPLAZA';
-      case 'COMPLEMENTS':
-      case 'COMPLEMENTA':
-        return 'COMPLEMENTA';
-      case 'REGULATES':
-      case 'REGLAMENTA':
-        return 'REGLAMENTA';
-      default:
-        return 'AFECTA';
-    }
-  }
-
-  incomingRelationVerb(relationType: string | null | undefined): string {
-    switch (this.normalizeRelationType(relationType)) {
-      case 'MODIFIES':
-      case 'MODIFICA':
-        return 'MODIFICADA';
-      case 'DEROGATES':
-      case 'DEROGA':
-      case 'REPEALS':
-        return 'DEROGADA';
-      case 'ABROGATES':
-      case 'ABROGA':
-        return 'ABROGADA';
-      case 'REPLACES':
-      case 'REEMPLAZA':
-        return 'REEMPLAZADA';
-      case 'COMPLEMENTS':
-      case 'COMPLEMENTA':
-        return 'COMPLEMENTADA';
-      case 'REGULATES':
-      case 'REGLAMENTA':
-        return 'REGLAMENTADA';
-      default:
-        return 'AFECTADA';
-    }
-  }
-
-  trackRelation(_index: number, relation: PublicDocumentRelation): string {
-    return `${relation.relationType}-${relation.document.id}`;
-  }
-
-  trackSkeleton(index: number): number {
-    return index;
-  }
-
-  notFoundTitle(): string {
-    return this.docResource.error()
-      ? 'No se pudo encontrar la normativa.'
-      : 'Normativa no disponible.';
-  }
-
-  notFoundDescription(): string {
-    return this.docResource.error()
-      ? 'El documento solicitado no existe, fue retirado o no está disponible para consulta pública.'
-      : 'Vuelve al listado para consultar otras normativas publicadas.';
-  }
-
-  private normalizeIncoming(
-    incoming: PublicDocumentRelation | PublicDocumentRelation[] | null | undefined,
-  ): PublicDocumentRelation[] {
-    if (!incoming) return [];
-    return Array.isArray(incoming) ? incoming : [incoming];
-  }
-
-  private normalizeRelationType(relationType: string | null | undefined): string {
-    return (relationType ?? '')
-      .trim()
-      .toUpperCase()
-      .replace(/[\s-]+/g, '_');
-  }
-
-  private absoluteBackendUrl(url: string | null | undefined): string | null {
-    if (!url) return null;
-    if (/^(https?:)?\/\//.test(url) || url.startsWith('blob:') || url.startsWith('data:')) {
-      return url;
+      return;
     }
 
-    const baseUrl = environment.baseUrl.replace(/\/$/, '');
-    const normalizedUrl = url.startsWith('/') ? url : `/${url}`;
-    return `${baseUrl}${normalizedUrl}`;
+    this.router.navigate(['/normativas']);
+  }
+
+  private canUseBrowserBack(): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const state = history.state as {
+      from?: string;
+    };
+
+    return (
+      state.from === 'documents-list' ||
+      state.from === 'document-detail' ||
+      state.from === 'landing'
+    );
+  }
+
+  private toViewModel(doc: PublicDocumentDetail) {
+    return {
+      ...doc,
+      legalStatusUi: LEGAL_STATUS_UI[doc.legalStatus] ?? {
+        label: doc.legalStatus,
+        severity: 'secondary',
+      },
+      relations: {
+        incoming: doc.relations.incoming
+          ? {
+              ...doc.relations.incoming,
+              relationLabel:
+                RELATION_TYPE_UI[doc.relations.incoming.relationType]?.incoming ?? 'afectada',
+            }
+          : null,
+        outgoing: doc.relations.outgoing.map((rel) => ({
+          ...rel,
+          relationLabel: RELATION_TYPE_UI[rel.relationType]?.outgoing ?? 'afecta',
+        })),
+      },
+    };
+  }
+
+  private mapErrorToDetailState(error: unknown) {
+    if (error instanceof HttpErrorResponse) {
+      switch (error.status) {
+        case 404:
+          return {
+            title: 'Normativa no encontrada',
+            description: 'La normativa solicitada no existe o ya no se encuentra disponible.',
+          };
+
+        case 0:
+          return {
+            title: 'No se pudo cargar la normativa',
+            description: 'Verifique su conexión a internet e intente nuevamente.',
+          };
+
+        default:
+          return {
+            title: 'No se pudo cargar la normativa',
+            description: 'Por favor, intente nuevamente más tarde.',
+          };
+      }
+    }
+    return {
+      title: 'No pudimos mostrar la normativa',
+      description: 'Intente volver al listado de normativas.',
+    };
   }
 }

@@ -1,4 +1,5 @@
-import { inject, Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 
 @Injectable({
@@ -6,6 +7,8 @@ import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 })
 export class WindowScrollStore {
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
   private positions = new Map<string, number>();
 
   private isPopState = false;
@@ -23,20 +26,23 @@ export class WindowScrollStore {
    * - el componente ya decidió que es el momento correcto
    */
   restoreScroll(routeKey: string): void {
+    if (!this.isBrowser) return;
+
     const y = this.positions.get(routeKey);
-    
+
     if (!y || y <= 0) return;
-    
+
     if (!this.isPopState) return;
-    
+
     window.scrollTo({ top: y });
-    console.log("RESTORE ", y);
 
     // Remover data para evitar que algun effect de RxResource siga restableciendo scroll cuando paginacion cambia
     this.positions.delete(routeKey);
   }
 
   private init(): void {
+    if (!this.isBrowser) return;
+
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.isPopState = event.navigationTrigger === 'popstate';

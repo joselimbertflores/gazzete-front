@@ -1,10 +1,11 @@
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { map, of, tap } from 'rxjs';
 
-import { PublicDocumentDetailResp, PublicDocumentResponse, PublicLandingResponse } from '../types';
+import { PublicDocumentDetail, PublicDocumentResponse, PublicLandingResponse } from '../types';
 import { environment } from '../../../../environments/environment';
 
 export interface GetPublicDocumentsParams {
@@ -24,9 +25,11 @@ export class PublicDocumentsApi {
   private readonly URL = `${environment.baseUrl}/api/public-documents`;
 
   private http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   documentListCache: Record<string, { documents: PublicDocumentResponse[]; total: number }> = {};
-  documentCache: Record<string, any> = {};
+  documentCache: Record<string, PublicDocumentDetail> = {};
 
   docTypes = toSignal(
     this.http
@@ -64,21 +67,38 @@ export class PublicDocumentsApi {
     const httpParams = new HttpParams({ fromObject: sortedParams });
     const key = httpParams.toString();
 
-    const cached = this.documentListCache[key];
-    if (cached) return of(cached);
+    if (this.isBrowser) {
+      const cached = this.documentListCache[key];
+      if (cached) return of(cached);
+    }
 
     return this.http
       .get<{ documents: PublicDocumentResponse[]; total: number }>(`${this.URL}`, {
         params: new HttpParams({ fromObject: cleanParams }),
       })
-      .pipe(tap((data) => (this.documentListCache[key] = data)));
+      .pipe(
+        tap((data) => {
+          if (this.isBrowser) {
+            this.documentListCache[key] = data;
+          }
+        }),
+      );
   }
 
-  getPublicDocumentDetail(id: string) {
-    const cached = this.documentCache[id];
-    if (cached) return of(cached);
+  getDocumentDetail(id: string) {
+    if (this.isBrowser) {
+      const cached = this.documentCache[id];
+      if (cached) return of(cached);
+    }
+
     return this.http
-      .get<PublicDocumentDetailResp>(`${this.URL}/detail/${id}`)
-      .pipe(tap((doc) => (this.documentCache[id] = doc)));
+      .get<PublicDocumentDetail>(`${this.URL}/detail/${id}`)
+      .pipe(
+        tap((doc) => {
+          if (this.isBrowser) {
+            this.documentCache[id] = doc;
+          }
+        }),
+      );
   }
 }

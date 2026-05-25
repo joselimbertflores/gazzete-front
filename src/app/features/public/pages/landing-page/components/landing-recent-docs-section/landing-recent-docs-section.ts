@@ -110,6 +110,7 @@ import { PublicDocumentResponse } from '../../../../types';
 
                     <a
                       [routerLink]="['/normativas', document.id]"
+                      [state]="{ from: 'landing' }"
                       class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-surface-0 px-4 py-2.5 text-sm font-medium text-surface-700 transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700"
                     >
                       Ver detalle

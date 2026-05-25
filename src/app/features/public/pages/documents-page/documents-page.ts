@@ -26,7 +26,7 @@ import { TagModule } from 'primeng/tag';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
-import { PublicDocumentResponse } from '../../types';
+import { PublicDocumentRelation, PublicDocumentResponse } from '../../types';
 import { FileSizePipe, WindowScrollStore } from '../../../../shared';
 
 type PublicDocumentsData = {
@@ -35,6 +35,12 @@ type PublicDocumentsData = {
 };
 
 type LegalStatusSeverity = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast';
+
+const INCOMING_RELATION_LABELS: Record<string, string> = {
+  MODIFIES: 'modificada',
+  DEROGATES: 'derogada',
+  ABROGATES: 'abrogada',
+};
 
 const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
   documents: [],
@@ -61,7 +67,7 @@ const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class DocumentsPage implements OnInit {
-  private router = inject(Router);
+  private readonly router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
@@ -203,8 +209,18 @@ export default class DocumentsPage implements OnInit {
   publicationDateLabel(document: PublicDocumentResponse): string {
     if (!document.publicationDate) return 'No registrada';
 
-    const date = new Date(document.publicationDate);
-    if (Number.isNaN(date.getTime())) return 'No registrada';
+    return this.dateLabel(document.publicationDate);
+  }
+
+  validUntilLabel(document: PublicDocumentResponse): string {
+    return this.dateLabel(document.validUntil);
+  }
+
+  private dateLabel(value: string | null | undefined): string {
+    if (!value) return 'No registrada';
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
 
     return this.publicationDateFormatter.format(date).replace(/\./g, '');
   }
@@ -237,6 +253,16 @@ export default class DocumentsPage implements OnInit {
       default:
         return 'secondary';
     }
+  }
+
+  incomingRelationLabel(relationType: string | null | undefined): string {
+    if (!relationType) return 'afectada';
+
+    return INCOMING_RELATION_LABELS[relationType.trim().toUpperCase()] ?? 'afectada';
+  }
+
+  relationDocumentIdentity(relation: PublicDocumentRelation): string {
+    return `${relation.document.typeName} ${relation.document.code}`.trim();
   }
 
   private setQueryParams(params: GetPublicDocumentsParams) {
