@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { DatePipe, isPlatformBrowser, Location } from '@angular/common';
 
 import { SkeletonModule } from 'primeng/skeleton';
+import { AnimateOnScroll } from 'primeng/animateonscroll';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 
@@ -43,7 +44,15 @@ const RELATION_TYPE_UI: Record<string, RelationLabels> = {
 
 @Component({
   selector: 'app-document-detail',
-  imports: [TagModule, RouterModule, ButtonModule, FileSizePipe, SkeletonModule, DatePipe],
+  imports: [
+    TagModule,
+    RouterModule,
+    ButtonModule,
+    FileSizePipe,
+    SkeletonModule,
+    DatePipe,
+    AnimateOnScroll,
+  ],
   templateUrl: './document-detail.html',
 })
 export default class DocumentDetail {

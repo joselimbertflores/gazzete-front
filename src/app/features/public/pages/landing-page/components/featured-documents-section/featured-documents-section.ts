@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { AnimateOnScroll } from 'primeng/animateonscroll';
 import { TagModule } from 'primeng/tag';
 
 import { PublicDocumentCard } from '../../../../types';
@@ -21,14 +22,20 @@ import { PublicDocumentCard } from '../../../../types';
 @Component({
   selector: 'app-featured-documents-section',
   standalone: true,
-  imports: [RouterLink, TagModule, DatePipe],
+  imports: [RouterLink, TagModule, DatePipe, AnimateOnScroll],
   template: `
     <section
       class="border-b border-primary-900 bg-linear-to-br from-primary-950 via-primary-900 to-primary-950"
       aria-labelledby="featured-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div
+          pAnimateOnScroll
+          enterClass="animate-enter fade-in-0 slide-in-from-b-4 animate-duration-500 animate-ease-out animate-fill-both"
+          [once]="true"
+          [threshold]="0.2"
+          class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        >
           <div class="max-w-2xl">
             <h2 id="featured-title" class="text-2xl font-semibold text-surface-0 sm:text-3xl">
               Documentos destacados
@@ -40,6 +47,10 @@ import { PublicDocumentCard } from '../../../../types';
         </div>
 
         <div
+          pAnimateOnScroll
+          enterClass="animate-enter fade-in-0 slide-in-from-b-8 zoom-in-95 animate-duration-700 animate-ease-out animate-fill-both"
+          [once]="true"
+          [threshold]="0.12"
           class="relative mt-6 sm:mt-8"
           (mouseenter)="pauseFeaturedAutoplay()"
           (mouseleave)="resumeFeaturedAutoplay()"
@@ -58,16 +69,19 @@ import { PublicDocumentCard } from '../../../../types';
           >
             @for (document of documents(); track document.id; let i = $index) {
               <article
-                class="group flex min-h-80 w-[calc(100%-1rem)] flex-none snap-start flex-col justify-between overflow-hidden rounded-lg border border-surface-200 bg-surface-0 shadow-xl shadow-primary-950/20 transition duration-200 hover:-translate-y-1 hover:border-primary-300 hover:bg-surface-0 hover:shadow-2xl hover:shadow-primary-950/25 focus-within:border-primary-300 sm:min-h-88 sm:w-[82%] lg:w-[70%]"
+                class="group flex min-h-80 w-[calc(100%-1rem)] flex-none snap-start flex-col justify-between overflow-hidden rounded-lg border border-surface-200 bg-surface-0 shadow-xl shadow-primary-950/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary-300 hover:bg-surface-0 hover:shadow-2xl hover:shadow-primary-950/25 focus-within:border-primary-300 sm:min-h-88 sm:w-[82%] lg:w-[70%]"
                 [attr.aria-label]="'Documento destacado ' + (i + 1) + ' de ' + documents().length"
               >
-                <div class="h-1.5 bg-primary-500 transition group-hover:bg-primary-600"></div>
+                <div class="h-1.5 bg-primary-500 transition-colors duration-300 group-hover:bg-primary-600"></div>
                 <div class="flex flex-1 flex-col justify-between p-6 sm:p-8 lg:p-9">
                   <div>
                     <div
-                      class="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-sm font-semibold text-primary-800"
+                      class="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-sm font-semibold text-primary-800 transition duration-300 ease-out group-hover:border-primary-200 group-hover:bg-primary-100"
                     >
-                      <i class="pi pi-star text-xs" aria-hidden="true"></i>
+                      <i
+                        class="pi pi-star text-xs transition-transform duration-300 ease-out group-hover:scale-110"
+                        aria-hidden="true"
+                      ></i>
                       Documento destacado
                     </div>
 
@@ -119,11 +133,11 @@ import { PublicDocumentCard } from '../../../../types';
                     <a
                       [routerLink]="['/normativas', document.id]"
                       [state]="{ from: 'landing' }"
-                      class="inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
+                      class="inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-300 hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
                     >
                       Ver detalle
                       <i
-                        class="pi pi-arrow-right text-xs transition group-hover:translate-x-0.5"
+                        class="pi pi-arrow-right text-xs transition-transform duration-300 ease-out group-hover:translate-x-0.5"
                         aria-hidden="true"
                       ></i>
                     </a>
@@ -137,7 +151,7 @@ import { PublicDocumentCard } from '../../../../types';
             <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
               <button
                 type="button"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-700 bg-surface-0 text-primary-800 shadow-sm transition hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-0"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-700 bg-surface-0 text-primary-800 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-0"
                 aria-label="Ver documento destacado anterior"
                 (click)="previousFeaturedSlide()"
               >
@@ -148,7 +162,7 @@ import { PublicDocumentCard } from '../../../../types';
                 @for (document of documents(); track document.id; let i = $index) {
                   <button
                     type="button"
-                    class="h-2.5 rounded-full transition focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-surface-0"
+                    class="h-2.5 rounded-full transition-all duration-300 ease-out hover:bg-surface-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-surface-0"
                     [class.w-8]="activeFeaturedIndex() === i"
                     [class.w-2.5]="activeFeaturedIndex() !== i"
                     [class.bg-surface-0]="activeFeaturedIndex() === i"
@@ -162,7 +176,7 @@ import { PublicDocumentCard } from '../../../../types';
 
               <button
                 type="button"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-700 bg-surface-0 text-primary-800 shadow-sm transition hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-0"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-700 bg-surface-0 text-primary-800 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-0"
                 aria-label="Ver siguiente documento destacado"
                 (click)="nextFeaturedSlide()"
               >
@@ -285,7 +299,7 @@ export class FeaturedDocumentsSection {
   }
 
   private startFeaturedAutoplay(): void {
-    if (this.featuredAutoplayId) return;
+    if (this.featuredAutoplayId || this.prefersReducedMotion()) return;
 
     this.featuredAutoplayId = setInterval(() => this.advanceFeaturedAutoplay(), 5500);
   }
@@ -295,5 +309,9 @@ export class FeaturedDocumentsSection {
 
     clearInterval(this.featuredAutoplayId);
     this.featuredAutoplayId = null;
+  }
+
+  private prefersReducedMotion(): boolean {
+    return this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 }

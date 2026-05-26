@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
+@import './app/features/public/styles/public-animations.css';
 
 /* DIALOG CONFI */
 .p-dialog-content {

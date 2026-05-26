@@ -11,7 +11,7 @@ import { InputTextModule } from 'primeng/inputtext';
   imports: [FormsModule, ButtonModule, InputGroupModule, InputTextModule],
   template: `
 <section
-  class="relative isolate overflow-hidden border-b border-surface-200 bg-surface-950"
+  class="public-motion-safe relative isolate overflow-hidden border-b border-surface-200 bg-surface-950"
   aria-labelledby="landing-title"
 >
   <div class="absolute inset-0 -z-20">
@@ -22,7 +22,7 @@ import { InputTextModule } from 'primeng/inputtext';
       height="960"
       fetchpriority="high"
       decoding="async"
-      class="h-full w-full object-cover object-[center_40%] opacity-[0.72] saturate-90 sm:object-[center_38%] sm:opacity-[0.7]"
+      class="h-full w-full object-cover object-[center_40%] opacity-[0.72] saturate-90 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:animate-duration-1000 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:object-[center_38%] sm:opacity-[0.7]"
       aria-hidden="true"
     />
   </div>
@@ -45,25 +45,27 @@ import { InputTextModule } from 'primeng/inputtext';
     <div class="mx-auto w-full max-w-4xl text-center">
       <h1
         id="landing-title"
-        class="text-3xl font-semibold tracking-tight text-surface-0 drop-shadow-sm sm:text-5xl lg:text-6xl"
+        class="text-3xl font-semibold tracking-tight text-surface-0 drop-shadow-sm motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-duration-700 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:text-5xl lg:text-6xl"
       >
         Gaceta Municipal de Sacaba
       </h1>
 
       <p
-        class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-surface-100 sm:mt-5 sm:text-lg sm:leading-7"
+        class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-surface-100 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-delay-100 motion-safe:animate-duration-700 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:mt-5 sm:text-lg sm:leading-7"
       >
         Consulte normativa municipal publicada oficialmente por el Gobierno Autónomo Municipal de
         Sacaba.
       </p>
 
       <form
-        class="mx-auto mt-8 w-full max-w-3xl"
+        class="mx-auto mt-8 w-full max-w-3xl motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-6 motion-safe:animate-delay-200 motion-safe:animate-duration-700 motion-safe:animate-ease-out motion-safe:animate-fill-both"
         role="search"
         aria-label="Buscar normativa municipal"
         (ngSubmit)="search.emit()"
       >
-        <p-inputgroup>
+        <p-inputgroup
+          class="overflow-hidden rounded-lg shadow-2xl shadow-primary-950/25 ring-1 ring-surface-0/20 transition duration-300 ease-out focus-within:ring-2 focus-within:ring-primary-200/75 motion-safe:hover:-translate-y-0.5"
+        >
           <input
             pInputText
             name="landing-search"
@@ -72,8 +74,14 @@ import { InputTextModule } from 'primeng/inputtext';
             placeholder="Buscar por código o descripción…"
             [ngModel]="searchTerm()"
             (ngModelChange)="searchTermChange.emit($event)"
+            class="transition-colors duration-300"
           />
-          <p-button type="submit" icon="pi pi-search" label="Buscar" />
+          <p-button
+            type="submit"
+            icon="pi pi-search"
+            label="Buscar"
+            styleClass="transition duration-300 ease-out hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200"
+          />
         </p-inputgroup>
       </form>
     </div>
