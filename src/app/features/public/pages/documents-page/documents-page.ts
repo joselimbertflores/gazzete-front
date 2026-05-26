@@ -9,8 +9,8 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -26,7 +26,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
 import { FileSizePipe, WindowScrollStore } from '../../../../shared';
-import { PublicDocumentResponse } from '../../types';
+import { PublicDocumentRelation, PublicDocumentResponse } from '../../types';
 
 type PublicDocumentsData = {
   documents: PublicDocumentResponse[];
@@ -35,10 +35,10 @@ type PublicDocumentsData = {
 
 type LegalStatusSeverity = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast';
 
-const INCOMING_RELATION_LABELS: Record<string, string> = {
-  MODIFIES: 'modificada',
-  DEROGATES: 'derogada',
-  ABROGATES: 'abrogada',
+const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
+  MODIFIES: 'Esta normativa fue modificada por',
+  DEROGATES: 'Esta normativa fue derogada por',
+  ABROGATES: 'Esta normativa fue abrogada por',
 };
 
 const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
@@ -229,10 +229,14 @@ export default class DocumentsPage implements OnInit {
     }
   }
 
-  incomingRelationLabel(relationType: string | null | undefined): string {
-    if (!relationType) return 'afectada';
+  relationDescription(relation: PublicDocumentRelation): string {
+    const customDescription = relation.description?.trim() || relation.note?.trim();
+    if (customDescription) return customDescription;
 
-    return INCOMING_RELATION_LABELS[relationType.trim().toUpperCase()] ?? 'afectada';
+    return (
+      INCOMING_RELATION_DESCRIPTIONS[relation.relationType.trim().toUpperCase()] ??
+      'Esta normativa fue afectada por'
+    );
   }
 
   private setQueryParams(params: GetPublicDocumentsParams) {

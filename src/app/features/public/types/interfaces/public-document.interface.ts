@@ -40,6 +40,7 @@ interface PublicDocumentFile {
 
 export interface PublicDocumentRelation {
   relationType: string;
+  description?: string | null;
   note: string | null;
   document: {
     id: string;
