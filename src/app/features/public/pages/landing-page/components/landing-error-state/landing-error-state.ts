@@ -5,13 +5,20 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <section class="flex min-h-[42vh] items-center" aria-live="polite">
+    <section
+      class="flex min-h-[42vh] items-center bg-linear-to-b from-surface-0 to-primary-50/35"
+      aria-live="polite"
+    >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div
-          class="mx-auto flex max-w-2xl flex-col items-start gap-5 p-6 text-center sm:items-center sm:p-8"
+          class="mx-auto flex max-w-2xl flex-col items-start gap-5 rounded-lg border border-primary-100 bg-surface-0 p-6 text-center shadow-sm shadow-primary-950/5 sm:items-center sm:p-8"
         >
           <div class="flex flex-col items-center gap-4">
-            <i class="pi pi-info-circle" style="font-size: 2rem;"></i>
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-lg border border-primary-100 bg-primary-50 text-primary-700"
+            >
+              <i class="pi pi-info-circle text-lg" aria-hidden="true"></i>
+            </span>
             <div>
               <h2 class="text-xl font-semibold text-surface-950 sm:text-2xl">
                 Información no disponible

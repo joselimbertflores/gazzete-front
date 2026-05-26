@@ -18,6 +18,8 @@ import { InputTextModule } from 'primeng/inputtext';
     <img
       src="/images/gaceta/gaceta-hero-banner.webp"
       alt=""
+      width="1920"
+      height="960"
       fetchpriority="high"
       decoding="async"
       class="h-full w-full object-cover object-[center_40%] opacity-[0.72] saturate-90 sm:object-[center_38%] sm:opacity-[0.7]"
@@ -66,7 +68,8 @@ import { InputTextModule } from 'primeng/inputtext';
             pInputText
             name="landing-search"
             autocomplete="off"
-            placeholder="Busqueda por código o descripción"
+            aria-label="Buscar normativa por código o descripción"
+            placeholder="Buscar por código o descripción…"
             [ngModel]="searchTerm()"
             (ngModelChange)="searchTermChange.emit($event)"
           />

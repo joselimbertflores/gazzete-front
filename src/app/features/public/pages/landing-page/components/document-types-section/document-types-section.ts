@@ -41,7 +41,7 @@ import { PublicDocumentTypeItem } from '../../../../types';
                 {{ type.name }}
               </h3>
               <p class="mt-2 flex-1 text-sm leading-6 text-surface-600">
-                {{ type.description || '  Consulte documentos publicados de este tipo.' }}
+                {{ type.description || 'Consulte documentos publicados de este tipo.' }}
               </p>
               <p class="mt-4 text-sm font-medium text-surface-700">
                 {{ type.documentsCount | i18nPlural: documentPluralMap }}

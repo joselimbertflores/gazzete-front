@@ -230,7 +230,7 @@ export default class DocumentsPage implements OnInit {
   }
 
   relationDescription(relation: PublicDocumentRelation): string {
-    const customDescription = relation.description?.trim() || relation.note?.trim();
+    const customDescription = relation.description?.trim();
     if (customDescription) return customDescription;
 
     return (
