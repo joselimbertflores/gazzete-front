@@ -2,14 +2,12 @@ import { I18nPluralPipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { AnimateOnScroll } from 'primeng/animateonscroll';
-
 import { PublicDocumentTypeItem } from '../../../../types';
 
 @Component({
   selector: 'app-document-types-section',
   standalone: true,
-  imports: [RouterLink, I18nPluralPipe, AnimateOnScroll],
+  imports: [RouterLink, I18nPluralPipe],
   template: `
     <section
       id="normativas"
@@ -18,30 +16,19 @@ import { PublicDocumentTypeItem } from '../../../../types';
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
         <div
-          pAnimateOnScroll
-          enterClass="animate-enter fade-in-0 slide-in-from-b-4 animate-duration-500 animate-ease-out animate-fill-both"
-          [once]="true"
-          [threshold]="0.2"
-          class="max-w-2xl"
+          class="max-w-2xl motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
         >
           <h2 id="document-types-title" class="text-2xl font-semibold text-surface-950 sm:text-3xl">
-            Consulte por tipo de documento
+            Tipos de documento
           </h2>
-          <p class="mt-2 text-sm leading-6 text-surface-600">
-            Ingrese directamente a las categorías principales de la normativa municipal.
-          </p>
         </div>
 
         <div class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
           @for (type of documentTypes(); track type.id) {
             <a
-              pAnimateOnScroll
               routerLink="/normativas"
               [queryParams]="{ type: type.id }"
-              enterClass="animate-enter fade-in-0 slide-in-from-b-6 zoom-in-95 animate-duration-500 animate-ease-out animate-fill-both"
-              [once]="true"
-              [threshold]="0.18"
-              class="group flex min-h-44 flex-col rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary-300 hover:bg-primary-50/65 hover:shadow-xl hover:shadow-primary-900/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:min-h-52 sm:p-5"
+              class="group flex min-h-44 flex-col rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition-all duration-300 ease-out motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both hover:-translate-y-1 hover:border-primary-300 hover:bg-primary-50/65 hover:shadow-xl hover:shadow-primary-900/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:min-h-52 sm:p-5"
               [attr.aria-label]="'Consultar ' + type.name"
             >
               <span

@@ -18,7 +18,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { SkeletonModule } from 'primeng/skeleton';
-import { AnimateOnScroll } from 'primeng/animateonscroll';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -57,7 +56,6 @@ const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
     InputIconModule,
     PaginatorModule,
     SkeletonModule,
-    AnimateOnScroll,
     ButtonModule,
     SelectModule,
     TagModule,

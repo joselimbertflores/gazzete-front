@@ -18,11 +18,8 @@ import { SkeletonModule } from 'primeng/skeleton';
         id="document-types-skeleton-title"
         class="text-2xl font-semibold text-surface-950 sm:text-3xl"
       >
-        Consulte por tipo de documento
+        Tipos de documento
       </h2>
-      <p class="mt-2 text-sm leading-6 text-surface-600">
-        Ingrese directamente a las categorías principales de la normativa municipal.
-      </p>
     </div>
 
     <div class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">

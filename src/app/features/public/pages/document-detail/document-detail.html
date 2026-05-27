@@ -1,5 +1,5 @@
 <section
-  class="public-motion-safe bg-linear-to-b from-primary-50/45 via-surface-50 to-surface-50"
+  class="public-motion-safe bg-surface-50"
 >
   <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6">
     <div
@@ -80,9 +80,8 @@
     } @else if (vm.state === 'ready' && vm.document; as doc) {
       <div class="space-y-5">
         <article
-          class="overflow-hidden rounded-lg border border-primary-100 bg-surface-0 shadow-sm shadow-primary-950/5 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-6 motion-safe:animate-duration-700 motion-safe:animate-ease-out motion-safe:animate-fill-both"
+          class="rounded-lg border border-surface-200 bg-surface-0 shadow-sm shadow-surface-950/5 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-6 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
         >
-          <div class="h-1 bg-linear-to-r from-primary-500 via-primary-400 to-amber-400"></div>
           <div class="p-5 sm:p-7">
             <h1
               class="text-2xl font-semibold tracking-tight text-pretty text-surface-950 sm:text-4xl"
@@ -118,11 +117,7 @@
         </article>
 
         <section
-          pAnimateOnScroll
-          enterClass="animate-enter fade-in-0 slide-in-from-b-4 animate-duration-500 animate-ease-out animate-fill-both"
-          [once]="true"
-          [threshold]="0.15"
-          class="rounded-lg border border-surface-200 bg-linear-to-r from-surface-0 to-primary-50/30 p-4 shadow-sm shadow-surface-950/5 transition-all duration-300 ease-out hover:border-primary-200 hover:shadow-md hover:shadow-primary-950/10 sm:p-5"
+          class="rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition-all duration-300 ease-out hover:border-primary-200 hover:shadow-md hover:shadow-primary-950/10 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-300 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:p-5"
           aria-label="PDF oficial"
         >
           <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
@@ -169,11 +164,7 @@
         </section>
 
         <section
-          pAnimateOnScroll
-          enterClass="animate-enter fade-in-0 slide-in-from-b-4 animate-duration-500 animate-ease-out animate-fill-both"
-          [once]="true"
-          [threshold]="0.15"
-          class="rounded-lg border border-surface-200 bg-surface-0 p-5 transition-all duration-300 ease-out hover:border-primary-200 hover:shadow-md hover:shadow-primary-950/5 sm:p-6"
+          class="rounded-lg border border-surface-200 bg-surface-0 p-5 transition-all duration-300 ease-out hover:border-primary-200 hover:shadow-md hover:shadow-primary-950/5 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-300 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:p-6"
         >
           <h2 class="text-xl font-semibold text-surface-950">Información del documento</h2>
 
@@ -216,11 +207,7 @@
         </section>
 
         <section
-          pAnimateOnScroll
-          enterClass="animate-enter fade-in-0 slide-in-from-b-4 animate-duration-500 animate-ease-out animate-fill-both"
-          [once]="true"
-          [threshold]="0.15"
-          class="rounded-lg border border-surface-200 bg-surface-0 p-5 transition-all duration-300 ease-out hover:border-primary-200 hover:shadow-md hover:shadow-primary-950/5 sm:p-6"
+          class="rounded-lg border border-surface-200 bg-surface-0 p-5 transition-all duration-300 ease-out hover:border-primary-200 hover:shadow-md hover:shadow-primary-950/5 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-300 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:p-6"
         >
           <h2 class="text-xl font-semibold text-surface-950">Relaciones normativas</h2>
 
@@ -231,43 +218,34 @@
                   <h3 class="text-base font-semibold text-surface-950">Afecta a esta normativa</h3>
                   <div class="mt-3">
                     <article
-                      class="rounded-lg border border-amber-200 bg-amber-50 p-4 transition-all duration-300 ease-out hover:border-amber-300 hover:bg-amber-50/80"
+                      class="rounded-lg border border-amber-200 bg-amber-50 p-3.5 transition-colors duration-300 ease-out hover:border-amber-300 hover:bg-amber-50/80 sm:p-4"
                     >
-                      <div class="flex gap-3">
-                        <span
-                          class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-amber-200 bg-surface-0 text-amber-700 transition-transform duration-300 ease-out hover:scale-105"
-                        >
-                          <i class="pi pi-link text-sm" aria-hidden="true"></i>
+                      <p class="text-sm leading-6 text-surface-800">
+                        Esta normativa fue
+                        <span class="font-semibold text-surface-800">
+                          {{ relation.relationLabel }}
                         </span>
-                        <div class="min-w-0">
-                          <p class="text-sm leading-6 text-surface-800">
-                            Esta normativa fue
-                            <span class="font-semibold text-surface-800">
-                              {{ relation.relationLabel }}
-                            </span>
-                            por
-                            <a
-                              [routerLink]="['/normativas', relation.document.id]"
-                              [state]="{ from: 'document-detail' }"
-                              class="font-semibold text-primary-700 transition hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
-                            >
-                              {{ relation.document.typeName }} {{ relation.document.code }}
-                            </a>
-                            .
-                          </p>
+                        por
+                        <a
+                          [routerLink]="['/normativas', relation.document.id]"
+                          [state]="{ from: 'document-detail' }"
+                          class="font-semibold text-primary-700 transition hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                        >
+                          {{ relation.document.typeName }} {{ relation.document.code }}
+                        </a>
+                        .
+                      </p>
 
-                          <p class="mt-1 line-clamp-2 text-sm leading-6 text-surface-600">
-                            {{ relation.document.summary }}
-                          </p>
+                      <p class="mt-1 line-clamp-2 text-sm leading-6 text-surface-600">
+                        {{ relation.document.summary }}
+                      </p>
 
-                          @if (relation.note) {
-                            <p class="mt-2 text-sm leading-6 text-surface-600">
-                              <span class="font-medium text-surface-700">Nota:</span>
-                              {{ relation.note }}
-                            </p>
-                          }
-                        </div>
-                      </div>
+                      @if (relation.note) {
+                        <p class="mt-2 text-sm leading-6 text-surface-600">
+                          <span class="font-medium text-surface-700">Nota:</span>
+                          {{ relation.note }}
+                        </p>
+                      }
                     </article>
                   </div>
                 </div>
@@ -282,45 +260,36 @@
                   <div class="mt-3 space-y-3">
                     @for (relation of doc.relations.outgoing; track relation.document.id) {
                       <article
-                        class="rounded-lg border border-amber-200 bg-amber-50 p-4 transition-all duration-300 ease-out hover:border-amber-300 hover:bg-amber-50/80"
+                        class="rounded-lg border border-amber-200 bg-amber-50 p-3.5 transition-colors duration-300 ease-out hover:border-amber-300 hover:bg-amber-50/80 sm:p-4"
                       >
-                        <div class="flex gap-3">
-                          <span
-                            class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-amber-200 bg-surface-0 text-amber-700 transition-transform duration-300 ease-out hover:scale-105"
-                          >
-                            <i class="pi pi-link text-sm" aria-hidden="true"></i>
+                        <p class="text-sm leading-6 text-surface-800">
+                          Mediante esta normativa se
+                          <span class="font-semibold text-surface-800">
+                            {{ relation.relationLabel }}
                           </span>
-                          <div class="min-w-0">
-                            <p class="text-sm leading-6 text-surface-800">
-                              Mediante esta normativa se
-                              <span class="font-semibold text-surface-800">
-                                {{ relation.relationLabel }}
-                              </span>
-                              la norma
-                              <a
-                                [routerLink]="['/normativas', relation.document.id]"
-                                [state]="{ from: 'document-detail' }"
-                                class="font-semibold text-primary-700 transition hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
-                              >
-                                {{ relation.document.typeName }} {{ relation.document.code }}
-                              </a>
-                              .
-                            </p>
+                          la norma
+                          <a
+                            [routerLink]="['/normativas', relation.document.id]"
+                            [state]="{ from: 'document-detail' }"
+                            class="font-semibold text-primary-700 transition hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                          >
+                            {{ relation.document.typeName }} {{ relation.document.code }}
+                          </a>
+                          .
+                        </p>
 
-                            @if (relation.document.summary) {
-                              <p class="mt-1 line-clamp-2 text-sm leading-6 text-surface-600">
-                                {{ relation.document.summary }}
-                              </p>
-                            }
+                        @if (relation.document.summary) {
+                          <p class="mt-1 line-clamp-2 text-sm leading-6 text-surface-600">
+                            {{ relation.document.summary }}
+                          </p>
+                        }
 
-                            @if (relation.note) {
-                              <p class="mt-2 text-sm leading-6 text-surface-600">
-                                <span class="font-medium text-surface-700">Nota:</span>
-                                {{ relation.note }}
-                              </p>
-                            }
-                          </div>
-                        </div>
+                        @if (relation.note) {
+                          <p class="mt-2 text-sm leading-6 text-surface-600">
+                            <span class="font-medium text-surface-700">Nota:</span>
+                            {{ relation.note }}
+                          </p>
+                        }
                       </article>
                     }
                   </div>

@@ -2,7 +2,6 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { AnimateOnScroll } from 'primeng/animateonscroll';
 import { TagModule } from 'primeng/tag';
 
 import { PublicDocumentCard } from '../../../../types';
@@ -10,16 +9,12 @@ import { PublicDocumentCard } from '../../../../types';
 @Component({
   selector: 'app-recent-documents-section',
   standalone: true,
-  imports: [RouterLink, TagModule, DatePipe, AnimateOnScroll],
+  imports: [RouterLink, TagModule, DatePipe],
   template: `
 <section class="border-b border-surface-200 bg-surface-100/80" aria-labelledby="recent-title">
   <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
     <div
-      pAnimateOnScroll
-      enterClass="animate-enter fade-in-0 slide-in-from-b-4 animate-duration-500 animate-ease-out animate-fill-both"
-      [once]="true"
-      [threshold]="0.2"
-      class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+      class="flex flex-col gap-4 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
         <h2 id="recent-title" class="text-2xl font-semibold text-surface-950 sm:text-3xl">
@@ -44,11 +39,7 @@ import { PublicDocumentCard } from '../../../../types';
     <div class="mt-6 grid gap-3 sm:mt-8 sm:gap-4 lg:grid-cols-2">
       @for (document of documents(); track document.id) {
         <article
-          pAnimateOnScroll
-          enterClass="animate-enter fade-in-0 slide-in-from-b-6 animate-duration-500 animate-ease-out animate-fill-both"
-          [once]="true"
-          [threshold]="0.16"
-          class="group rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary-300 hover:bg-primary-50/40 hover:shadow-xl hover:shadow-surface-950/10 sm:p-5"
+          class="group rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition-all duration-300 ease-out motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both hover:-translate-y-0.5 hover:border-primary-300 hover:bg-primary-50/40 hover:shadow-xl hover:shadow-surface-950/10 sm:p-5"
         >
           <div class="flex items-start gap-4">
             <span

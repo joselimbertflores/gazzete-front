@@ -1,15 +1,14 @@
+/*
+ * Public pages use CSS/Tailwind render animations instead of scroll-observer reveals.
+ * This scoped rule only reduces remaining public-page transitions for users who
+ * prefer less motion; it is not a visibility fallback.
+ */
 @media (prefers-reduced-motion: reduce) {
   .public-motion-safe,
-  .public-motion-safe *,
-  .p-animateonscroll {
+  .public-motion-safe * {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
-  }
-
-  .p-animateonscroll {
-    opacity: 1 !important;
-    transform: none !important;
   }
 }

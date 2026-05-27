@@ -14,7 +14,6 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { AnimateOnScroll } from 'primeng/animateonscroll';
 import { TagModule } from 'primeng/tag';
 
 import { PublicDocumentCard } from '../../../../types';
@@ -22,7 +21,7 @@ import { PublicDocumentCard } from '../../../../types';
 @Component({
   selector: 'app-featured-documents-section',
   standalone: true,
-  imports: [RouterLink, TagModule, DatePipe, AnimateOnScroll],
+  imports: [RouterLink, TagModule, DatePipe],
   template: `
     <section
       class="border-b border-primary-900 bg-linear-to-br from-primary-950 via-primary-900 to-primary-950"
@@ -30,11 +29,7 @@ import { PublicDocumentCard } from '../../../../types';
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8">
         <div
-          pAnimateOnScroll
-          enterClass="animate-enter fade-in-0 slide-in-from-b-4 animate-duration-500 animate-ease-out animate-fill-both"
-          [once]="true"
-          [threshold]="0.2"
-          class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+          class="flex flex-col gap-4 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:flex-row sm:items-end sm:justify-between"
         >
           <div class="max-w-2xl">
             <h2 id="featured-title" class="text-2xl font-semibold text-surface-0 sm:text-3xl">
@@ -47,11 +42,7 @@ import { PublicDocumentCard } from '../../../../types';
         </div>
 
         <div
-          pAnimateOnScroll
-          enterClass="animate-enter fade-in-0 slide-in-from-b-8 zoom-in-95 animate-duration-700 animate-ease-out animate-fill-both"
-          [once]="true"
-          [threshold]="0.12"
-          class="relative mt-6 sm:mt-8"
+          class="relative mt-6 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:mt-8"
           (mouseenter)="pauseFeaturedAutoplay()"
           (mouseleave)="resumeFeaturedAutoplay()"
           (focusin)="pauseFeaturedAutoplay()"
