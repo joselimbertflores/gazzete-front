@@ -19,7 +19,7 @@ import { PublicDocumentTypeItem } from '../../../../types';
           class="max-w-2xl motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
         >
           <h2 id="document-types-title" class="text-2xl font-semibold text-surface-950 sm:text-3xl">
-            Tipos de documento
+            Tipos de normativas
           </h2>
         </div>
 
@@ -40,7 +40,7 @@ import { PublicDocumentTypeItem } from '../../../../types';
                 {{ type.name }}
               </h3>
               <p class="mt-2 flex-1 text-sm leading-6 text-surface-600">
-                {{ type.description || 'Consulte documentos publicados de este tipo.' }}
+                {{ type.description || 'Consulte normativas publicadas de este tipo.' }}
               </p>
               <p class="mt-4 text-sm font-medium text-surface-700">
                 {{ type.documentsCount | i18nPlural: documentPluralMap }}
@@ -65,8 +65,8 @@ export class DocumentTypesSection {
   readonly documentTypes = input.required<PublicDocumentTypeItem[]>();
 
   readonly documentPluralMap = {
-    '=0': 'No hay documentos disponibles',
-    '=1': '1 documento disponible',
-    other: '# documentos disponibles',
+    '=0': 'No hay normativas disponibles',
+    '=1': '1 normativa disponible',
+    other: '# normativas disponibles',
   } as const;
 }

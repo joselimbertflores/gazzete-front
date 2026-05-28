@@ -1,16 +1,16 @@
 import { Component, computed, inject, input, PLATFORM_ID } from '@angular/core';
+import { DatePipe, isPlatformBrowser, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Router, RouterModule } from '@angular/router';
-import { DatePipe, isPlatformBrowser, Location } from '@angular/common';
 
 import { SkeletonModule } from 'primeng/skeleton';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 
 import { PublicDocumentsApi } from '../../services';
-import { FileSizePipe } from '../../../../shared';
 import { PublicDocumentDetail } from '../../types';
+import { FileSizePipe } from '../../../../shared';
 
 type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary';
 
@@ -43,14 +43,7 @@ const RELATION_TYPE_UI: Record<string, RelationLabels> = {
 
 @Component({
   selector: 'app-document-detail',
-  imports: [
-    TagModule,
-    RouterModule,
-    ButtonModule,
-    FileSizePipe,
-    SkeletonModule,
-    DatePipe,
-  ],
+  imports: [TagModule, RouterModule, ButtonModule, FileSizePipe, SkeletonModule, DatePipe],
   templateUrl: './document-detail.html',
 })
 export default class DocumentDetail {

@@ -65,14 +65,15 @@
           class="min-w-0 space-y-4 overflow-hidden rounded-lg border border-surface-200 bg-surface-50 p-3 transition-all duration-300 ease-out md:contents md:space-y-0 md:overflow-visible md:rounded-none md:border-0 md:bg-transparent md:p-0"
           [class.hidden]="!showAdvancedFilters()"
         >
+        {{documentTypes() | json}}
           <div class="min-w-0 md:col-start-2 md:row-start-1">
             <label for="type" class="mb-2 block text-sm font-medium text-surface-700">Tipo</label>
             <p-select
               inputId="type"
               formControlName="type"
-              [options]="docTypes()"
-              optionLabel="label"
-              optionValue="value"
+              [options]="documentTypes()"
+              optionLabel="name"
+              optionValue="id"
               placeholder="Todos los tipos"
               [showClear]="true"
               [filter]="true"
@@ -146,7 +147,7 @@
         <div class="min-w-0">
           <p class="text-sm font-semibold text-surface-900">
             {{ data.total }}
-            {{ data.total === 1 ? 'documento encontrado' : 'documentos encontrados' }}
+            {{ data.total === 1 ? 'normativa encontrada' : 'normativas encontradas' }}
           </p>
           @if (hasActiveFilters()) {
             <p class="mt-1 text-xs leading-5 text-surface-500">
@@ -182,9 +183,7 @@
       >
         @if (dataResource.isLoading()) {
           @for (item of resultSkeletonItems(); track item) {
-            <article
-              class="rounded-lg border border-surface-200 bg-surface-0 p-4 sm:p-5"
-            >
+            <article class="rounded-lg border border-surface-200 bg-surface-0 p-4 sm:p-5">
               <div
                 class="grid grid-cols-[4rem_minmax(0,1fr)] gap-4 sm:gap-5 lg:grid-cols-[5rem_minmax(0,1fr)_12rem] lg:items-center"
               >
@@ -229,7 +228,7 @@
               No se encontraron normativas con los filtros seleccionados.
             </h2>
             <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-surface-600">
-              Ajusta la búsqueda o limpia los filtros para volver al listado completo.
+              Ajuste la búsqueda o limpie los filtros para volver al listado completo.
             </p>
             <p-button
               type="button"

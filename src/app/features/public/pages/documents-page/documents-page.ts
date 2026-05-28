@@ -10,7 +10,13 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -89,11 +95,11 @@ export default class DocumentsPage implements OnInit {
   readonly rowsPerPageOptions = [10, 20, 30, 50];
   readonly yearOptions = this.buildYearOptions();
 
-  filterForm: FormGroup = inject(FormBuilder).group({
-    term: [null],
-    type: [null],
-    year: [null],
-    legalStatus: [null],
+  filterForm = inject(FormBuilder).group({
+    term: new FormControl<string | null>(null),
+    type: new FormControl<number | null>(null),
+    year: new FormControl<number | null>(null),
+    legalStatus: new FormControl<string | null>(null),
   });
 
   limit = computed(() => this.queryParams()?.limit ?? 10);
@@ -110,7 +116,7 @@ export default class DocumentsPage implements OnInit {
   });
   showAdvancedFilters = signal(false);
 
-  docTypes = this.documentPublicApi.docTypes;
+  readonly documentTypes = toSignal(this.documentPublicApi.getTypeOptions(), { initialValue: [] });
 
   queryParams = toSignal(
     this.route.queryParams.pipe(map((params) => this.mapQueryParams(params))),
@@ -143,33 +149,7 @@ export default class DocumentsPage implements OnInit {
 
   ngOnInit(): void {
     this.loadFilterParams();
-
-    this.filterForm
-      .get('term')
-      ?.valueChanges.pipe(
-        debounceTime(350),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => this.applyFilters());
-
-    for (const controlName of ['type', 'year', 'legalStatus']) {
-      this.filterForm
-        .get(controlName)
-        ?.valueChanges.pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => this.applyFilters());
-    }
-  }
-
-  applyFilters(): void {
-    const { term, type, year, legalStatus } = this.filterForm.value;
-    this.setQueryParams({
-      term: this.normalizeFilterValue(term),
-      type: this.normalizeFilterValue(type),
-      year: this.normalizeFilterValue(year),
-      legalStatus: this.normalizeFilterValue(legalStatus),
-      offset: 0,
-    });
+    this.listenToFilterChanges();
   }
 
   onPageChange(event: PaginatorState) {
@@ -239,19 +219,6 @@ export default class DocumentsPage implements OnInit {
     );
   }
 
-  private setQueryParams(params: GetPublicDocumentsParams) {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: params,
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
-  }
-
-  private loadFilterParams() {
-    this.filterForm.patchValue(this.route.snapshot.queryParams, { emitEvent: false });
-  }
-
   private mapQueryParams(params: Record<string, string | undefined>) {
     return {
       term: params['term'] || null,
@@ -263,21 +230,61 @@ export default class DocumentsPage implements OnInit {
     };
   }
 
-  private normalizeFilterValue(value: unknown): string | null {
-    if (typeof value === 'string') {
-      const trimmed = value.trim();
-      return trimmed.length ? trimmed : null;
-    }
-
-    if (typeof value === 'number') return String(value);
-    return value === undefined ? null : (value as string | null);
-  }
-
   private buildYearOptions() {
     const currentYear = new Date().getFullYear();
     return Array.from({ length: 15 }, (_, index) => {
       const year = currentYear - index;
       return { label: String(year), value: String(year) };
     });
+  }
+
+
+  private listenToFilterChanges(): void {
+    this.filterForm.controls.term.valueChanges
+      .pipe(debounceTime(350), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.applyFilters());
+
+    const controls: AbstractControl[] = [
+      this.filterForm.controls.type,
+      this.filterForm.controls.year,
+      this.filterForm.controls.legalStatus,
+    ];
+
+    controls.forEach((control) => {
+      control.valueChanges
+        .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.applyFilters());
+    });
+  }
+
+  private applyFilters(): void {
+    const { term, type, year, legalStatus } = this.filterForm.controls;
+
+    this.setQueryParams({
+      term: this.normalizeFilterValue(term.value),
+      type: this.normalizeFilterValue(type.value),
+      year: this.normalizeFilterValue(year.value),
+      legalStatus: this.normalizeFilterValue(legalStatus.value),
+      offset: 0,
+    });
+  }
+
+  private setQueryParams(params: GetPublicDocumentsParams): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  private normalizeFilterValue(value: unknown): string | null {
+    if (value == null) return null;
+    const normalized = String(value).trim();
+    return normalized.length ? normalized : null;
+  }
+
+  private loadFilterParams(): void {
+    this.filterForm.patchValue(this.route.snapshot.queryParams, { emitEvent: false });
   }
 }

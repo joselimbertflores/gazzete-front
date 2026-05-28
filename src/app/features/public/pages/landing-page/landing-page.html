@@ -1,27 +1,21 @@
-<app-landing-hero
-  [searchTerm]="searchTerm()"
-  (searchTermChange)="searchTerm.set($event)"
-  (search)="search()"
-/>
+<landing-hero (search)="search($event)" />
 
 @if (landingResource.error()) {
   <app-landing-error-state />
 } @else if (landingResource.isLoading()) {
   <app-landing-sections-skeleton />
 } @else if (landingResource.hasValue()) {
-  @if (documentTypes().length > 0) {
-    <app-document-types-section [documentTypes]="documentTypes()" />
+  @if (landingResource.value().documentTypes.length > 0) {
+    <app-document-types-section [documentTypes]="landingResource.value().documentTypes" />
   }
 
-  @if (featuredDocuments().length > 0) {
-    <app-featured-documents-section [documents]="featuredDocuments()" />
+  @if (landingResource.value().featuredDocuments.length > 0) {
+    <app-featured-documents-section [documents]="landingResource.value().featuredDocuments" />
   }
 
-  @if (recentDocuments().length > 0) {
-    <app-recent-documents-section [documents]="recentDocuments()" />
+  @if (landingResource.value().recentDocuments.length > 0) {
+    <app-recent-documents-section [documents]="landingResource.value().recentDocuments" />
   }
 
-  @if (statistics(); as stats) {
-    <app-landing-stats-section [statistics]="stats" />
-  }
+  <app-landing-stats-section [stats]="landingResource.value().stats" />
 }

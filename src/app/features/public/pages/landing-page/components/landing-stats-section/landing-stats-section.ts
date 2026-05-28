@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { LandingStatistic } from '../landing-section.types';
+import { LandingStatistic } from '../../../../types/landing-section.types';
+import { LandingStats } from '../../../../types';
 
 @Component({
   selector: 'app-landing-stats-section',
@@ -13,7 +14,7 @@ import { LandingStatistic } from '../landing-section.types';
           class="max-w-2xl motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
         >
           <h2 id="stats-title" class="text-2xl font-semibold text-surface-950 sm:text-3xl">
-            Información disponible en la gaceta
+            Información disponible en la Gaceta
           </h2>
           <p class="mt-2 text-sm leading-6 text-surface-600">
             Alcance general del archivo normativo publicado para la ciudadanía.
@@ -45,5 +46,39 @@ import { LandingStatistic } from '../landing-section.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingStatsSection {
-  readonly statistics = input.required<LandingStatistic[]>();
+  readonly stats = input.required<LandingStats>();
+
+  readonly statistics = computed(() => {
+    const availableYearsStatistic = this.getAvailableYearsStatistic(this.stats());
+    return [
+      {
+        label: 'Normativas publicadas',
+        value: this.stats().totalPublishedDocuments.toString(),
+        description: 'Registros normativos disponibles para consulta pública.',
+      },
+      ...(availableYearsStatistic ? [availableYearsStatistic] : []),
+      {
+        label: 'Gestión actual',
+        value: this.stats().currentYearPublications.toString(),
+        description: `Normativas incorporadas durante la gestión ${this.stats().currentYear}.`,
+      },
+      {
+        label: 'Tipos de normativas',
+        value: this.stats().documentTypesCount.toString(),
+        description: 'Categorías principales de normativas municipales.',
+      },
+    ];
+  });
+
+  private getAvailableYearsStatistic(stats: LandingStats): LandingStatistic | null {
+    const { min, max } = stats.availableYears;
+
+    if (min === null || max === null || min > max) return null;
+
+    return {
+      label: 'Gestiones disponibles',
+      value: min === max ? `${min}` : `${min}–${max}`,
+      description: 'Archivo normativo organizado por gestión.',
+    };
+  }
 }

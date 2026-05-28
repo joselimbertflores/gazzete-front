@@ -1,8 +1,8 @@
-export interface PublicLandingResponse {
+export interface LandingDataResponse {
   documentTypes: PublicDocumentTypeItem[];
   recentDocuments: PublicDocumentCard[];
   featuredDocuments: PublicDocumentCard[];
-  stats: PublicLandingStats;
+  stats: LandingStats;
 }
 
 export interface PublicDocumentTypeItem {
@@ -22,7 +22,7 @@ export interface PublicDocumentCard {
   legalStatus: string;
 }
 
-export interface PublicLandingStats {
+export interface LandingStats {
   totalPublishedDocuments: number;
   documentTypesCount: number;
   currentYearPublications: number;

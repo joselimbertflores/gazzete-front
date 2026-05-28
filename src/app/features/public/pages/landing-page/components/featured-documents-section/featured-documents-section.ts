@@ -33,7 +33,7 @@ import { PublicDocumentCard } from '../../../../types';
         >
           <div class="max-w-2xl">
             <h2 id="featured-title" class="text-2xl font-semibold text-surface-0 sm:text-3xl">
-              Documentos destacados
+              Normativas destacadas
             </h2>
             <p class="mt-2 text-sm leading-6 text-surface-100">
               Normativa relevante seleccionada para consulta rápida.
@@ -51,7 +51,7 @@ import { PublicDocumentCard } from '../../../../types';
           <div
             #featuredCarousel
             class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-6 sm:gap-5 sm:px-6"
-            aria-label="Documentos destacados"
+            aria-label="Normativas destacadas"
             tabindex="0"
             (scroll)="onFeaturedScroll($event)"
             (keydown)="onFeaturedKeydown($event)"
@@ -61,7 +61,7 @@ import { PublicDocumentCard } from '../../../../types';
             @for (document of documents(); track document.id; let i = $index) {
               <article
                 class="group flex min-h-80 w-[calc(100%-1rem)] flex-none snap-start flex-col justify-between overflow-hidden rounded-lg border border-surface-200 bg-surface-0 shadow-xl shadow-primary-950/20 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary-300 hover:bg-surface-0 hover:shadow-2xl hover:shadow-primary-950/25 focus-within:border-primary-300 sm:min-h-88 sm:w-[82%] lg:w-[70%]"
-                [attr.aria-label]="'Documento destacado ' + (i + 1) + ' de ' + documents().length"
+                [attr.aria-label]="'Normativa destacada ' + (i + 1) + ' de ' + documents().length"
               >
                 <div class="h-1.5 bg-primary-500 transition-colors duration-300 group-hover:bg-primary-600"></div>
                 <div class="flex flex-1 flex-col justify-between p-6 sm:p-8 lg:p-9">
@@ -73,7 +73,7 @@ import { PublicDocumentCard } from '../../../../types';
                         class="pi pi-star text-xs transition-transform duration-300 ease-out group-hover:scale-110"
                         aria-hidden="true"
                       ></i>
-                      Documento destacado
+                      Normativa destacada
                     </div>
 
                     <h3
@@ -143,7 +143,7 @@ import { PublicDocumentCard } from '../../../../types';
               <button
                 type="button"
                 class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-700 bg-surface-0 text-primary-800 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-0"
-                aria-label="Ver documento destacado anterior"
+                aria-label="Ver normativa destacada anterior"
                 (click)="previousFeaturedSlide()"
               >
                 <i class="pi pi-arrow-left text-sm" aria-hidden="true"></i>
@@ -158,7 +158,7 @@ import { PublicDocumentCard } from '../../../../types';
                     [class.w-2.5]="activeFeaturedIndex() !== i"
                     [class.bg-surface-0]="activeFeaturedIndex() === i"
                     [class.bg-primary-700]="activeFeaturedIndex() !== i"
-                    [attr.aria-label]="'Ir al documento destacado ' + (i + 1)"
+                    [attr.aria-label]="'Ir a la normativa destacada ' + (i + 1)"
                     [attr.aria-current]="activeFeaturedIndex() === i ? 'true' : null"
                     (click)="goToFeaturedSlide(i)"
                   ></button>
@@ -168,7 +168,7 @@ import { PublicDocumentCard } from '../../../../types';
               <button
                 type="button"
                 class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-700 bg-surface-0 text-primary-800 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-0"
-                aria-label="Ver siguiente documento destacado"
+                aria-label="Ver siguiente normativa destacada"
                 (click)="nextFeaturedSlide()"
               >
                 <i class="pi pi-arrow-right text-sm" aria-hidden="true"></i>

@@ -65,15 +65,6 @@ export const routes: Routes = [
         path: 'normativas/:id',
         loadComponent: () => import('./features/public/pages/document-detail/document-detail'),
       },
-      {
-        path: 'documents',
-        redirectTo: 'normativas',
-        pathMatch: 'full',
-      },
-      {
-        path: 'documents/:id',
-        redirectTo: 'normativas/:id',
-      },
     ],
   },
 ];

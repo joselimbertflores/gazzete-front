@@ -43,7 +43,7 @@ interface ContactItem {
             </div>
 
             <p class="mt-5 max-w-md text-sm leading-6 text-surface-300">
-              Portal público de consulta de documentos normativos municipales.
+              Portal público de consulta de normativas municipales.
             </p>
           </section>
 
@@ -101,12 +101,12 @@ export class PublicFooter {
   readonly publicConsultationItems: FooterInfoItem[] = [
     {
       label: 'Normativas municipales',
-      description: 'Consulta de disposiciones y normativa municipal publicada.',
+      description: 'Consulta de normativas municipales publicadas.',
       icon: 'pi pi-book',
     },
     {
-      label: 'Documentos oficiales publicados',
-      description: 'Registro público de documentos normativos disponibles.',
+      label: 'Normativas publicadas',
+      description: 'Registro público de normativas municipales disponibles.',
       icon: 'pi pi-file',
     },
     {

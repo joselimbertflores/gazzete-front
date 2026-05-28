@@ -18,17 +18,17 @@ import { PublicDocumentCard } from '../../../../types';
     >
       <div>
         <h2 id="recent-title" class="text-2xl font-semibold text-surface-950 sm:text-3xl">
-          Documentos recientes
+          Normativas recientes
         </h2>
         <p class="mt-2 text-sm leading-6 text-surface-600">
-          Últimas publicaciones incorporadas a la Gaceta Municipal.
+          Últimas normativas incorporadas a la Gaceta Municipal.
         </p>
       </div>
       <a
         routerLink="/normativas"
         class="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-300 hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
       >
-        Revisar documentos
+        Revisar normativas
         <i
           class="pi pi-arrow-right text-xs transition-transform duration-300 ease-out group-hover:translate-x-0.5"
           aria-hidden="true"

@@ -1,11 +1,10 @@
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
-import { map, of, tap } from 'rxjs';
+import { of, shareReplay, tap } from 'rxjs';
 
-import { PublicDocumentDetail, PublicDocumentResponse, PublicLandingResponse } from '../types';
+import { PublicDocumentDetail, PublicDocumentResponse, LandingDataResponse } from '../types';
 import { environment } from '../../../../environments/environment';
 
 export interface GetPublicDocumentsParams {
@@ -21,30 +20,28 @@ export interface GetPublicDocumentsParams {
   providedIn: 'root',
 })
 export class PublicDocumentsApi {
-  private readonly URL = `${environment.baseUrl}/api/public-documents`;
-
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
+
+  private readonly URL = `${environment.baseUrl}/api/public-documents`;
   private isBrowser = isPlatformBrowser(this.platformId);
 
   documentListCache: Record<string, { documents: PublicDocumentResponse[]; total: number }> = {};
-  documentCache: Record<string, PublicDocumentDetail> = {};
-
-  docTypes = toSignal(
-    this.http
-      .get<{ id: number; name: string }[]>(`${this.URL}/types`)
-      .pipe(map((types) => types.map((t) => ({ value: t.id.toString(), label: t.name })))),
-    { initialValue: [] },
-  );
-
-  docTypesResource = rxResource({
-    stream: () => this.http.get<{ id: number; name: string }[]>(`${this.URL}/types`),
-  });
 
   constructor() {}
 
   getLandingData() {
-    return this.http.get<PublicLandingResponse>(`${this.URL}/landing`).pipe();
+    return this.http.get<LandingDataResponse>(`${this.URL}/landing`);
+  }
+
+  getTypeOptions() {
+    return this.http
+      .get<{ id: number; name: string }[]>(`${this.URL}/types`)
+      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+  }
+
+  getDocumentDetail(id: string) {
+    return this.http.get<PublicDocumentDetail>(`${this.URL}/detail/${id}`);
   }
 
   findAll(params: GetPublicDocumentsParams) {
@@ -79,23 +76,6 @@ export class PublicDocumentsApi {
         tap((data) => {
           if (this.isBrowser) {
             this.documentListCache[key] = data;
-          }
-        }),
-      );
-  }
-
-  getDocumentDetail(id: string) {
-    if (this.isBrowser) {
-      const cached = this.documentCache[id];
-      if (cached) return of(cached);
-    }
-
-    return this.http
-      .get<PublicDocumentDetail>(`${this.URL}/detail/${id}`)
-      .pipe(
-        tap((doc) => {
-          if (this.isBrowser) {
-            this.documentCache[id] = doc;
           }
         }),
       );
