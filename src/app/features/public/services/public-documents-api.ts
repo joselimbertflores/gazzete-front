@@ -63,21 +63,22 @@ export class PublicDocumentsApi {
     const httpParams = new HttpParams({ fromObject: sortedParams });
     const key = httpParams.toString();
 
-    if (this.isBrowser) {
-      const cached = this.documentListCache[key];
-      if (cached) return of(cached);
-    }
+    // if (this.isBrowser) {
+    //   const cached = this.documentListCache[key];
+    //   if (cached) return of(cached);
+    // }
 
+    console.log('ccalling get data backend');
     return this.http
       .get<{ documents: PublicDocumentResponse[]; total: number }>(`${this.URL}`, {
         params: new HttpParams({ fromObject: cleanParams }),
       })
       .pipe(
-        tap((data) => {
-          if (this.isBrowser) {
-            this.documentListCache[key] = data;
-          }
-        }),
+        // tap((data) => {
+        //   if (this.isBrowser) {
+        //     this.documentListCache[key] = data;
+        //   }
+        // }),
       );
   }
 }
