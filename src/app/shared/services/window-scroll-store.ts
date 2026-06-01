@@ -6,16 +6,17 @@ import { Router, NavigationStart, NavigationEnd } from '@angular/router';
   providedIn: 'root',
 })
 export class WindowScrollStore {
-  private router = inject(Router);
-  private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
-  private positions = new Map<string, number>();
+  private readonly router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
+  private readonly positions = new Map<string, number>();
+
+  private currentUrl: string | null = null;
   private isPopState = false;
 
-  private currentRoute = this.router.url.split('?')[0];
-
   constructor() {
+    if (!this.isBrowser) return;
     this.init();
   }
 
@@ -25,19 +26,20 @@ export class WindowScrollStore {
    * - hay una posición guardada
    * - el componente ya decidió que es el momento correcto
    */
-  restoreScroll(routeKey: string): void {
-    if (!this.isBrowser) return;
+  restoreScroll(url: string): boolean {
+    if (!this.isBrowser) return false;
+    if (!this.isPopState) return false;
 
-    const y = this.positions.get(routeKey);
-
-    if (!y || y <= 0) return;
-
-    if (!this.isPopState) return;
-
-    window.scrollTo({ top: y });
+    const key = this.toKey(url);
+    const scrollY = this.positions.get(key);
 
     // Remover data para evitar que algun effect de RxResource siga restableciendo scroll cuando paginacion cambia
-    this.positions.delete(routeKey);
+    this.positions.delete(key);
+
+    if (scrollY == null || scrollY <= 0) return false;
+
+    window.scrollTo({ top: scrollY, behavior: 'auto' });
+    return true;
   }
 
   private init(): void {
@@ -47,14 +49,22 @@ export class WindowScrollStore {
       if (event instanceof NavigationStart) {
         this.isPopState = event.navigationTrigger === 'popstate';
 
-        if (this.currentRoute) {
-          this.positions.set(this.currentRoute, window.scrollY);
+        if (this.currentUrl) {
+          const scrollY = window.scrollY;
+
+          if (scrollY > 0) {
+            this.positions.set(this.currentUrl, scrollY);
+          }
         }
       }
 
       if (event instanceof NavigationEnd) {
-        this.currentRoute = event.urlAfterRedirects.split('?')[0];
+        this.currentUrl = this.toKey(event.urlAfterRedirects);
       }
     });
+  }
+
+  private toKey(url: string): string {
+    return url.split('#')[0];
   }
 }

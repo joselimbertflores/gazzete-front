@@ -1,7 +1,5 @@
-import { CommonModule } from '@angular/common';
 import {
   afterRenderEffect,
-  linkedSignal,
   DestroyRef,
   Component,
   computed,
@@ -11,7 +9,7 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,36 +18,22 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 
-import { debounceTime, distinctUntilChanged, map, merge } from 'rxjs';
+import { debounceTime, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
-import { FileSizePipe, WindowScrollStore } from '../../../../shared';
-import { PublicDocumentRelation, PublicDocumentResponse } from '../../types';
+import { PublicDocumentCardComponent } from './components';
+import { WindowScrollStore } from '../../../../shared';
+import { PublicDocumentResponse } from '../../types';
 
 type PublicDocumentsData = {
   documents: PublicDocumentResponse[];
   total: number;
 };
 
-type LegalStatusSeverity = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast';
-
-const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
-  MODIFIES: 'Esta normativa fue modificada por',
-  DEROGATES: 'Esta normativa fue derogada por',
-  ABROGATES: 'Esta normativa fue abrogada por',
-};
-
-const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
-  documents: [],
-  total: 0,
-};
-
 @Component({
   selector: 'app-documents-page',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     InputTextModule,
     IconFieldModule,
@@ -58,9 +42,7 @@ const EMPTY_DOCUMENTS_DATA: PublicDocumentsData = {
     SkeletonModule,
     ButtonModule,
     SelectModule,
-    RouterModule,
-    FileSizePipe,
-    TagModule,
+    PublicDocumentCardComponent,
   ],
   templateUrl: './documents-page.html',
   styles: `
@@ -81,8 +63,6 @@ export default class DocumentsPage implements OnInit {
   private scrollStore = inject(WindowScrollStore);
   private documentPublicApi = inject(PublicDocumentsApi);
 
-  private readonly scrollKey = this.router.url.split('?')[0];
-
   readonly rowsPerPageOptions = [10, 20, 30, 50];
   readonly yearOptions = this.buildYearOptions();
 
@@ -92,12 +72,14 @@ export default class DocumentsPage implements OnInit {
     { label: 'Derogada', value: 'DEROGATED' },
     { label: 'Modificada', value: 'MODIFIED' },
   ];
+
   readonly documentTypes = toSignal(
     this.documentPublicApi
       .getTypeOptions()
       .pipe(map((options) => options.map(({ id, name }) => ({ label: name, value: String(id) })))),
     { initialValue: [] },
   );
+
   showAdvancedFilters = signal(false);
 
   filterForm = inject(FormBuilder).group({
@@ -129,23 +111,14 @@ export default class DocumentsPage implements OnInit {
     params: () => this.queryParams(),
     stream: ({ params }) => this.documentPublicApi.findAll(params),
   });
-
-  visibleData = linkedSignal<PublicDocumentsData | undefined, PublicDocumentsData>({
-    source: () => this.dataResource.value(),
-    computation: (data, previous) => data ?? previous?.value ?? EMPTY_DOCUMENTS_DATA,
-  });
-
-  resultSkeletonItems = computed(() => {
-    const documentCount = this.visibleData().documents.length;
-    const count = documentCount || this.limit();
-    return Array.from({ length: Math.max(1, count) }, (_, index) => index);
-  });
+  
+  readonly resultSkeletonItems = Array.from({ length: 5 }, (_, index) => index);
+  
+  private scrollRestored = false;
 
   constructor() {
     afterRenderEffect(() => {
-      if (!this.dataResource.isLoading()) {
-        // this.scrollStore.restoreScroll(this.scrollKey);
-      }
+      this.restoreScroll();
     });
   }
 
@@ -170,54 +143,6 @@ export default class DocumentsPage implements OnInit {
   resetFilters(): void {
     this.filterForm.reset({}, { emitEvent: false });
     this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
-  }
-
-  documentYear(document: PublicDocumentResponse): string {
-    if (document.year) return String(document.year);
-    if (!document.publicationDate) return 'No registrada';
-
-    const year = new Date(document.publicationDate).getFullYear();
-    return Number.isFinite(year) ? String(year) : 'No registrada';
-  }
-
-  legalStatusLabel(status: string | null | undefined): string {
-    switch (status) {
-      case 'VALID':
-        return 'Vigente';
-      case 'ABROGATED':
-        return 'Abrogada';
-      case 'DEROGATED':
-        return 'Derogada';
-      case 'MODIFIED':
-        return 'Modificada';
-      default:
-        return 'No registrado';
-    }
-  }
-
-  legalStatusSeverity(status: string | null | undefined): LegalStatusSeverity {
-    switch (status) {
-      case 'VALID':
-        return 'success';
-      case 'ABROGATED':
-        return 'danger';
-      case 'DEROGATED':
-        return 'warn';
-      case 'MODIFIED':
-        return 'info';
-      default:
-        return 'secondary';
-    }
-  }
-
-  relationDescription(relation: PublicDocumentRelation): string {
-    const customDescription = relation.description?.trim();
-    if (customDescription) return customDescription;
-
-    return (
-      INCOMING_RELATION_DESCRIPTIONS[relation.relationType.trim().toUpperCase()] ??
-      'Esta normativa fue afectada por'
-    );
   }
 
   private listenToFilterChanges(): void {
@@ -295,5 +220,11 @@ export default class DocumentsPage implements OnInit {
   private parseOffset(value: string | undefined): number {
     const parsed = Number(value);
     return Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
+  }
+
+  private restoreScroll(): void {
+    if (this.scrollRestored) return;
+    if (this.dataResource.isLoading()) return;
+    this.scrollRestored = this.scrollStore.restoreScroll(this.router.url);
   }
 }

@@ -16,6 +16,11 @@ export interface GetPublicDocumentsParams {
   offset?: number;
 }
 
+interface PublicDocumentsData {
+  documents: PublicDocumentResponse[];
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -26,7 +31,8 @@ export class PublicDocumentsApi {
   private readonly URL = `${environment.baseUrl}/api/public-documents`;
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  documentListCache: Record<string, { documents: PublicDocumentResponse[]; total: number }> = {};
+  private readonly documentListCache = new Map<string, PublicDocumentsData>();
+  private readonly maxDocumentListCacheEntries = 30;
 
   constructor() {}
 
@@ -45,40 +51,47 @@ export class PublicDocumentsApi {
   }
 
   findAll(params: GetPublicDocumentsParams) {
-    const cleanParams = Object.fromEntries(
-      Object.entries(params).filter(
-        ([_, value]) => value !== undefined && value !== null && value !== '',
-      ),
-    );
-    const sortedParams = Object.keys(cleanParams)
-      .sort()
-      .reduce(
-        (acc, key) => {
-          acc[key as keyof typeof cleanParams] = cleanParams[key];
-          return acc;
-        },
-        {} as typeof cleanParams,
-      );
+    const httpParams = this.buildHttpParams(params);
+    const cacheKey = httpParams.toString();
 
-    const httpParams = new HttpParams({ fromObject: sortedParams });
-    const key = httpParams.toString();
+    if (this.isBrowser) {
+      const cached = this.documentListCache.get(cacheKey);
 
-    // if (this.isBrowser) {
-    //   const cached = this.documentListCache[key];
-    //   if (cached) return of(cached);
-    // }
+      if (cached) {
+        return of(cached);
+      }
+    }
 
-    console.log('ccalling get data backend');
     return this.http
-      .get<{ documents: PublicDocumentResponse[]; total: number }>(`${this.URL}`, {
-        params: new HttpParams({ fromObject: cleanParams }),
+      .get<PublicDocumentsData>(this.URL, {
+        params: httpParams,
       })
       .pipe(
-        // tap((data) => {
-        //   if (this.isBrowser) {
-        //     this.documentListCache[key] = data;
-        //   }
-        // }),
+        tap((data) => {
+          if (!this.isBrowser) return;
+
+          this.documentListCache.set(cacheKey, data);
+          this.pruneDocumentListCache();
+        }),
       );
+  }
+
+  private buildHttpParams(params: GetPublicDocumentsParams): HttpParams {
+    const cleanParams = Object.fromEntries(
+      Object.entries(params)
+        .filter(([, value]) => value !== undefined && value !== null && value !== '')
+        .sort(([a], [b]) => a.localeCompare(b)),
+    );
+    return new HttpParams({ fromObject: cleanParams });
+  }
+
+  private pruneDocumentListCache(): void {
+    if (this.documentListCache.size <= this.maxDocumentListCacheEntries) return;
+
+    const oldestKey = this.documentListCache.keys().next().value;
+
+    if (oldestKey) {
+      this.documentListCache.delete(oldestKey);
+    }
   }
 }
