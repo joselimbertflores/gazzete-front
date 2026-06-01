@@ -5,17 +5,19 @@
 } @else if (landingResource.isLoading()) {
   <app-landing-sections-skeleton />
 } @else if (landingResource.hasValue()) {
-  @if (landingResource.value().documentTypes.length > 0) {
-    <app-document-types-section [documentTypes]="landingResource.value().documentTypes" />
+  @let landing = landingResource.value();
+
+  @if (landing.documentTypes.length > 0) {
+    <app-document-types-section [documentTypes]="landing.documentTypes" />
   }
 
-  @if (landingResource.value().featuredDocuments.length > 0) {
-    <app-featured-documents-section [documents]="landingResource.value().featuredDocuments" />
+  @if (landing.featuredDocuments.length > 0) {
+    <app-featured-documents-section [documents]="landing.featuredDocuments" />
   }
 
-  @if (landingResource.value().recentDocuments.length > 0) {
-    <app-recent-documents-section [documents]="landingResource.value().recentDocuments" />
+  @if (landing.recentDocuments.length > 0) {
+    <app-recent-documents-section [documents]="landing.recentDocuments" />
   }
 
-  <app-landing-stats-section [stats]="landingResource.value().stats" />
+  <app-landing-stats-section [stats]="landing.stats" />
 }

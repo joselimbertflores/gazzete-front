@@ -41,6 +41,9 @@ const RELATION_TYPE_UI: Record<string, RelationLabels> = {
   },
 } as const;
 
+const DOCUMENT_DETAIL_BACK_SOURCES = ['documents-list', 'document-detail', 'landing'] as const;
+type DocumentDetailBackSource = (typeof DOCUMENT_DETAIL_BACK_SOURCES)[number];
+
 @Component({
   selector: 'app-document-detail',
   imports: [TagModule, RouterModule, ButtonModule, FileSizePipe, SkeletonModule, DatePipe],
@@ -83,7 +86,7 @@ export default class DocumentDetail {
   readonly metadataSkeletonItems = Array.from({ length: 5 }, (_, index) => index);
 
   goBack(): void {
-    if (this.canUseBrowserBack()) {
+    if (this.hasKnownInternalReferrer()) {
       this.location.back();
       return;
     }
@@ -91,20 +94,12 @@ export default class DocumentDetail {
     this.router.navigate(['/normativas']);
   }
 
-  private canUseBrowserBack(): boolean {
-    if (!isPlatformBrowser(this.platformId)) {
-      return false;
-    }
+  private hasKnownInternalReferrer(): boolean {
+    if (!isPlatformBrowser(this.platformId)) return false;
 
-    const state = history.state as {
-      from?: string;
-    };
+    const state = history.state as { from?: string };
 
-    return (
-      state.from === 'documents-list' ||
-      state.from === 'document-detail' ||
-      state.from === 'landing'
-    );
+    return DOCUMENT_DETAIL_BACK_SOURCES.includes(state.from as DocumentDetailBackSource);
   }
 
   private toViewModel(doc: PublicDocumentDetail) {

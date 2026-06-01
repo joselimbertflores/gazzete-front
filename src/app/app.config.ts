@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   withComponentInputBinding,
@@ -6,6 +6,8 @@ import {
   withViewTransitions,
   provideRouter,
 } from '@angular/router';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 
 import { definePreset, palette } from '@primeuix/themes';
 import { providePrimeNG } from 'primeng/config';
@@ -17,6 +19,8 @@ import { handleTransitionCreated } from './core/router/view-transition.config';
 import { httpErrorInterceptor } from './core/http/http-error-interceptor';
 import { authInterceptor } from './core/auth/auth-interceptor';
 import { routes } from './app.routes';
+
+registerLocaleData(localeEs);
 
 const primaryColor = palette('{green}');
 const AuraSky = definePreset(theme, {
@@ -38,6 +42,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions({ onViewTransitionCreated: handleTransitionCreated }),
     ),
     provideHttpClient(withInterceptors([httpErrorInterceptor, authInterceptor])),
+    { provide: LOCALE_ID, useValue: 'es' },
     providePrimeNG({
       translation: es,
       theme: {

@@ -41,7 +41,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
     @let item = document();
 
     <article
-      class="flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm transition-colors hover:border-primary-200 hover:shadow-md"
+      class="flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm hover:border-primary-200 hover:shadow-md"
     >
       <div class="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-start md:gap-6">
         <div class="flex shrink-0 items-center gap-3 md:w-20 md:flex-col md:justify-center">
@@ -123,7 +123,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
       </div>
 
       @if (item.validUntil || item.incomingRelation) {
-        <div class="border-t border-surface-100 p-4 pt-0 sm:p-5 sm:pt-0">
+        <div class="border-t border-surface-100 p-2 pt-0 sm:p-4 sm:pt-0">
           <div class="space-y-2 pt-4">
             @if (item.incomingRelation; as relation) {
               <div
@@ -166,7 +166,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PublicDocumentCardComponent {
+export class PublicDocumentCard {
   readonly document = input.required<PublicDocumentResponse>();
 
   legalStatusUi(status: string | null | undefined): LegalStatusUi {

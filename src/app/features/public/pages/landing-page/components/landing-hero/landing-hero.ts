@@ -11,19 +11,25 @@ import { ButtonModule } from 'primeng/button';
   imports: [FormsModule, ButtonModule, InputGroupModule, InputTextModule],
   template: `
     <section
-      class="public-motion-safe relative isolate overflow-hidden border-b border-surface-200 bg-surface-950"
+      class="relative isolate overflow-hidden border-b border-surface-200 bg-surface-950"
       aria-labelledby="landing-title"
     >
       <div class="absolute inset-0 -z-20">
         <img
-          src="/images/gaceta/gaceta-hero-banner.webp"
+          src="/images/gaceta/gaceta-hero-banner-1280.webp"
+          srcset="
+            /images/gaceta/gaceta-hero-banner-768.webp   768w,
+            /images/gaceta/gaceta-hero-banner-1280.webp 1280w,
+            /images/gaceta/gaceta-hero-banner-1672.webp 1672w
+          "
+          sizes="100vw"
+          width="1672"
+          height="713"
           alt=""
-          width="1920"
-          height="960"
+          aria-hidden="true"
           fetchpriority="high"
           decoding="async"
-          class="h-full w-full object-cover object-[center_40%] opacity-[0.72] saturate-90 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:animate-duration-1000 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:object-[center_38%] sm:opacity-[0.7]"
-          aria-hidden="true"
+          class="h-full w-full object-cover object-[center_40%] opacity-[0.72] saturate-90 sm:object-[center_38%] sm:opacity-[0.7]"
         />
       </div>
       <div
@@ -42,23 +48,23 @@ import { ButtonModule } from 'primeng/button';
       <div
         class="mx-auto flex min-h-105 w-full max-w-7xl items-center px-4 py-9 sm:min-h-125 sm:px-6 sm:py-12 lg:min-h-135 lg:px-8"
       >
-        <div class="mx-auto w-full max-w-4xl text-center">
+        <div class="mx-auto w-full max-w-4xl text-center motion-safe:animate-fadein">
           <h1
             id="landing-title"
-            class="text-3xl font-semibold tracking-tight text-surface-0 drop-shadow-sm motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-duration-700 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:text-5xl lg:text-6xl"
+            class="text-3xl font-semibold tracking-tight text-surface-0 drop-shadow-sm sm:text-5xl lg:text-6xl"
           >
             Gaceta Municipal de Sacaba
           </h1>
 
           <p
-            class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-surface-100 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-delay-100 motion-safe:animate-duration-700 motion-safe:animate-ease-out motion-safe:animate-fill-both sm:mt-5 sm:text-lg sm:leading-7"
+            class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-surface-100 sm:mt-5 sm:text-lg sm:leading-7"
           >
-            Consulte normativas municipales publicadas oficialmente por el Gobierno Autónomo
-            Municipal de Sacaba.
+            Busque y consulte normativas municipales publicadas por el Gobierno Autónomo Municipal
+            de Sacaba.
           </p>
 
           <form
-            class="mx-auto mt-8 w-full max-w-3xl motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-6 motion-safe:animate-delay-200 motion-safe:animate-duration-700 motion-safe:animate-ease-out motion-safe:animate-fill-both"
+            class="mx-auto mt-8 w-full max-w-3xl"
             role="search"
             aria-label="Buscar normativas municipales"
             (ngSubmit)="onSearch(searchInput.value)"

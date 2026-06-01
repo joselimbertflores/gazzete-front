@@ -15,9 +15,7 @@ import { PublicDocumentTypeItem } from '../../../../types';
       aria-labelledby="document-types-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
-        <div
-          class="max-w-2xl motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
-        >
+        <div class="max-w-2xl">
           <h2 id="document-types-title" class="text-2xl font-semibold text-surface-950 sm:text-3xl">
             Tipos de normativas
           </h2>
@@ -28,11 +26,11 @@ import { PublicDocumentTypeItem } from '../../../../types';
             <a
               routerLink="/normativas"
               [queryParams]="{ type: type.id }"
-              class="group flex min-h-44 flex-col rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition-all duration-300 ease-out motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-3 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both hover:-translate-y-1 hover:border-primary-300 hover:bg-primary-50/65 hover:shadow-xl hover:shadow-primary-900/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:min-h-52 sm:p-5"
+              class="group flex min-h-44 flex-col rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-300 hover:-translate-y-1 hover:border-primary-300 hover:bg-primary-50/65 hover:shadow-xl hover:shadow-primary-900/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:min-h-52 sm:p-5"
               [attr.aria-label]="'Consultar ' + type.name"
             >
               <span
-                class="inline-flex h-12 w-12 items-center justify-center rounded-lg border border-primary-200 bg-primary-50 text-primary-700 shadow-sm transition-all duration-300 ease-out group-hover:scale-105 group-hover:border-primary-300 group-hover:bg-primary-100 group-hover:text-primary-800 sm:h-14 sm:w-14"
+                class="inline-flex h-12 w-12 items-center justify-center rounded-lg border border-primary-200 bg-primary-50 text-primary-700 shadow-sm transition-colors group-hover:border-primary-300 group-hover:bg-primary-100 group-hover:text-primary-800 sm:h-14 sm:w-14"
               >
                 <i class="pi pi-file" style="font-size: 1.2rem;" aria-hidden="true"></i>
               </span>

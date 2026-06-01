@@ -22,9 +22,9 @@ import { ButtonModule } from 'primeng/button';
 import { debounceTime, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
-import { PublicDocumentCardComponent } from './components';
 import { WindowScrollStore } from '../../../../shared';
 import { PublicDocumentResponse } from '../../types';
+import { PublicDocumentCard } from './components';
 
 type PublicDocumentsData = {
   documents: PublicDocumentResponse[];
@@ -42,7 +42,7 @@ type PublicDocumentsData = {
     SkeletonModule,
     ButtonModule,
     SelectModule,
-    PublicDocumentCardComponent,
+    PublicDocumentCard,
   ],
   templateUrl: './documents-page.html',
   styles: `
@@ -111,9 +111,9 @@ export default class DocumentsPage implements OnInit {
     params: () => this.queryParams(),
     stream: ({ params }) => this.documentPublicApi.findAll(params),
   });
-  
+
   readonly resultSkeletonItems = Array.from({ length: 5 }, (_, index) => index);
-  
+
   private scrollRestored = false;
 
   constructor() {

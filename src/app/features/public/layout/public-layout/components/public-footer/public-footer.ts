@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-interface FooterInfoItem {
-  readonly label: string;
-  readonly description: string;
-  readonly icon: string;
-}
-
 interface ContactItem {
   readonly label: string;
   readonly value: string;
+  readonly icon: string;
+  readonly href?: string;
+  readonly detail?: string;
+}
+
+interface OfficialChannel {
+  readonly label: string;
+  readonly href: string;
   readonly icon: string;
 }
 
@@ -16,14 +18,14 @@ interface ContactItem {
   selector: 'public-footer',
   standalone: true,
   template: `
-    <footer class="border-t border-primary-900 bg-primary-950 text-surface-0">
-      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
-        <div class="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1fr)]">
-          <section aria-labelledby="footer-brand" class="lg:pr-10">
+    <footer class="border-t border-white/10 bg-primary-950 text-surface-0">
+      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="grid gap-9 md:grid-cols-2 lg:grid-cols-3">
+          <section aria-labelledby="footer-brand" class="md:col-span-2 lg:col-span-1 lg:pr-8">
             <div class="flex items-center gap-4">
               <img
                 src="/images/gaceta/gaceta-logo-mark.webp"
-                alt="Marca de la Gaceta Municipal"
+                alt="Isotipo de la Gaceta Municipal"
                 class="h-14 w-14 shrink-0 rounded-2xl object-cover"
                 width="56"
                 height="56"
@@ -47,37 +49,59 @@ interface ContactItem {
             </p>
           </section>
 
-          <section aria-labelledby="footer-public-consultation">
-            <h3 id="footer-public-consultation" class="text-sm font-semibold text-surface-0">
-              Consulta pública
+          <section aria-labelledby="footer-contact">
+            <h3 id="footer-contact" class="text-sm font-semibold text-surface-0">
+              Contacto institucional
             </h3>
-            <ul class="mt-5 space-y-4">
-              @for (item of publicConsultationItems; track item.label) {
-                <li class="flex gap-3">
-                  <i [class]="item.icon" class="mt-1 text-sm text-primary-300" aria-hidden="true"></i>
-                  <span>
-                    <span class="block text-sm font-semibold text-surface-100">{{ item.label }}</span>
-                    <span class="mt-0.5 block text-sm leading-6 text-surface-300">
-                      {{ item.description }}
+            <address class="not-italic">
+              <ul class="mt-5 space-y-4">
+                @for (item of contactItems; track item.label) {
+                  <li class="flex gap-3">
+                    <i [class]="item.icon" class="mt-1 text-sm text-primary-300" aria-hidden="true"></i>
+                    <span>
+                      <span class="block text-sm font-semibold text-surface-100">{{ item.label }}</span>
+                      @if (item.href) {
+                        <a
+                          [href]="item.href"
+                          class="mt-0.5 block text-sm leading-6 text-surface-300 transition-colors hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-300"
+                        >
+                          {{ item.value }}
+                        </a>
+                      } @else {
+                        <span class="mt-0.5 block text-sm leading-6 text-surface-300">
+                          {{ item.value }}
+                        </span>
+                      }
+                      @if (item.detail) {
+                        <span class="mt-0.5 block text-xs leading-5 text-surface-400">
+                          {{ item.detail }}
+                        </span>
+                      }
                     </span>
-                  </span>
-                </li>
-              }
-            </ul>
+                  </li>
+                }
+              </ul>
+            </address>
           </section>
 
-          <section aria-labelledby="footer-contact">
-            <h3 id="footer-contact" class="text-sm font-semibold text-surface-0">Contacto</h3>
-            <ul class="mt-5 space-y-4">
-              @for (item of contactItems; track item.label) {
-                <li class="flex gap-3">
-                  <i [class]="item.icon" class="mt-1 text-sm text-primary-300" aria-hidden="true"></i>
-                  <span>
-                    <span class="block text-sm font-semibold text-surface-100">{{ item.label }}</span>
-                    <span class="mt-0.5 block text-sm leading-6 text-surface-300">
-                      {{ item.value }}
-                    </span>
-                  </span>
+          <section aria-labelledby="footer-official-channels">
+            <h3 id="footer-official-channels" class="text-sm font-semibold text-surface-0">
+              Canales oficiales
+            </h3>
+            <ul class="mt-5 space-y-3">
+              @for (channel of officialChannels; track channel.href) {
+                <li>
+                  <a
+                    [href]="channel.href"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-3 text-sm text-surface-300 transition-colors hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-300"
+                    [attr.aria-label]="'Abrir ' + channel.label + ' en una nueva pestaña'"
+                  >
+                    <i [class]="channel.icon" class="text-sm text-primary-300" aria-hidden="true"></i>
+                    <span>{{ channel.label }}</span>
+                    <i class="pi pi-external-link text-xs text-surface-400" aria-hidden="true"></i>
+                  </a>
                 </li>
               }
             </ul>
@@ -85,7 +109,7 @@ interface ContactItem {
         </div>
 
         <div
-          class="mt-10 flex flex-col gap-2 border-t border-primary-900 pt-5 text-xs leading-5 text-surface-300 sm:flex-row sm:items-center sm:justify-between"
+          class="mt-9 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs leading-5 text-surface-300 sm:flex-row sm:items-center sm:justify-between"
         >
           <p>© {{ currentYear }} Gobierno Autónomo Municipal de Sacaba. Todos los derechos reservados.</p>
           <p>Gaceta Municipal de Sacaba</p>
@@ -98,39 +122,53 @@ interface ContactItem {
 export class PublicFooter {
   readonly currentYear = new Date().getFullYear();
 
-  readonly publicConsultationItems: FooterInfoItem[] = [
-    {
-      label: 'Normativas municipales',
-      description: 'Consulta de normativas municipales publicadas.',
-      icon: 'pi pi-book',
-    },
-    {
-      label: 'Normativas publicadas',
-      description: 'Registro público de normativas municipales disponibles.',
-      icon: 'pi pi-file',
-    },
-    {
-      label: 'Archivo normativo por gestión',
-      description: 'Información organizada para consulta histórica por año.',
-      icon: 'pi pi-calendar',
-    },
-  ];
-
   readonly contactItems: ContactItem[] = [
     {
       label: 'Dirección',
-      value: 'Plaza 6 de Agosto, Sacaba',
+      value: 'Plaza 6 de Agosto, Sacaba, Bolivia',
       icon: 'pi pi-map-marker',
+      detail: 'GAM-SACABA, CONSISTORIAL S-002, BOLIVIA',
     },
     {
-      label: 'Atención',
-      value: 'Lunes a viernes de 08:00 a 16:00',
-      icon: 'pi pi-clock',
+      label: 'Línea directa',
+      value: '+(591) 4-4701677',
+      icon: 'pi pi-phone',
+      href: 'tel:+59144701677',
     },
     {
-      label: 'Correo',
-      value: 'gaceta.municipal@sacaba.gob.bo',
+      label: 'Correo institucional',
+      value: 'info@sacaba.gob.bo',
       icon: 'pi pi-envelope',
+      href: 'mailto:info@sacaba.gob.bo',
+    },
+    {
+      label: 'Sugerencias',
+      value: 'gobiernoelectronico@sacaba.gob.bo',
+      icon: 'pi pi-envelope',
+      href: 'mailto:gobiernoelectronico@sacaba.gob.bo',
+    },
+  ];
+
+  readonly officialChannels: OfficialChannel[] = [
+    {
+      label: 'Sitio web institucional',
+      href: 'https://sacaba.gob.bo/',
+      icon: 'pi pi-globe',
+    },
+    {
+      label: 'Facebook',
+      href: 'https://www.facebook.com/gob.municipal.sacaba',
+      icon: 'pi pi-facebook',
+    },
+    {
+      label: 'Instagram',
+      href: 'https://www.instagram.com/gamsacaba',
+      icon: 'pi pi-instagram',
+    },
+    {
+      label: 'TikTok',
+      href: 'https://www.tiktok.com/@gamsacaba',
+      icon: 'pi pi-tiktok',
     },
   ];
 }

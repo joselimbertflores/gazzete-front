@@ -9,7 +9,7 @@ import { SkeletonModule } from 'primeng/skeleton';
   template: `
     <section
       id="normativas"
-      class="public-motion-safe border-b border-surface-200 bg-linear-to-b from-surface-0 to-primary-50/40 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
+      class="border-b border-surface-200 bg-linear-to-b from-surface-0 to-primary-50/40"
       aria-labelledby="document-types-skeleton-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
@@ -40,7 +40,7 @@ import { SkeletonModule } from 'primeng/skeleton';
     </section>
 
     <section
-      class="public-motion-safe border-b border-primary-900 bg-linear-to-br from-primary-950 via-primary-900 to-primary-950 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-delay-100 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
+      class="border-b border-primary-900 bg-linear-to-br from-primary-950 via-primary-900 to-primary-950"
       aria-labelledby="featured-skeleton-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8">
@@ -90,7 +90,7 @@ import { SkeletonModule } from 'primeng/skeleton';
     </section>
 
     <section
-      class="public-motion-safe border-b border-surface-200 bg-surface-100/80 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-delay-150 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
+      class="border-b border-surface-200 bg-surface-100/80"
       aria-labelledby="recent-skeleton-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
@@ -137,7 +137,7 @@ import { SkeletonModule } from 'primeng/skeleton';
     </section>
 
     <section
-      class="public-motion-safe bg-surface-0 motion-safe:animate-enter motion-safe:fade-in-0 motion-safe:slide-in-from-b-4 motion-safe:animate-delay-200 motion-safe:animate-duration-500 motion-safe:animate-ease-out motion-safe:animate-fill-both"
+      class="bg-surface-0"
       aria-labelledby="stats-skeleton-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
