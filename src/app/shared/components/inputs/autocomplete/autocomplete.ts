@@ -51,7 +51,6 @@ export class Autocomplete<T> implements OnInit {
     effect(() => {
       const value = this.initivalValue();
       this.control.setValue(value ?? null, { emitEvent: false });
-      console.log(value);
     });
 
     this.searchSubject

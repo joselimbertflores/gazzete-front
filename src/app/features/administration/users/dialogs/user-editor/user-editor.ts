@@ -6,11 +6,11 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
 
-import { UserRole } from '../../../../../core/auth/auth.types';
 import { UserResponse } from '../../interfaces';
 import { UserApi } from '../../services';
 import { MessageModule } from 'primeng/message';
 import { FormUtils } from '../../../../../helpers';
+import { USER_ROLE_OPTIONS } from '../../constants';
 
 @Component({
   selector: 'app-user-editor',
@@ -28,14 +28,7 @@ export class UserEditor {
     roles: [[], [Validators.required, Validators.minLength(1)]],
   });
 
-  readonly roles = [
-    {
-      value: UserRole.ADMIN,
-      title: 'Administrador',
-      description: 'Administracion de accesos y catalogos',
-    },
-    { title: 'Usuario', value: UserRole.USER, description: 'Administracion de documentos' },
-  ];
+  readonly roles = USER_ROLE_OPTIONS;
 
   readonly formUtils = FormUtils;
 

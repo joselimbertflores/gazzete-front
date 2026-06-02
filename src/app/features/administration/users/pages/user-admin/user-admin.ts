@@ -10,7 +10,7 @@ import { MenuItem } from 'primeng/api';
 
 import { SearchInput } from '../../../../../shared';
 import { UserResponse } from '../../interfaces';
-import { UserEditor } from '../../dialogs';
+import { UserEditor, UserImporter } from '../../dialogs';
 import { UserApi } from '../../services';
 
 @Component({
@@ -63,6 +63,25 @@ export default class UserAdmin {
       },
     });
     dialogRef?.onClose.subscribe((result?: any) => {
+      if (!result) return;
+      this.updateItem(result);
+    });
+  }
+
+  openImportUserDialog() {
+    const dialogRef = this.dialogService.open(UserImporter, {
+      header: 'Importar usuario',
+      modal: true,
+      draggable: false,
+      closeOnEscape: true,
+      closable: true,
+      width: '30vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw',
+      },
+    });
+    dialogRef?.onClose.subscribe((result?: UserResponse) => {
       if (!result) return;
       this.updateItem(result);
     });

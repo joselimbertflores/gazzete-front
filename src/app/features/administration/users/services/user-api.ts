@@ -2,7 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { environment } from '../../../../../environments/environment';
-import { UserResponse } from '../interfaces';
+import { UserRole } from '../../../../core/auth/auth.types';
+import { IdentityCandidateResponse, UserResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -20,5 +21,18 @@ export class UserApi {
 
   update(id: string, roles: string[]) {
     return this.http.patch<UserResponse>(`${this.URL}/${id}/role`, { roles });
+  }
+
+  findIdentityCandidates(term: string) {
+    return this.http.get<IdentityCandidateResponse[]>(`${this.URL}/identity-candidates`, {
+      params: new HttpParams({ fromObject: { term } }),
+    });
+  }
+
+  importFromIdentity(externalKey: string, roles: UserRole[]) {
+    return this.http.post<UserResponse>(`${this.URL}/import-from-identity`, {
+      externalKey,
+      roles,
+    });
   }
 }
