@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { InstitutionalLogo } from '../institutional-logo/institutional-logo';
 
 interface ContactItem {
   readonly label: string;
@@ -17,25 +18,17 @@ interface OfficialChannel {
 @Component({
   selector: 'public-footer',
   standalone: true,
+  imports: [InstitutionalLogo],
   template: `
     <footer class="border-t border-white/10 bg-primary-950 text-surface-0">
       <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div class="grid gap-9 md:grid-cols-2 lg:grid-cols-3">
           <section aria-labelledby="footer-brand" class="md:col-span-2 lg:col-span-1 lg:pr-8">
             <div class="flex items-center gap-4">
-              <img
-                src="/images/gaceta/gaceta-logo-mark.webp"
-                alt="Isotipo de la Gaceta Municipal"
-                class="h-14 w-14 shrink-0 rounded-2xl object-cover"
-                width="56"
-                height="56"
-              />
+              <institutional-logo />
 
               <div class="min-w-0">
-                <h2
-                  id="footer-brand"
-                  class="text-lg font-semibold tracking-tight text-surface-0"
-                >
+                <h2 id="footer-brand" class="text-lg font-semibold tracking-tight text-surface-0">
                   Gaceta Municipal
                 </h2>
                 <p class="mt-0.5 text-sm font-medium text-surface-300">
@@ -57,9 +50,15 @@ interface OfficialChannel {
               <ul class="mt-5 space-y-4">
                 @for (item of contactItems; track item.label) {
                   <li class="flex gap-3">
-                    <i [class]="item.icon" class="mt-1 text-sm text-primary-300" aria-hidden="true"></i>
+                    <i
+                      [class]="item.icon"
+                      class="mt-1 text-sm text-primary-300"
+                      aria-hidden="true"
+                    ></i>
                     <span>
-                      <span class="block text-sm font-semibold text-surface-100">{{ item.label }}</span>
+                      <span class="block text-sm font-semibold text-surface-100">{{
+                        item.label
+                      }}</span>
                       @if (item.href) {
                         <a
                           [href]="item.href"
@@ -98,7 +97,11 @@ interface OfficialChannel {
                     class="inline-flex items-center gap-3 text-sm text-surface-300 transition-colors hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-300"
                     [attr.aria-label]="'Abrir ' + channel.label + ' en una nueva pestaña'"
                   >
-                    <i [class]="channel.icon" class="text-sm text-primary-300" aria-hidden="true"></i>
+                    <i
+                      [class]="channel.icon"
+                      class="text-sm text-primary-300"
+                      aria-hidden="true"
+                    ></i>
                     <span>{{ channel.label }}</span>
                     <i class="pi pi-external-link text-xs text-surface-400" aria-hidden="true"></i>
                   </a>
@@ -111,7 +114,10 @@ interface OfficialChannel {
         <div
           class="mt-9 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs leading-5 text-surface-300 sm:flex-row sm:items-center sm:justify-between"
         >
-          <p>© {{ currentYear }} Gobierno Autónomo Municipal de Sacaba. Todos los derechos reservados.</p>
+          <p>
+            © {{ currentYear }} Gobierno Autónomo Municipal de Sacaba. Todos los derechos
+            reservados.
+          </p>
           <p>Gaceta Municipal de Sacaba</p>
         </div>
       </div>

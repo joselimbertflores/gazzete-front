@@ -25,12 +25,7 @@ interface SidebarItem {
         routerLink="/admin"
         class="flex min-h-16 items-center gap-3 border-b border-surface-100 px-4 outline-none transition-colors hover:bg-surface-50 focus-visible:ring-2 focus-visible:ring-primary-300"
       >
-        <img
-          src="images/gaceta/gaceta-logo-mark.webp"
-          alt="Gaceta"
-          class="h-12 w-12 object-contain"
-        />
-
+        <!-- App icon -->
         <div class="min-w-0 leading-tight">
           <span class="block truncate text-sm font-semibold text-surface-950">Gaceta</span>
           <span class="block truncate text-xs text-surface-500">Panel administrativo</span>

@@ -9,6 +9,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
+import { InstitutionalLogo } from '../institutional-logo/institutional-logo';
 
 interface PublicNavItem {
   readonly label: string;
@@ -20,10 +21,11 @@ interface PublicNavItem {
 @Component({
   selector: 'public-navbar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, InstitutionalLogo],
+  host: { class: 'block' },
   template: `
     <nav
-      class="sticky top-0 z-50 border-b border-surface-200/80 bg-surface-0/90 shadow-sm shadow-surface-950/5 backdrop-blur-md"
+      class="relative border-b border-surface-200/80 bg-surface-0/90 shadow-sm shadow-surface-950/5 backdrop-blur-md"
       aria-label="Navegación principal"
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -34,20 +36,16 @@ interface PublicNavItem {
             (click)="closeMenu()"
             aria-label="Ir al inicio de la Gaceta Municipal"
           >
-            <img
-              src="/images/gaceta/gaceta-logo-mark.webp"
-              alt="Marca de la Gaceta Municipal"
-              class="h-12 w-12 shrink-0 rounded-2xl object-cover sm:h-14 sm:w-14 lg:h-16 lg:w-16"
-              width="48"
-              height="48"
-            />
+            <institutional-logo />
 
             <div class="min-w-0 leading-tight">
               <p class="truncate text-lg font-semibold tracking-tight text-primary-800 sm:text-2xl">
                 Gaceta Municipal
               </p>
 
-              <p class="hidden max-w-64 truncate text-xs font-medium text-surface-500 sm:block sm:text-sm lg:max-w-none">
+              <p
+                class="hidden max-w-64 truncate text-xs font-medium text-surface-500 sm:block sm:text-sm lg:max-w-none"
+              >
                 Gobierno Autónomo Municipal de Sacaba
               </p>
             </div>
@@ -90,19 +88,11 @@ interface PublicNavItem {
       </div>
 
       @if (menuOpen()) {
-        <button
-          type="button"
-          class="fixed inset-0 top-16 z-40 bg-surface-950/25 backdrop-blur-[1px] sm:top-[4.5rem] md:hidden"
-          aria-label="Cerrar menú de navegación"
-          (click)="closeMenu()"
-        ></button>
-
-        <div
-          id="public-mobile-menu"
-          class="absolute inset-x-0 top-full z-50 border-t border-surface-200 bg-surface-0/95 shadow-xl shadow-surface-950/10 backdrop-blur-md md:hidden"
-        >
-          <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6">
-            <ul class="grid gap-2">
+        <div id="public-mobile-menu" class="absolute inset-x-0 top-full z-40 px-3 pt-2 md:hidden">
+          <div
+            class="mx-auto w-full max-w-7xl rounded-xl border border-surface-200/80 bg-surface-0/95 p-1.5 shadow-xl shadow-surface-950/15 ring-1 ring-surface-950/5 backdrop-blur-md"
+          >
+            <ul class="grid gap-1">
               @for (item of navItems; track item.label) {
                 <li>
                   <a
@@ -110,8 +100,8 @@ interface PublicNavItem {
                     [attr.aria-current]="isItemActive(item) ? 'page' : null"
                     [class]="
                       isItemActive(item)
-                        ? 'inline-flex w-full items-center gap-3 rounded-lg border border-primary-100 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary-700 shadow-sm shadow-primary-950/5'
-                        : 'inline-flex w-full items-center gap-3 rounded-lg border border-surface-100 bg-surface-0 px-4 py-3 text-sm font-semibold text-surface-600 transition hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700'
+                        ? 'inline-flex w-full items-center gap-3 rounded-lg bg-primary-50 px-3.5 py-2.5 text-sm font-semibold text-primary-700'
+                        : 'inline-flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold text-surface-600 transition hover:bg-primary-50 hover:text-primary-700'
                     "
                     (click)="closeMenu()"
                   >
