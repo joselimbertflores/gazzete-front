@@ -6,6 +6,8 @@ import {
   inject,
   OnInit,
   signal,
+  viewChild,
+  ElementRef,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -114,11 +116,31 @@ export default class DocumentsPage implements OnInit {
 
   readonly resultSkeletonItems = Array.from({ length: 5 }, (_, index) => index);
 
-  private scrollRestored = false;
+  /**
+   * Se usa solo para el primer render útil después de entrar a la vista.
+   *
+   * Motivo:
+   * - Si volvemos desde detalle con Back, queremos restaurar la posición exacta.
+   * - Si no venimos por Back, no tiene sentido seguir intentando restaurar
+   *   en cada ejecución de afterRenderEffect().
+   */
+  private restoreAttempted = false;
+
+  /**
+   * Se activa cuando la navegación interna del listado viene de filtros o paginación.
+   *
+   * Motivo:
+   * - En esos casos usamos scroll: 'manual' para que Angular no mande al top global.
+   * - Después de cargar/renderizar la nueva data, nosotros movemos el scroll
+   *   al inicio del bloque de filtros.
+   */
+  private shouldScrollToFilters = false;
+
+  private readonly filtersTop = viewChild<ElementRef<HTMLElement>>('filtersTop');
 
   constructor() {
     afterRenderEffect(() => {
-      this.restoreScroll();
+      this.handleScrollAfterRender();
     });
   }
 
@@ -133,7 +155,10 @@ export default class DocumentsPage implements OnInit {
     const offset = event.first ?? 0;
     const limit = event.rows ?? this.limit();
 
-    this.setQueryParams({ offset, limit });
+    // Evita navegar si el paginator emite el mismo estado actual.
+    if (offset === this.offset() && limit === this.limit()) return;
+
+    this.setQueryParams({ offset, limit }, { scrollToFilters: true });
   }
 
   toggleAdvancedFilters(): void {
@@ -171,15 +196,29 @@ export default class DocumentsPage implements OnInit {
 
     if (!hasChanged) return;
 
-    this.setQueryParams({ ...filters, offset: 0 });
+    this.setQueryParams({ ...filters, offset: 0 }, { scrollToFilters: true });
   }
 
-  private setQueryParams(params: object): void {
+  private setQueryParams(params: object, options: { scrollToFilters?: boolean } = {}): void {
+    if (options.scrollToFilters) {
+      this.shouldScrollToFilters = true;
+    }
+
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
       queryParamsHandling: 'merge',
       replaceUrl: true,
+
+      /**
+       * Importante:
+       * Con scrollPositionRestoration: 'enabled', Angular mandaría la página
+       * al top absoluto [0, 0] en cambios de query params.
+       *
+       * Aquí lo desactivamos solo para esta navegación porque queremos controlar
+       * manualmente el destino del scroll: el inicio del bloque de filtros.
+       */
+      scroll: 'manual',
     });
   }
 
@@ -222,9 +261,36 @@ export default class DocumentsPage implements OnInit {
     return Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
   }
 
-  private restoreScroll(): void {
-    if (this.scrollRestored) return;
+  private handleScrollAfterRender(): void {
     if (this.dataResource.isLoading()) return;
-    this.scrollRestored = this.scrollStore.restoreScroll(this.router.url);
+    /**
+     * Prioridad 1:
+     * Si entramos a esta vista usando Back desde el detalle, restauramos
+     * la posición exacta donde el usuario dejó el listado.
+     *
+     * Esto debe ejecutarse antes del scroll a filtros, porque si no haríamos
+     * dos movimientos: primero a filtros y luego a la posición guardada.
+     */
+    if (!this.restoreAttempted) {
+      this.restoreAttempted = true;
+
+      const restored = this.scrollStore.restoreScroll(this.router.url);
+
+      if (restored) {
+        this.shouldScrollToFilters = false;
+        return;
+      }
+    }
+
+    /**
+     * Prioridad 2:
+     * Si el cambio vino de paginación o filtros, subimos al inicio del bloque
+     * de filtros después de que la nueva data ya está renderizada.
+     */
+    if (!this.shouldScrollToFilters) return;
+
+    this.filtersTop()?.nativeElement.scrollIntoView({ block: 'start', behavior: 'smooth' });
+
+    this.shouldScrollToFilters = false;
   }
 }

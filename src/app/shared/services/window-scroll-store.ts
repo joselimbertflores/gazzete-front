@@ -21,6 +21,17 @@ export class WindowScrollStore {
   }
 
   /**
+   * Restaura la posición guardada del window scroll.
+   *
+   * Este método NO se ejecuta automáticamente en NavigationEnd porque muchos
+   * listados cargan data async. Si se restaura demasiado pronto, el DOM todavía
+   * no tiene altura suficiente y el scroll queda mal.
+   *
+   * Por eso el componente llama a este método cuando ya terminó de cargar y
+   * renderizar su data.
+   *
+   * Devuelve true si restauró una posición.
+   *
    * Restaura el scroll SOLO si:
    * - venimos de un back (popstate)
    * - hay una posición guardada
@@ -34,6 +45,10 @@ export class WindowScrollStore {
     const scrollY = this.positions.get(key);
 
     // Remover data para evitar que algun effect de RxResource siga restableciendo scroll cuando paginacion cambia
+    /**
+     * Se borra después de leerla para evitar restauraciones repetidas en
+     * afterRenderEffect(), cambios de paginación, filtros o renders posteriores.
+     */
     this.positions.delete(key);
 
     if (scrollY == null || scrollY <= 0) return false;
@@ -49,6 +64,13 @@ export class WindowScrollStore {
       if (event instanceof NavigationStart) {
         this.isPopState = event.navigationTrigger === 'popstate';
 
+        /**
+         * Antes de salir de la ruta actual, guardamos el scroll actual.
+         * Ejemplo: listado -> detalle.
+         *
+         * Luego, si el usuario vuelve con Back, el listado podrá restaurar
+         * esta posición cuando su data ya esté lista.
+         */
         if (this.currentUrl) {
           const scrollY = window.scrollY;
 
