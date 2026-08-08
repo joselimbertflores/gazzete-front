@@ -1,6 +1,11 @@
 <div class="flex items-center justify-between mb-4">
   <h2 class="text-2xl font-semibold">Usuarios</h2>
-  <p-button size="small" label="Importar" icon="pi pi-arrow-circle-down" (onClick)="openImportUserDialog()" />
+  <p-button
+    size="small"
+    label="Importar"
+    icon="pi pi-arrow-circle-down"
+    (onClick)="openImportUserDialog()"
+  />
 </div>
 <div>
   <p-table
@@ -23,20 +28,12 @@
     <ng-template #header>
       <tr>
         <th>Nombre</th>
-        <th class="w-37">Estado</th>
         <th style="width: 2.5rem"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
       <tr>
         <td>{{ item.fullName | titlecase }}</td>
-        <td>
-          @if (item.isActive) {
-            <p-tag severity="success" value="Activo" />
-          } @else {
-            <p-tag severity="warn" value="Inactivo" />
-          }
-        </td>
         <td>
           <p-button
             [text]="true"

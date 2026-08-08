@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 
 import { AuthDataSource } from '../auth-data-source';
 
-export const roleGuard: CanActivateFn = (route, state) => {
+export const roleGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const authDataSource = inject(AuthDataSource);
 

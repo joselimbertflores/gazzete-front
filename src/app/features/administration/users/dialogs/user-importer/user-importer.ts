@@ -117,6 +117,7 @@ export class UserImporter {
       case 400:
         return 'Los datos de importacion o el rol seleccionado no son validos.';
       case 401:
+        return 'La sesion expiro. Redirigiendo al inicio de sesion.';
       case 403:
         return 'No tiene permisos para importar usuarios.';
       case 404:

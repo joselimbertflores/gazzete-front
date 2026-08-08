@@ -41,7 +41,9 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
           default:
             break;
         }
-        messageService.add({ ...messageConfig, life: 3000 });
+        if (messageConfig.summary) {
+          messageService.add({ ...messageConfig, life: 3000 });
+        }
       }
       return throwError(() => error);
     }),

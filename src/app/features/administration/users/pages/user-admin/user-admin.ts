@@ -5,8 +5,6 @@ import { CommonModule } from '@angular/common';
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { MenuItem } from 'primeng/api';
 
 import { SearchInput } from '../../../../../shared';
 import { UserResponse } from '../../interfaces';
@@ -15,7 +13,7 @@ import { UserApi } from '../../services';
 
 @Component({
   selector: 'app-user-admin',
-  imports: [CommonModule, TableModule, TagModule, ButtonModule, SearchInput],
+  imports: [CommonModule, TableModule, ButtonModule, SearchInput],
   templateUrl: './user-admin.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
@@ -46,11 +44,9 @@ export default class UserAdmin {
     return this.roleResource.value().total;
   });
 
-  menuOptions = signal<MenuItem[]>([]);
-
-  openUserDialog(user?: any) {
+  openUserDialog(user: UserResponse) {
     const dialogRef = this.dialogService.open(UserEditor, {
-      header: user ? 'Editar usuario' : 'Crear usuario',
+      header: 'Editar usuario',
       modal: true,
       draggable: false,
       closeOnEscape: true,
@@ -62,7 +58,7 @@ export default class UserAdmin {
         '640px': '90vw',
       },
     });
-    dialogRef?.onClose.subscribe((result?: any) => {
+    dialogRef?.onClose.subscribe((result?: UserResponse) => {
       if (!result) return;
       this.updateItem(result);
     });

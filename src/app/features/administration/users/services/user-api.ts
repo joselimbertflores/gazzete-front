@@ -19,7 +19,7 @@ export class UserApi {
     });
   }
 
-  update(id: string, roles: string[]) {
+  update(id: string, roles: UserRole[]) {
     return this.http.patch<UserResponse>(`${this.URL}/${id}/role`, { roles });
   }
 

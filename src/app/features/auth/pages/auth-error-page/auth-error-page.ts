@@ -24,12 +24,6 @@ import { environment } from '../../../../../environments/environment';
 
           <p class="text-surface-600 mb-4">{{ message().description }}</p>
 
-          @if (clientName()) {
-            <p class="text-sm text-surface-500 mb-6">
-              Sistema: <span class="font-medium text-surface-700">{{ clientName() }}</span>
-            </p>
-          }
-
           <div class="flex flex-col gap-3">
             <a
               pButton
@@ -53,7 +47,6 @@ export default class AuthErrorPage {
     this.route.queryParamMap.pipe(
       map((params) => ({
         error: params.get('error'),
-        client_name: params.get('client_name'),
       })),
     ),
   );
@@ -69,11 +62,10 @@ export default class AuthErrorPage {
       default:
         return {
           title: 'Ha ocurrido un error',
-          description: 'No puede acceder a este sistema por el momento.`',
+          description: 'No puede acceder a este sistema por el momento.',
         };
     }
   });
-  clientName = computed(() => this.errorParams()?.client_name);
 
   readonly identityHubAppsUrl = `${environment.identityHubUrl}/home/apps`;
 }

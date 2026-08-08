@@ -1,9 +1,10 @@
+import { UserRole } from '../../../../../core/auth/auth.types';
+
 export interface UserResponse {
   id: string;
   fullName: string;
   externalKey: string;
-  isActive: boolean;
-  roles: string[];
+  roles: UserRole[];
 }
 
 export interface IdentityCandidateResponse {
