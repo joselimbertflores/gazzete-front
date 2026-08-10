@@ -4,12 +4,17 @@ import { isPlatformBrowser } from '@angular/common';
 
 import { of, shareReplay, tap } from 'rxjs';
 
-import { PublicDocumentDetail, PublicDocumentResponse, LandingDataResponse } from '../types';
+import {
+  DocTypeResponse,
+  PublicDocumentDetail,
+  PublicDocumentResponse,
+  LandingDataResponse,
+} from '../types';
 import { environment } from '../../../../environments/environment';
 
 export interface GetPublicDocumentsParams {
   term?: string | null;
-  type?: number | string | null;
+  type?: string | null;
   year?: number | string | null;
   legalStatus?: string | null;
   limit?: number;
@@ -42,12 +47,12 @@ export class PublicDocumentsApi {
 
   getTypeOptions() {
     return this.http
-      .get<{ id: number; name: string }[]>(`${this.URL}/types`)
+      .get<DocTypeResponse[]>(`${this.URL}/types`)
       .pipe(shareReplay({ bufferSize: 1, refCount: false }));
   }
 
-  getDocumentDetail(id: string) {
-    return this.http.get<PublicDocumentDetail>(`${this.URL}/detail/${id}`);
+  getDocumentDetail(slug: string) {
+    return this.http.get<PublicDocumentDetail>(`${this.URL}/detail/${slug}`);
   }
 
   findAll(params: GetPublicDocumentsParams) {

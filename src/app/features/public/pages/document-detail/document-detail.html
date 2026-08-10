@@ -222,7 +222,7 @@
                         </span>
                         por
                         <a
-                          [routerLink]="['/normativas', relation.document.id]"
+                          [routerLink]="['/normativas', relation.document.slug]"
                           [state]="{ from: 'document-detail' }"
                           class="font-semibold text-primary-700 transition hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
                         >
@@ -264,7 +264,7 @@
                           </span>
                           la norma
                           <a
-                            [routerLink]="['/normativas', relation.document.id]"
+                            [routerLink]="['/normativas', relation.document.slug]"
                             [state]="{ from: 'document-detail' }"
                             class="font-semibold text-primary-700 transition hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
                           >

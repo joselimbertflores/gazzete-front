@@ -135,7 +135,7 @@ import { PublicDocumentCard } from '../../../../types';
 
           <div class="mt-auto flex justify-start border-t border-surface-200 pt-4 sm:justify-end">
             <a
-              [routerLink]="['/normativas', document.id]"
+              [routerLink]="['/normativas', document.slug]"
               [state]="{ from: 'landing' }"
               class="inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition-colors hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
               [attr.aria-label]="'Ver detalle de ' + document.typeName + ' ' + document.code"

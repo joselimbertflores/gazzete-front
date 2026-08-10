@@ -78,7 +78,7 @@ export default class DocumentsPage implements OnInit {
   readonly documentTypes = toSignal(
     this.documentPublicApi
       .getTypeOptions()
-      .pipe(map((options) => options.map(({ id, name }) => ({ label: name, value: String(id) })))),
+      .pipe(map((options) => options.map(({ name, slug }) => ({ label: name, value: slug })))),
     { initialValue: [] },
   );
 
@@ -196,7 +196,16 @@ export default class DocumentsPage implements OnInit {
 
     if (!hasChanged) return;
 
-    this.setQueryParams({ ...filters, offset: 0 }, { scrollToFilters: true });
+    this.setQueryParams(
+      {
+        term: filters.term,
+        tipo: filters.type,
+        gestion: filters.year,
+        legalStatus: filters.legalStatus,
+        offset: 0,
+      },
+      { scrollToFilters: true },
+    );
   }
 
   private setQueryParams(params: object, options: { scrollToFilters?: boolean } = {}): void {
@@ -229,7 +238,8 @@ export default class DocumentsPage implements OnInit {
   }
 
   private loadFilterParams(): void {
-    this.filterForm.patchValue(this.route.snapshot.queryParams, { emitEvent: false });
+    const { term, type, year, legalStatus } = this.mapQueryParams(this.route.snapshot.queryParams);
+    this.filterForm.patchValue({ term, type, year, legalStatus }, { emitEvent: false });
   }
 
   private buildYearOptions() {
@@ -243,8 +253,8 @@ export default class DocumentsPage implements OnInit {
   private mapQueryParams(params: Record<string, string | undefined>) {
     return {
       term: params['term'] || null,
-      type: params['type'] || null,
-      year: params['year'] || null,
+      type: params['tipo'] || null,
+      year: params['gestion'] || null,
       legalStatus: params['legalStatus'] || null,
       limit: this.parseLimit(params['limit']),
       offset: this.parseOffset(params['offset']),

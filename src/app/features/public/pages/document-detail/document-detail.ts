@@ -55,11 +55,11 @@ export default class DocumentDetail {
   private readonly documentApi = inject(PublicDocumentsApi);
   private readonly platformId = inject(PLATFORM_ID);
 
-  id = input.required<string>();
+  slug = input.required<string>();
 
   readonly docResource = rxResource({
-    params: () => ({ id: this.id() }),
-    stream: ({ params }) => this.documentApi.getDocumentDetail(params.id),
+    params: () => ({ slug: this.slug() }),
+    stream: ({ params }) => this.documentApi.getDocumentDetail(params.slug),
   });
 
   readonly viewState = computed(() => {

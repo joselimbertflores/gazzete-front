@@ -104,7 +104,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
             severity="secondary"
             size="small"
             class="w-full justify-center"
-            [routerLink]="['/normativas', item.id]"
+            [routerLink]="['/normativas', item.slug]"
             [state]="{ from: 'documents-list' }"
             icon="pi pi-arrow-right"
             label="Ver detalle"
@@ -132,7 +132,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
                 <p>
                   {{ relationDescription(relation) }}
                   <a
-                    [routerLink]="['/normativas', relation.document.id]"
+                    [routerLink]="['/normativas', relation.document.slug]"
                     [state]="{ from: 'documents-list' }"
                     class="font-semibold text-primary-700 hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
                   >

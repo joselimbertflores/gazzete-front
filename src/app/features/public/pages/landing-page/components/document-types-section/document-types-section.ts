@@ -22,10 +22,10 @@ import { PublicDocumentTypeItem } from '../../../../types';
         </div>
 
         <div class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-          @for (type of documentTypes(); track type.id) {
+          @for (type of documentTypes(); track type.slug) {
             <a
               routerLink="/normativas"
-              [queryParams]="{ type: type.id }"
+              [queryParams]="{ tipo: type.slug }"
               class="group flex min-h-44 flex-col rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-300 hover:-translate-y-1 hover:border-primary-300 hover:bg-primary-50/65 hover:shadow-xl hover:shadow-primary-900/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:min-h-52 sm:p-5"
               [attr.aria-label]="'Consultar ' + type.name"
             >

@@ -62,7 +62,7 @@ export const routes: Routes = [
       },
       {
         title: 'Detalle',
-        path: 'normativas/:id',
+        path: 'normativas/:slug',
         loadComponent: () => import('./features/public/pages/document-detail/document-detail'),
       },
     ],

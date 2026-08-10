@@ -6,14 +6,15 @@ export interface LandingDataResponse {
 }
 
 export interface PublicDocumentTypeItem {
-  id: string;
   name: string;
+  slug: string;
   description?: string | null;
   documentsCount: number;
 }
 
 export interface PublicDocumentCard {
   id: string;
+  slug: string;
   code: string;
   summary: string;
   typeName: string;

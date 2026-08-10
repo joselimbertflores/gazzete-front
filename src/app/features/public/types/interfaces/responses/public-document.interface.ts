@@ -1,5 +1,6 @@
 export interface PublicDocumentResponse {
   id: string;
+  slug: string;
   code: string;
   summary: string;
   legalStatus: string;
@@ -20,6 +21,7 @@ export interface PublicDocumentResponse {
 
 export interface PublicDocumentDetail {
   id: string;
+  slug: string;
   code: string;
   summary: string;
   validUntil: string | null;
@@ -44,6 +46,7 @@ export interface PublicDocumentRelation {
   note: string | null;
   document: {
     id: string;
+    slug: string;
     code: string;
     summary?: string;
     typeName: string;

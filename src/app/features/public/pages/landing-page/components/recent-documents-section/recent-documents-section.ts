@@ -81,7 +81,7 @@ import { PublicDocumentCard } from '../../../../types';
                   {{ document.summary }}
                 </p>
                 <a
-                  [routerLink]="['/normativas', document.id]"
+                  [routerLink]="['/normativas', document.slug]"
                   [state]="{ from: 'landing' }"
                   class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-300 group-hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:mt-5"
                 >
