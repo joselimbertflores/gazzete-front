@@ -41,7 +41,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
     @let item = document();
 
     <article
-      class="group flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm shadow-surface-950/5 transition duration-200 ease-out focus-within:border-primary-300 focus-within:shadow-lg hover:border-primary-300 hover:bg-primary-50/15 hover:shadow-lg hover:shadow-primary-950/10 dark:border-surface-700 dark:bg-surface-900 dark:shadow-black/20 dark:focus-within:border-primary-600 dark:hover:border-primary-600 dark:hover:bg-primary-950/20 dark:hover:shadow-black/30 motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none"
+      class="group flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm shadow-surface-950/5 transition-[transform,background-color,box-shadow,border-color] duration-200 ease-out focus-within:border-primary-300 focus-within:shadow-lg hover:border-primary-300 hover:bg-primary-50/15 hover:shadow-lg hover:shadow-primary-950/10 dark:border-surface-700 dark:bg-surface-900 dark:shadow-black/20 dark:focus-within:border-primary-600 dark:hover:border-primary-600 dark:hover:bg-primary-950/20 dark:hover:shadow-black/30 motion-safe:hover:-translate-y-0.5 motion-reduce:transition-[background-color,box-shadow,border-color]"
     >
       <div class="flex flex-col gap-5 p-5 sm:p-6 md:flex-row md:items-start md:gap-6">
         <div class="flex shrink-0 items-center gap-3 md:w-20 md:flex-col md:justify-center">
@@ -148,7 +148,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
                   <a
                     [routerLink]="['/normativas', relation.document.slug]"
                     [state]="{ from: 'documents-list' }"
-                    class="font-semibold text-primary-700 hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:outline-primary-400"
+                    class="font-semibold text-primary-700 transition-colors duration-200 ease-out hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:outline-primary-400"
                   >
                     {{ relation.document.typeName }} {{ relation.document.code }} </a
                   >.

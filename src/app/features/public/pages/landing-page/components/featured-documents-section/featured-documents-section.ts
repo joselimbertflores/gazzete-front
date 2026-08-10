@@ -55,19 +55,25 @@ interface FeaturedSwiperElement extends HTMLElement {
               >
                 <button
                   type="button"
-                  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-colors hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 dark:border-surface-700 dark:bg-surface-900 dark:text-primary-300 dark:hover:border-primary-700 dark:hover:bg-primary-950 dark:focus-visible:outline-primary-400 sm:h-11 sm:w-11"
+                  class="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-200 ease-out hover:border-primary-200 hover:bg-primary-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 dark:border-surface-700 dark:bg-surface-900 dark:text-primary-300 dark:hover:border-primary-700 dark:hover:bg-primary-950 dark:hover:shadow-black/25 dark:focus-visible:outline-primary-400 sm:h-11 sm:w-11"
                   aria-label="Ver normativa destacada anterior"
                   (click)="showPreviousDocument()"
                 >
-                  <i class="pi pi-chevron-left text-sm" aria-hidden="true"></i>
+                  <i
+                    class="pi pi-chevron-left text-sm transition-transform duration-200 ease-out motion-safe:group-hover:-translate-x-0.5 motion-safe:group-focus-visible:-translate-x-0.5 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  ></i>
                 </button>
                 <button
                   type="button"
-                  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-colors hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 dark:border-surface-700 dark:bg-surface-900 dark:text-primary-300 dark:hover:border-primary-700 dark:hover:bg-primary-950 dark:focus-visible:outline-primary-400 sm:h-11 sm:w-11"
+                  class="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-200 ease-out hover:border-primary-200 hover:bg-primary-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 dark:border-surface-700 dark:bg-surface-900 dark:text-primary-300 dark:hover:border-primary-700 dark:hover:bg-primary-950 dark:hover:shadow-black/25 dark:focus-visible:outline-primary-400 sm:h-11 sm:w-11"
                   aria-label="Ver siguiente normativa destacada"
                   (click)="showNextDocument()"
                 >
-                  <i class="pi pi-chevron-right text-sm" aria-hidden="true"></i>
+                  <i
+                    class="pi pi-chevron-right text-sm transition-transform duration-200 ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  ></i>
                 </button>
               </div>
             }
@@ -189,11 +195,14 @@ interface FeaturedSwiperElement extends HTMLElement {
             <a
               [routerLink]="['/normativas', document.slug]"
               [state]="{ from: 'landing' }"
-              class="inline-flex w-fit items-center gap-3 text-sm font-bold text-accent-300 transition-colors hover:text-accent-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-300"
+              class="group inline-flex w-fit items-center gap-3 text-sm font-bold text-accent-300 transition-colors duration-200 ease-out hover:text-accent-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-300"
               [attr.aria-label]="'Ver detalle de ' + document.typeName + ' ' + document.code"
             >
               Ver detalle
-              <i class="pi pi-arrow-right text-xs" aria-hidden="true"></i>
+              <i
+                class="pi pi-arrow-right text-xs transition-transform duration-200 ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-reduce:transition-none"
+                aria-hidden="true"
+              ></i>
             </a>
           </div>
         </div>
@@ -227,6 +236,34 @@ interface FeaturedSwiperElement extends HTMLElement {
       --swiper-pagination-color: var(--p-accent-500);
       --swiper-pagination-bullet-inactive-color: var(--p-surface-300);
       --swiper-pagination-bullet-inactive-opacity: 1;
+    }
+
+    .featured-swiper::part(bullet) {
+      transition:
+        background-color 180ms ease-out,
+        opacity 180ms ease-out,
+        transform 180ms ease-out;
+    }
+
+    .featured-swiper::part(bullet):hover,
+    .featured-swiper::part(bullet):focus-visible {
+      transform: scale(1.15);
+    }
+
+    .featured-swiper::part(bullet):focus-visible {
+      outline: 2px solid var(--p-primary-600);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .featured-swiper::part(bullet) {
+        transition: none;
+      }
+
+      .featured-swiper::part(bullet):hover,
+      .featured-swiper::part(bullet):focus-visible {
+        transform: none;
+      }
     }
 
   `,

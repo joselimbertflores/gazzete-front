@@ -30,11 +30,11 @@ import { PublicDocumentCard } from '../../../../types';
           </div>
           <a
             routerLink="/normativas"
-            class="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-300 hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:outline-primary-400"
+            class="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-200 ease-out hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:outline-primary-400"
           >
             Revisar normativas
             <i
-              class="pi pi-arrow-right text-xs transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+              class="pi pi-arrow-right text-xs transition-transform duration-200 ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-reduce:transition-none"
               aria-hidden="true"
             ></i>
           </a>
@@ -43,11 +43,11 @@ import { PublicDocumentCard } from '../../../../types';
         <div class="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
           @for (document of documents(); track document.id) {
             <article
-              class="group h-full rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-950/10 dark:border-surface-700 dark:bg-surface-900 dark:shadow-black/20 dark:hover:border-primary-700 dark:hover:shadow-black/30 sm:p-5"
+              class="group h-full rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition-[transform,box-shadow,border-color] duration-200 ease-out hover:border-primary-200 hover:shadow-lg hover:shadow-primary-950/10 focus-within:border-primary-200 focus-within:shadow-lg dark:border-surface-700 dark:bg-surface-900 dark:shadow-black/20 dark:hover:border-primary-700 dark:hover:shadow-black/30 dark:focus-within:border-primary-700 motion-safe:hover:-translate-y-0.5 motion-reduce:transition-[box-shadow,border-color] sm:p-5"
             >
               <div class="flex h-full items-start gap-3.5 sm:gap-4">
                 <span
-                  class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 sm:h-12 sm:w-12"
+                  class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm transition-[background-color,border-color,color] duration-200 ease-out group-hover:border-primary-200 group-hover:bg-primary-100 group-hover:text-primary-800 group-focus-within:border-primary-200 group-focus-within:bg-primary-100 group-focus-within:text-primary-800 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:group-hover:border-primary-700 dark:group-hover:bg-primary-900 dark:group-hover:text-primary-200 dark:group-focus-within:border-primary-700 dark:group-focus-within:bg-primary-900 dark:group-focus-within:text-primary-200 sm:h-12 sm:w-12"
                 >
                   <i
                     class="pi pi-file-check"
@@ -94,11 +94,11 @@ import { PublicDocumentCard } from '../../../../types';
                     <a
                       [routerLink]="['/normativas', document.slug]"
                       [state]="{ from: 'landing' }"
-                      class="inline-flex items-center gap-2.5 text-sm font-bold text-primary-700 transition-colors duration-300 group-hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:text-primary-400 dark:group-hover:text-primary-300 dark:focus-visible:outline-primary-400"
+                      class="inline-flex items-center gap-2.5 text-sm font-bold text-primary-700 transition-colors duration-200 ease-out group-hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:text-primary-400 dark:group-hover:text-primary-300 dark:focus-visible:outline-primary-400"
                     >
                       Ver detalle
                       <i
-                        class="pi pi-arrow-right transition-transform duration-200 group-hover:translate-x-0.5"
+                        class="pi pi-arrow-right transition-transform duration-200 ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-within:translate-x-0.5 motion-reduce:transition-none"
                         style="font-size: 0.75rem"
                         aria-hidden="true"
                       ></i>

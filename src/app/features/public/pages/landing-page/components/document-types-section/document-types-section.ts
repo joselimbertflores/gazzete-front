@@ -29,17 +29,17 @@ import { PublicDocumentTypeItem } from '../../../../types';
             <a
               routerLink="/normativas"
               [queryParams]="{ tipo: type.slug }"
-              class="group flex min-h-44 flex-col rounded-xl border border-accent-100 bg-surface-0 p-5 shadow-md shadow-accent-950/6 transition duration-300 hover:-translate-y-1 hover:border-primary-300 hover:shadow-xl hover:shadow-primary-950/12 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:border-accent-800/70 dark:bg-surface-900 dark:shadow-black/20 dark:hover:border-primary-600 dark:hover:shadow-black/30 dark:focus-visible:outline-primary-400 sm:min-h-48 sm:p-6"
+              class="group flex min-h-44 flex-col rounded-xl border border-accent-100 bg-surface-0 p-5 shadow-md shadow-accent-950/6 transition-[transform,box-shadow,border-color] duration-200 ease-out hover:border-primary-300 hover:shadow-xl hover:shadow-primary-950/12 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:border-accent-800/70 dark:bg-surface-900 dark:shadow-black/20 dark:hover:border-primary-600 dark:hover:shadow-black/30 dark:focus-visible:outline-primary-400 motion-safe:hover:-translate-y-0.5 motion-reduce:transition-[box-shadow,border-color] sm:min-h-48 sm:p-6"
               [attr.aria-label]="'Consultar ' + type.name"
             >
               <div class="flex items-start justify-between gap-4">
                 <span
-                  class="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 transition-colors group-hover:bg-primary-100 group-hover:text-primary-800 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:group-hover:bg-primary-900 dark:group-hover:text-primary-200"
+                  class="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 transition-[background-color,border-color,color] duration-200 ease-out group-hover:border-primary-200 group-hover:bg-primary-100 group-hover:text-primary-800 group-focus-visible:border-primary-200 group-focus-visible:bg-primary-100 group-focus-visible:text-primary-800 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:group-hover:border-primary-700 dark:group-hover:bg-primary-900 dark:group-hover:text-primary-200 dark:group-focus-visible:border-primary-700 dark:group-focus-visible:bg-primary-900 dark:group-focus-visible:text-primary-200"
                 >
                   <i class="pi pi-file" style="font-size: 1.25rem" aria-hidden="true"></i>
                 </span>
                 <span
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-surface-200 bg-surface-50 text-surface-500 transition group-hover:border-primary-700 group-hover:bg-primary-700 group-hover:text-surface-0 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-400 dark:group-hover:border-primary-400 dark:group-hover:bg-primary-400 dark:group-hover:text-primary-950"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-surface-200 bg-surface-50 text-surface-500 transition-[transform,background-color,border-color,color] duration-200 ease-out group-hover:border-primary-700 group-hover:bg-primary-700 group-hover:text-surface-0 group-focus-visible:border-primary-700 group-focus-visible:bg-primary-700 group-focus-visible:text-surface-0 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-400 dark:group-hover:border-primary-400 dark:group-hover:bg-primary-400 dark:group-hover:text-primary-950 dark:group-focus-visible:border-primary-400 dark:group-focus-visible:bg-primary-400 dark:group-focus-visible:text-primary-950 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-safe:group-focus-visible:-translate-y-0.5 motion-reduce:transition-[background-color,border-color,color]"
                 >
                   <i
                     class="pi pi-arrow-up-right"
@@ -55,7 +55,7 @@ import { PublicDocumentTypeItem } from '../../../../types';
                 {{ type.description || 'Consulte normativas publicadas de este tipo.' }}
               </p>
               <div
-                class="mt-5 flex items-center gap-2.5 rounded-lg border border-accent-100 bg-accent-50/80 px-3 py-2.5 text-sm font-semibold text-primary-800 transition-colors group-hover:border-primary-100 group-hover:bg-primary-50 dark:border-accent-800/80 dark:bg-accent-950/70 dark:text-accent-100 dark:group-hover:border-primary-800 dark:group-hover:bg-primary-950"
+                class="mt-5 flex items-center gap-2.5 rounded-lg border border-accent-100 bg-accent-50/80 px-3 py-2.5 text-sm font-semibold text-primary-800 transition-[background-color,border-color] duration-200 ease-out group-hover:border-primary-100 group-hover:bg-primary-50 group-focus-visible:border-primary-100 group-focus-visible:bg-primary-50 dark:border-accent-800/80 dark:bg-accent-950/70 dark:text-accent-100 dark:group-hover:border-primary-800 dark:group-hover:bg-primary-950 dark:group-focus-visible:border-primary-800 dark:group-focus-visible:bg-primary-950"
               >
                 <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent-500" aria-hidden="true"></span>
                 <span>{{ type.documentsCount | i18nPlural: documentPluralMap }}</span>

@@ -30,7 +30,7 @@ import { LandingStats } from '../../../../types';
         <dl class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           @for (statistic of statistics(); track statistic.label) {
             <div
-              class="rounded-xl border border-surface-0/25 bg-surface-0/95 p-4 shadow-lg shadow-primary-950/20 backdrop-blur-sm dark:border-accent-300/20 dark:bg-primary-950/80 sm:p-5"
+              class="rounded-xl border border-surface-0/25 bg-surface-0/95 p-4 shadow-lg shadow-primary-950/20 backdrop-blur-sm transition-[transform,box-shadow,border-color] duration-200 ease-out hover:border-accent-300/50 hover:shadow-xl dark:border-accent-300/20 dark:bg-primary-950/80 dark:hover:border-accent-300/40 motion-safe:hover:-translate-y-px motion-reduce:transition-[box-shadow,border-color] sm:p-5"
             >
               <dt class="flex items-center gap-2 text-sm font-medium text-surface-600 dark:text-primary-100">
                 <span

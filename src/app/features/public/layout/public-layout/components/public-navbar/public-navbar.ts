@@ -60,8 +60,8 @@ interface PublicNavItem {
                   [attr.aria-current]="isItemActive(item) ? 'page' : null"
                   [class]="
                     isItemActive(item)
-                      ? 'inline-flex items-center gap-2 rounded-lg bg-primary-800 px-4 py-2.5 text-[0.95rem] font-semibold text-surface-0 shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300'
-                      : 'inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-[0.95rem] font-semibold text-primary-100 transition hover:bg-surface-0/10 hover:text-surface-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300'
+                      ? 'inline-flex items-center gap-2 rounded-lg bg-primary-800 px-4 py-2.5 text-[0.95rem] font-semibold text-surface-0 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300'
+                      : 'inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-[0.95rem] font-semibold text-primary-100 transition-[background-color,color] duration-200 ease-out hover:bg-surface-0/10 hover:text-surface-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300'
                   "
                 >
                   <i [class]="item.icon + ' text-[0.8rem] leading-none'" aria-hidden="true"></i>
@@ -76,7 +76,7 @@ interface PublicNavItem {
 
             <button
               type="button"
-              class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-surface-0/15 bg-surface-0/5 text-surface-0 transition hover:bg-surface-0/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300 md:hidden"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-surface-0/15 bg-surface-0/5 text-surface-0 transition-[background-color,border-color,color] duration-200 ease-out hover:border-surface-0/25 hover:bg-surface-0/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300 md:hidden"
               [attr.aria-expanded]="menuOpen()"
               aria-controls="public-mobile-menu"
               [attr.aria-label]="
@@ -91,7 +91,12 @@ interface PublicNavItem {
       </div>
 
       @if (menuOpen()) {
-        <div id="public-mobile-menu" class="absolute inset-x-0 top-full z-40 w-full md:hidden">
+        <div
+          id="public-mobile-menu"
+          class="absolute inset-x-0 top-full z-40 w-full md:hidden"
+          animate.enter="public-mobile-menu-enter"
+          animate.leave="public-mobile-menu-leave"
+        >
           <div
             class="w-full border-t border-primary-800/70 bg-primary-950 px-4 py-2 shadow-lg shadow-primary-950/20 sm:px-6"
           >
@@ -104,7 +109,7 @@ interface PublicNavItem {
                     [class]="
                       isItemActive(item)
                         ? 'inline-flex w-full items-center gap-3 rounded-lg bg-primary-800 px-3.5 py-2.5 text-sm font-semibold text-surface-0 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent-300'
-                        : 'inline-flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold text-primary-100 transition hover:bg-surface-0/10 hover:text-surface-0 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent-300'
+                        : 'inline-flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold text-primary-100 transition-[background-color,color] duration-200 ease-out hover:bg-surface-0/10 hover:text-surface-0 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent-300'
                     "
                     (click)="closeMenu()"
                   >
@@ -118,6 +123,47 @@ interface PublicNavItem {
         </div>
       }
     </nav>
+  `,
+  styles: `
+    .public-mobile-menu-enter {
+      animation: public-mobile-menu-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .public-mobile-menu-leave {
+      pointer-events: none;
+      animation: public-mobile-menu-out 150ms ease-in forwards;
+    }
+
+    @keyframes public-mobile-menu-in {
+      from {
+        opacity: 0;
+        transform: translateY(-0.25rem);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes public-mobile-menu-out {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(-0.2rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .public-mobile-menu-enter,
+      .public-mobile-menu-leave {
+        animation-duration: 1ms;
+      }
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

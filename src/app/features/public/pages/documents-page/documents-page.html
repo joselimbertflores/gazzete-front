@@ -274,7 +274,7 @@
             </div>
           }
 
-          <div class="animate-fadein flex flex-col gap-4 sm:gap-5">
+          <div class="flex flex-col gap-4 sm:gap-5">
             @for (document of data.documents; track document.id) {
               <public-document-card [document]="document" />
             }

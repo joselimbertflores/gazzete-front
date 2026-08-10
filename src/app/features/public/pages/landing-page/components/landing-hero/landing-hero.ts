@@ -52,7 +52,7 @@ import { ButtonModule } from 'primeng/button';
       <div
         class="mx-auto flex min-h-115 w-full max-w-7xl items-center px-4 py-12 sm:min-h-125 sm:px-6 sm:py-16 lg:min-h-135 lg:px-8"
       >
-        <div class="mx-auto w-full max-w-4xl text-center motion-safe:animate-fadein">
+        <div class="mx-auto w-full max-w-4xl text-center">
           <span
             class="mx-auto mb-6 block h-1 w-14 rounded-full bg-accent-400"
             aria-hidden="true"
