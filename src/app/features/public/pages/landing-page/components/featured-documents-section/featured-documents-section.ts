@@ -30,7 +30,7 @@ interface FeaturedSwiperElement extends HTMLElement {
 
     @if (featuredDocuments.length > 0) {
       <section
-        class="border-b border-surface-200 bg-surface-0"
+        class="border-b border-surface-200 bg-surface-0 dark:border-surface-800 dark:bg-surface-950"
         aria-labelledby="featured-title"
       >
         <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
@@ -38,11 +38,11 @@ interface FeaturedSwiperElement extends HTMLElement {
             <div class="max-w-2xl">
               <h2
                 id="featured-title"
-                class="text-3xl font-bold tracking-tight text-surface-950 sm:text-4xl"
+                class="text-3xl font-bold tracking-tight text-surface-950 dark:text-surface-0 sm:text-4xl"
               >
                 Normativas destacadas
               </h2>
-              <p class="mt-3 text-sm leading-6 text-primary-900/80 sm:text-base">
+              <p class="mt-3 text-sm leading-6 text-primary-900/80 dark:text-primary-200/80 sm:text-base">
                 Normativa relevante seleccionada para consulta rápida.
               </p>
             </div>
@@ -55,7 +55,7 @@ interface FeaturedSwiperElement extends HTMLElement {
               >
                 <button
                   type="button"
-                  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-colors hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 sm:h-11 sm:w-11"
+                  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-colors hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 dark:border-surface-700 dark:bg-surface-900 dark:text-primary-300 dark:hover:border-primary-700 dark:hover:bg-primary-950 dark:focus-visible:outline-primary-400 sm:h-11 sm:w-11"
                   aria-label="Ver normativa destacada anterior"
                   (click)="showPreviousDocument()"
                 >
@@ -63,7 +63,7 @@ interface FeaturedSwiperElement extends HTMLElement {
                 </button>
                 <button
                   type="button"
-                  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-colors hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 sm:h-11 sm:w-11"
+                  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-200 bg-surface-0 text-primary-800 shadow-sm transition-colors hover:border-primary-200 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-600 dark:border-surface-700 dark:bg-surface-900 dark:text-primary-300 dark:hover:border-primary-700 dark:hover:bg-primary-950 dark:focus-visible:outline-primary-400 sm:h-11 sm:w-11"
                   aria-label="Ver siguiente normativa destacada"
                   (click)="showNextDocument()"
                 >

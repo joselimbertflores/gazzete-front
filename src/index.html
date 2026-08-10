@@ -6,6 +6,14 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- La preferencia local debe aplicarse antes del primer paint para evitar un flash claro. -->
+    <script>
+      try {
+        if (localStorage.getItem('gaceta-theme') === 'dark') {
+          document.documentElement.classList.add('app-dark');
+        }
+      } catch {}
+    </script>
   </head>
   <body>
     <app-root></app-root>

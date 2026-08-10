@@ -30,19 +30,21 @@ import { LandingStats } from '../../../../types';
         <dl class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           @for (statistic of statistics(); track statistic.label) {
             <div
-              class="rounded-xl border border-surface-0/25 bg-surface-0/95 p-4 shadow-lg shadow-primary-950/20 backdrop-blur-sm sm:p-5"
+              class="rounded-xl border border-surface-0/25 bg-surface-0/95 p-4 shadow-lg shadow-primary-950/20 backdrop-blur-sm dark:border-accent-300/20 dark:bg-primary-950/80 sm:p-5"
             >
-              <dt class="flex items-center gap-2 text-sm font-medium text-surface-600">
+              <dt class="flex items-center gap-2 text-sm font-medium text-surface-600 dark:text-primary-100">
                 <span
                   class="h-2 w-2 rounded-full bg-accent-500"
                   aria-hidden="true"
                 ></span>
                 {{ statistic.label }}
               </dt>
-              <dd class="mt-3 text-2xl font-bold tracking-tight text-surface-950 sm:text-3xl">
+              <dd class="mt-3 text-2xl font-bold tracking-tight text-surface-950 dark:text-surface-0 sm:text-3xl">
                 {{ statistic.value }}
               </dd>
-              <p class="mt-2 text-sm leading-6 text-surface-600">{{ statistic.description }}</p>
+              <p class="mt-2 text-sm leading-6 text-surface-600 dark:text-primary-100/80">
+                {{ statistic.description }}
+              </p>
             </div>
           }
         </dl>

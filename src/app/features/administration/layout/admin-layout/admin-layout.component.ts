@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 
+import { ThemeToggle } from '../../../../shared';
 import { ProfileOverlay, AdminSidebar } from './components';
 
 @Component({
@@ -18,6 +19,7 @@ import { ProfileOverlay, AdminSidebar } from './components';
     DrawerModule,
     AdminSidebar,
     ProfileOverlay,
+    ThemeToggle,
     CdkScrollable,
   ],
   templateUrl: './admin-layout.component.html',
@@ -29,7 +31,7 @@ import { ProfileOverlay, AdminSidebar } from './components';
     }
 
     :host ::ng-deep .admin-mobile-drawer .p-drawer-header {
-      border-bottom: 1px solid var(--p-surface-100);
+      border-bottom: 1px solid var(--p-content-border-color);
       min-height: 4rem;
       padding: 0 1rem;
     }

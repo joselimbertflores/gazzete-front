@@ -20,15 +20,15 @@ interface SidebarItem {
     class: 'block h-full',
   },
   template: `
-    <div class="flex h-full flex-col bg-surface-0">
+    <div class="flex h-full flex-col bg-[var(--p-content-background)]">
       <a
         routerLink="/admin"
-        class="flex min-h-16 items-center gap-3 border-b border-surface-100 px-4 outline-none transition-colors hover:bg-surface-50 focus-visible:ring-2 focus-visible:ring-primary-300"
+        class="flex min-h-16 items-center gap-3 border-b border-surface px-4 outline-none transition-colors hover:bg-emphasis focus-visible:ring-2 focus-visible:ring-[var(--p-primary-color)]"
       >
         <!-- App icon -->
         <div class="min-w-0 leading-tight">
-          <span class="block truncate text-sm font-semibold text-surface-950">Gaceta</span>
-          <span class="block truncate text-xs text-surface-500">Panel administrativo</span>
+          <span class="text-color block truncate text-sm font-semibold">Gaceta</span>
+          <span class="text-muted-color block truncate text-xs">Panel administrativo</span>
         </div>
       </a>
 
@@ -38,14 +38,14 @@ interface SidebarItem {
             <a
               pRipple
               [routerLink]="item.routerLink"
-              routerLinkActive="bg-primary-50 text-primary-700 border-primary-200"
-              class="flex min-h-10 items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-100 hover:text-surface-950"
+              routerLinkActive="bg-primary-50 text-primary-700 border-primary-200 hover:bg-primary-100 dark:bg-primary-950 dark:text-primary-300 dark:border-primary-800 dark:hover:bg-primary-900"
+              class="text-color flex min-h-10 items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-sm font-medium transition-colors hover:bg-emphasis"
             >
               <i [class]="item.icon + ' text-base'"></i>
               <span class="min-w-0 flex-1 truncate">{{ item.label }}</span>
               @if (item.badge) {
                 <span
-                  class="rounded-full bg-surface-100 px-2 py-0.5 text-[11px] font-semibold text-surface-500"
+                  class="rounded-full bg-surface-100 px-2 py-0.5 text-[11px] font-semibold text-surface-500 dark:bg-surface-800 dark:text-surface-400"
                 >
                   {{ item.badge }}
                 </span>

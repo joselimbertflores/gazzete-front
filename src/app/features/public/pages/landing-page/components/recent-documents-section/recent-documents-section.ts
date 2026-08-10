@@ -11,23 +11,26 @@ import { PublicDocumentCard } from '../../../../types';
   standalone: true,
   imports: [RouterLink, TagModule, DatePipe],
   template: `
-    <section class="border-b border-surface-200 bg-surface-50" aria-labelledby="recent-title">
+    <section
+      class="border-b border-surface-200 bg-surface-50 dark:border-surface-800 dark:bg-surface-950"
+      aria-labelledby="recent-title"
+    >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2
               id="recent-title"
-              class="text-3xl font-bold tracking-tight text-surface-950 sm:text-4xl"
+              class="text-3xl font-bold tracking-tight text-surface-950 dark:text-surface-0 sm:text-4xl"
             >
               Normativas recientes
             </h2>
-            <p class="mt-2 text-sm leading-6 text-surface-600">
+            <p class="mt-2 text-sm leading-6 text-surface-600 dark:text-surface-400">
               Últimas normativas incorporadas a la Gaceta Municipal.
             </p>
           </div>
           <a
             routerLink="/normativas"
-            class="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-300 hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
+            class="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-300 hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:outline-primary-400"
           >
             Revisar normativas
             <i
@@ -40,11 +43,11 @@ import { PublicDocumentCard } from '../../../../types';
         <div class="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
           @for (document of documents(); track document.id) {
             <article
-              class="group h-full rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-950/10 sm:p-5"
+              class="group h-full rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-950/10 dark:border-surface-700 dark:bg-surface-900 dark:shadow-black/20 dark:hover:border-primary-700 dark:hover:shadow-black/30 sm:p-5"
             >
               <div class="flex h-full items-start gap-3.5 sm:gap-4">
                 <span
-                  class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm sm:h-12 sm:w-12"
+                  class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 sm:h-12 sm:w-12"
                 >
                   <i
                     class="pi pi-file-check"
@@ -53,7 +56,7 @@ import { PublicDocumentCard } from '../../../../types';
                   ></i>
                 </span>
                 <div class="flex min-w-0 flex-1 flex-col self-stretch">
-                  <h3 class="text-lg font-bold leading-7 text-surface-950 sm:text-xl">
+                  <h3 class="text-lg font-bold leading-7 text-surface-950 dark:text-surface-0 sm:text-xl">
                     {{ document.typeName }} {{ document.code }}
                   </h3>
 
@@ -77,21 +80,21 @@ import { PublicDocumentCard } from '../../../../types';
                     }
                     <span class="text-surface-400" aria-hidden="true">·</span>
                     <time
-                      class="block text-sm font-medium text-surface-500"
+                      class="block text-sm font-medium text-surface-500 dark:text-surface-400"
                       [attr.datetime]="document.publicationDate"
                     >
                       Publicado el {{ document.publicationDate | date: 'd MMM y' }}
                     </time>
                   </div>
 
-                  <p class="mt-4 line-clamp-2 text-sm leading-6 text-surface-600">
+                  <p class="mt-4 line-clamp-2 text-sm leading-6 text-surface-600 dark:text-surface-300">
                     {{ document.summary }}
                   </p>
                   <div class="mt-auto pt-4 sm:pt-5">
                     <a
                       [routerLink]="['/normativas', document.slug]"
                       [state]="{ from: 'landing' }"
-                      class="inline-flex items-center gap-2.5 text-sm font-bold text-primary-700 transition-colors duration-300 group-hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
+                      class="inline-flex items-center gap-2.5 text-sm font-bold text-primary-700 transition-colors duration-300 group-hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:text-primary-400 dark:group-hover:text-primary-300 dark:focus-visible:outline-primary-400"
                     >
                       Ver detalle
                       <i

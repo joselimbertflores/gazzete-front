@@ -78,7 +78,7 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: GacetaPreset,
         options: {
-          darkModeSelector: false || 'none',
+          darkModeSelector: '.app-dark',
         },
       },
     }),

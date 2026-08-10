@@ -1,13 +1,17 @@
-<div class="flex h-dvh overflow-hidden bg-surface-100 text-surface-900">
+<div
+  class="flex h-dvh overflow-hidden bg-surface-100 text-surface-900 dark:bg-surface-950 dark:text-surface-100"
+>
   @if (!isMobile()) {
-    <aside class="hidden w-72 shrink-0 border-r border-surface-200 bg-surface-0 shadow-sm lg:block">
+    <aside
+      class="hidden w-72 shrink-0 border-r border-surface bg-[var(--p-content-background)] shadow-sm dark:shadow-black/20 lg:block"
+    >
       <app-admin-sidebar />
     </aside>
   }
 
   <div class="flex min-w-0 flex-1 flex-col">
     <header
-      class="z-10 flex min-h-16 shrink-0 items-center gap-3 border-b border-surface-200 bg-surface-0/95 px-3 shadow-sm backdrop-blur sm:px-5"
+      class="z-10 flex min-h-16 shrink-0 items-center gap-3 border-b border-surface bg-[var(--p-content-background)] px-3 shadow-sm dark:shadow-black/20 sm:px-5"
     >
       @if (isMobile()) {
         <p-button
@@ -21,6 +25,7 @@
       }
 
       <div class="ml-auto flex items-center gap-2">
+        <app-theme-toggle />
         <profile-overlay />
       </div>
     </header>
@@ -37,7 +42,7 @@
   header="Administración"
   [dismissible]="true"
   [(visible)]="mobileMenuOpen"
-  styleClass="admin-mobile-drawer !w-[19rem] max-w-[88vw] bg-surface-0"
+  styleClass="admin-mobile-drawer !w-[19rem] max-w-[88vw]"
   (onHide)="closeMobileMenu()"
 >
   <app-admin-sidebar (click)="closeMobileMenu()" />

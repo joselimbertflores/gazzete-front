@@ -41,17 +41,17 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
     @let item = document();
 
     <article
-      class="group flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm shadow-surface-950/5 transition duration-200 ease-out focus-within:border-primary-300 focus-within:shadow-lg hover:border-primary-300 hover:bg-primary-50/15 hover:shadow-lg hover:shadow-primary-950/10 motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none"
+      class="group flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm shadow-surface-950/5 transition duration-200 ease-out focus-within:border-primary-300 focus-within:shadow-lg hover:border-primary-300 hover:bg-primary-50/15 hover:shadow-lg hover:shadow-primary-950/10 dark:border-surface-700 dark:bg-surface-900 dark:shadow-black/20 dark:focus-within:border-primary-600 dark:hover:border-primary-600 dark:hover:bg-primary-950/20 dark:hover:shadow-black/30 motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none"
     >
       <div class="flex flex-col gap-5 p-5 sm:p-6 md:flex-row md:items-start md:gap-6">
         <div class="flex shrink-0 items-center gap-3 md:w-20 md:flex-col md:justify-center">
           <div
-            class="flex h-14 w-14 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm transition-colors duration-200 group-hover:border-primary-200 group-hover:bg-primary-100 group-hover:text-primary-800 md:h-16 md:w-16"
+            class="flex h-14 w-14 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm transition-colors duration-200 group-hover:border-primary-200 group-hover:bg-primary-100 group-hover:text-primary-800 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:group-hover:border-primary-700 dark:group-hover:bg-primary-900 dark:group-hover:text-primary-200 md:h-16 md:w-16"
           >
             <i class="pi pi-file-pdf" style="font-size: 1.85rem" aria-hidden="true"></i>
           </div>
 
-          <span class="text-xs font-semibold text-surface-500">
+          <span class="text-xs font-semibold text-surface-500 dark:text-surface-400">
             {{ item.file.sizeBytes | fileSize }}
           </span>
         </div>
@@ -60,7 +60,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
           <div
             class="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3"
           >
-            <h2 class="text-pretty text-lg font-bold leading-tight tracking-tight text-surface-950 md:text-xl">
+            <h2 class="text-pretty text-lg font-bold leading-tight tracking-tight text-surface-950 dark:text-surface-0 md:text-xl">
               {{ item.typeName }} {{ item.code }}
             </h2>
 
@@ -68,26 +68,26 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
             <p-tag [severity]="statusUi.severity" [value]="statusUi.label" [rounded]="true" />
           </div>
 
-          <p class="line-clamp-3 text-sm leading-6 text-surface-600 sm:line-clamp-2">
+          <p class="line-clamp-3 text-sm leading-6 text-surface-600 dark:text-surface-300 sm:line-clamp-2">
             {{ item.summary || 'Sin resumen registrado.' }}
           </p>
 
-          <div class="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-surface-500">
+          <div class="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-surface-500 dark:text-surface-400">
             <span class="inline-flex items-center gap-1.5">
               <i
-                class="pi pi-calendar text-primary-600"
+                class="pi pi-calendar text-primary-600 dark:text-primary-400"
                 style="font-size: 0.75rem"
                 aria-hidden="true"
               ></i>
               <span>
-                <span class="font-semibold text-surface-600">Publicado:</span>
+                <span class="font-semibold text-surface-600 dark:text-surface-300">Publicado:</span>
                 {{ item.publicationDate | date: 'dd/MM/yyyy' }}
               </span>
             </span>
 
             <span class="inline-flex items-center gap-1.5">
               <i
-                class="pi pi-calendar-clock text-primary-600"
+                class="pi pi-calendar-clock text-primary-600 dark:text-primary-400"
                 style="font-size: 0.75rem"
                 aria-hidden="true"
               ></i>
@@ -97,7 +97,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
             @if (showsDownloadCount(item)) {
               <span class="inline-flex items-center gap-1.5">
                 <i
-                  class="pi pi-download text-primary-600"
+                  class="pi pi-download text-primary-600 dark:text-primary-400"
                   style="font-size: 0.75rem"
                   aria-hidden="true"
                 ></i>
@@ -108,7 +108,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
         </div>
 
         <div
-          class="flex shrink-0 flex-col gap-2.5 border-t border-surface-100 pt-5 md:w-40 md:border-l md:border-t-0 md:pl-6 md:pt-0"
+          class="flex shrink-0 flex-col gap-2.5 border-t border-surface-100 pt-5 dark:border-surface-800 md:w-40 md:border-l md:border-t-0 md:pl-6 md:pt-0"
         >
           <a
             pButton
@@ -137,25 +137,25 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
       </div>
 
       @if (item.validUntil || item.incomingRelation) {
-        <div class="border-t border-surface-100 px-5 pb-5 sm:px-6 sm:pb-6">
+        <div class="border-t border-surface-100 px-5 pb-5 dark:border-surface-800 sm:px-6 sm:pb-6">
           <div class="space-y-2 pt-4">
             @if (item.incomingRelation; as relation) {
               <div
-                class="rounded-lg border border-accent-200 bg-accent-50 px-3 py-2.5 text-sm leading-6 text-accent-950"
+                class="rounded-lg border border-accent-200 bg-accent-50 px-3 py-2.5 text-sm leading-6 text-accent-950 dark:border-accent-800 dark:bg-accent-950/65 dark:text-accent-100"
               >
                 <p>
                   {{ relationDescription(relation) }}
                   <a
                     [routerLink]="['/normativas', relation.document.slug]"
                     [state]="{ from: 'documents-list' }"
-                    class="font-semibold text-primary-700 hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                    class="font-semibold text-primary-700 hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:outline-primary-400"
                   >
                     {{ relation.document.typeName }} {{ relation.document.code }} </a
                   >.
                 </p>
 
                 @if (relation.note) {
-                  <p class="mt-1 text-sm leading-5 text-accent-900/80">
+                  <p class="mt-1 text-sm leading-5 text-accent-900/80 dark:text-accent-200/80">
                     <span class="font-medium">Nota:</span>
                     {{ relation.note }}
                   </p>
@@ -165,10 +165,10 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
 
             @if (item.validUntil) {
               <div
-                class="rounded-lg border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm leading-6 text-surface-700"
+                class="rounded-lg border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm leading-6 text-surface-700 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-300"
               >
                 <p>
-                  <span class="font-semibold text-surface-800">Vigente hasta:</span>
+                  <span class="font-semibold text-surface-800 dark:text-surface-200">Vigente hasta:</span>
                   {{ item.validUntil | date: 'dd/MM/yyyy' }}
                 </p>
               </div>

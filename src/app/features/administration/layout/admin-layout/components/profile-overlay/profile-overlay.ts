@@ -50,7 +50,7 @@ import { AuthDataSource } from '../../../../../../core/auth/auth-data-source';
             <div>
               <p-avatar icon="pi pi-user" size="xlarge" shape="circle" />
             </div>
-            <span class="font-semibold text-lg text-surface-800">
+            <span class="text-color text-lg font-semibold">
               {{ user()?.fullName | titlecase }}
             </span>
             <p-menu [model]="menuOptions" class="w-full">

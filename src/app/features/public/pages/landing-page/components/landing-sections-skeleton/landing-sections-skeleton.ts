@@ -9,20 +9,20 @@ import { SkeletonModule } from 'primeng/skeleton';
   template: `
     <section
       id="normativas"
-      class="border-b border-accent-200/70 bg-accent-50"
+      class="border-b border-accent-200/70 bg-accent-50 dark:border-accent-900/80 dark:bg-accent-950"
       aria-labelledby="document-types-skeleton-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
         <h2
           id="document-types-skeleton-title"
-          class="text-3xl font-bold tracking-tight text-surface-950 sm:text-4xl"
+          class="text-3xl font-bold tracking-tight text-surface-950 dark:text-accent-50 sm:text-4xl"
         >
           Tipos de normativas
         </h2>
 
         <div class="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
           @for (item of documentTypeSkeletonItems; track item) {
-            <div class="min-h-44 rounded-xl border border-accent-100 bg-surface-0 p-5 shadow-md shadow-accent-950/6 sm:min-h-48 sm:p-6">
+            <div class="min-h-44 rounded-xl border border-accent-100 bg-surface-0 p-5 shadow-md shadow-accent-950/6 dark:border-accent-800/70 dark:bg-surface-900 dark:shadow-black/20 sm:min-h-48 sm:p-6">
               <p-skeleton width="48px" height="48px" borderRadius="12px" />
               <p-skeleton width="65%" height="22px" styleClass="mt-5" />
               <p-skeleton width="100%" height="14px" styleClass="mt-4" />
@@ -34,13 +34,16 @@ import { SkeletonModule } from 'primeng/skeleton';
       </div>
     </section>
 
-    <section class="border-b border-surface-200 bg-surface-0" aria-labelledby="featured-skeleton-title">
+    <section
+      class="border-b border-surface-200 bg-surface-0 dark:border-surface-800 dark:bg-surface-950"
+      aria-labelledby="featured-skeleton-title"
+    >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
         <div class="max-w-2xl">
-          <h2 id="featured-skeleton-title" class="text-3xl font-bold tracking-tight text-surface-950 sm:text-4xl">
+          <h2 id="featured-skeleton-title" class="text-3xl font-bold tracking-tight text-surface-950 dark:text-surface-0 sm:text-4xl">
             Normativas destacadas
           </h2>
-          <p class="mt-3 text-sm leading-6 text-primary-900/80 sm:text-base">
+          <p class="mt-3 text-sm leading-6 text-primary-900/80 dark:text-primary-200/80 sm:text-base">
             Normativa relevante seleccionada para consulta rápida.
           </p>
         </div>
@@ -64,7 +67,7 @@ import { SkeletonModule } from 'primeng/skeleton';
     </section>
 
     <section
-      class="border-b border-surface-200 bg-surface-50"
+      class="border-b border-surface-200 bg-surface-50 dark:border-surface-800 dark:bg-surface-950"
       aria-labelledby="recent-skeleton-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
@@ -72,11 +75,11 @@ import { SkeletonModule } from 'primeng/skeleton';
           <div>
             <h2
               id="recent-skeleton-title"
-              class="text-3xl font-bold tracking-tight text-surface-950 sm:text-4xl"
+              class="text-3xl font-bold tracking-tight text-surface-950 dark:text-surface-0 sm:text-4xl"
             >
               Normativas recientes
             </h2>
-            <p class="mt-2 text-sm leading-6 text-surface-600">
+            <p class="mt-2 text-sm leading-6 text-surface-600 dark:text-surface-400">
               Últimas normativas incorporadas a la Gaceta Municipal.
             </p>
           </div>
@@ -85,7 +88,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
         <div class="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
           @for (item of recentSkeletonItems; track item) {
-            <article class="rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 sm:p-5">
+            <article class="rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 dark:border-surface-700 dark:bg-surface-900 dark:shadow-black/20 sm:p-5">
               <div class="flex items-start gap-4">
                 <p-skeleton
                   width="48px"
@@ -126,7 +129,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
         <dl class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           @for (item of statsSkeletonItems; track item) {
-            <div class="rounded-xl border border-surface-0/25 bg-surface-0/95 p-4 shadow-lg shadow-primary-950/20 sm:p-5">
+            <div class="rounded-xl border border-surface-0/25 bg-surface-0/95 p-4 shadow-lg shadow-primary-950/20 dark:border-accent-300/20 dark:bg-primary-950/80 sm:p-5">
               <p-skeleton width="60%" height="16px" />
               <p-skeleton width="48%" height="34px" styleClass="mt-4" />
               <p-skeleton width="100%" height="14px" styleClass="mt-3" />

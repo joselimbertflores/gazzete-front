@@ -2,6 +2,8 @@
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
 
+@custom-variant dark (&:where(.app-dark, .app-dark *));
+
 @theme inline {
   --color-accent-50: var(--p-accent-50);
   --color-accent-100: var(--p-accent-100);
@@ -25,6 +27,14 @@
   --color-secondary-800: var(--p-secondary-800);
   --color-secondary-900: var(--p-secondary-900);
   --color-secondary-950: var(--p-secondary-950);
+}
+
+html {
+  color-scheme: light;
+}
+
+html.app-dark {
+  color-scheme: dark;
 }
 
 /* DIALOG CONFI */

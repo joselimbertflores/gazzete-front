@@ -9,6 +9,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
+import { ThemeToggle } from '../../../../../../shared';
 import { InstitutionalLogo } from '../institutional-logo/institutional-logo';
 
 interface PublicNavItem {
@@ -21,7 +22,7 @@ interface PublicNavItem {
 @Component({
   selector: 'public-navbar',
   standalone: true,
-  imports: [RouterModule, InstitutionalLogo],
+  imports: [RouterModule, InstitutionalLogo, ThemeToggle],
   host: { class: 'block' },
   template: `
     <nav
@@ -51,7 +52,7 @@ interface PublicNavItem {
             </div>
           </a>
 
-          <ul class="hidden items-center gap-1.5 md:flex">
+          <ul class="ml-auto hidden items-center gap-1.5 md:flex">
             @for (item of navItems; track item.label) {
               <li>
                 <a
@@ -70,25 +71,29 @@ interface PublicNavItem {
             }
           </ul>
 
-          <button
-            type="button"
-            class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-surface-0/15 bg-surface-0/5 text-surface-0 transition hover:bg-surface-0/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300 md:hidden"
-            [attr.aria-expanded]="menuOpen()"
-            aria-controls="public-mobile-menu"
-            [attr.aria-label]="
-              menuOpen() ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'
-            "
-            (click)="toggleMenu()"
-          >
-            <i [class]="menuOpen() ? 'pi pi-times' : 'pi pi-bars'" aria-hidden="true"></i>
-          </button>
+          <div class="flex shrink-0 items-center gap-2">
+            <app-theme-toggle tone="inverse" />
+
+            <button
+              type="button"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-surface-0/15 bg-surface-0/5 text-surface-0 transition hover:bg-surface-0/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300 md:hidden"
+              [attr.aria-expanded]="menuOpen()"
+              aria-controls="public-mobile-menu"
+              [attr.aria-label]="
+                menuOpen() ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'
+              "
+              (click)="toggleMenu()"
+            >
+              <i [class]="menuOpen() ? 'pi pi-times' : 'pi pi-bars'" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
       </div>
 
       @if (menuOpen()) {
-        <div id="public-mobile-menu" class="absolute inset-x-0 top-full z-40 px-3 pt-2 md:hidden">
+        <div id="public-mobile-menu" class="absolute inset-x-0 top-full z-40 w-full md:hidden">
           <div
-            class="mx-auto w-full max-w-7xl rounded-xl border border-primary-700/80 bg-primary-950/98 p-1.5 shadow-2xl shadow-primary-950/30"
+            class="w-full border-t border-primary-800/70 bg-primary-950 px-4 py-2 shadow-lg shadow-primary-950/20 sm:px-6"
           >
             <ul class="grid gap-1">
               @for (item of navItems; track item.label) {
