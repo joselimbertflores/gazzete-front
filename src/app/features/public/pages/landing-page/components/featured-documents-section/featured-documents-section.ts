@@ -30,7 +30,7 @@ interface FeaturedSwiperElement extends HTMLElement {
 
     @if (featuredDocuments.length > 0) {
       <section
-        class="featured-section border-b border-accent-100 bg-accent-50/70"
+        class="border-b border-surface-200 bg-surface-0"
         aria-labelledby="featured-title"
       >
         <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
@@ -42,7 +42,7 @@ interface FeaturedSwiperElement extends HTMLElement {
               >
                 Normativas destacadas
               </h2>
-              <p class="mt-3 text-sm leading-6 text-surface-600 sm:text-base">
+              <p class="mt-3 text-sm leading-6 text-primary-900/80 sm:text-base">
                 Normativa relevante seleccionada para consulta rápida.
               </p>
             </div>
@@ -201,12 +201,6 @@ interface FeaturedSwiperElement extends HTMLElement {
     </ng-template>
   `,
   styles: `
-    .featured-section {
-      background-image:
-        radial-gradient(circle at 8% 18%, var(--p-accent-100), transparent 28rem),
-        linear-gradient(135deg, var(--p-accent-50), var(--p-surface-0) 60%);
-    }
-
     .featured-card {
       background:
         radial-gradient(circle at 88% 16%, color-mix(in srgb, var(--p-secondary-500), transparent 72%), transparent 24rem),

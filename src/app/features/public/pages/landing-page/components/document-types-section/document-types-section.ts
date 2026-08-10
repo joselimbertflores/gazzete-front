@@ -11,7 +11,7 @@ import { PublicDocumentTypeItem } from '../../../../types';
   template: `
     <section
       id="normativas"
-      class="border-b border-accent-100 bg-accent-50/60"
+      class="border-b border-accent-200/70 bg-accent-50"
       aria-labelledby="document-types-title"
     >
       <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
@@ -29,7 +29,7 @@ import { PublicDocumentTypeItem } from '../../../../types';
             <a
               routerLink="/normativas"
               [queryParams]="{ tipo: type.slug }"
-              class="group flex min-h-44 flex-col rounded-xl border border-surface-200 bg-surface-0 p-5 shadow-sm shadow-surface-950/5 transition duration-300 hover:-translate-y-1 hover:border-primary-300 hover:shadow-xl hover:shadow-primary-950/12 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:min-h-48 sm:p-6"
+              class="group flex min-h-44 flex-col rounded-xl border border-accent-100 bg-surface-0 p-5 shadow-md shadow-accent-950/6 transition duration-300 hover:-translate-y-1 hover:border-primary-300 hover:shadow-xl hover:shadow-primary-950/12 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:min-h-48 sm:p-6"
               [attr.aria-label]="'Consultar ' + type.name"
             >
               <div class="flex items-start justify-between gap-4">
@@ -54,9 +54,12 @@ import { PublicDocumentTypeItem } from '../../../../types';
               <p class="mt-2 flex-1 text-sm leading-6 text-surface-600">
                 {{ type.description || 'Consulte normativas publicadas de este tipo.' }}
               </p>
-              <p class="mt-5 border-t border-surface-100 pt-4 text-sm font-semibold text-primary-700">
-                {{ type.documentsCount | i18nPlural: documentPluralMap }}
-              </p>
+              <div
+                class="mt-5 flex items-center gap-2.5 rounded-lg border border-accent-100 bg-accent-50/80 px-3 py-2.5 text-sm font-semibold text-primary-800 transition-colors group-hover:border-primary-100 group-hover:bg-primary-50"
+              >
+                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent-500" aria-hidden="true"></span>
+                <span>{{ type.documentsCount | i18nPlural: documentPluralMap }}</span>
+              </div>
             </a>
           }
         </div>
