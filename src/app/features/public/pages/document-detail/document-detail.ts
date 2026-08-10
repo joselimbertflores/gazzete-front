@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  PLATFORM_ID,
+  RESPONSE_INIT,
+} from '@angular/core';
 import { DatePipe, isPlatformBrowser, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -11,6 +19,7 @@ import { TagModule } from 'primeng/tag';
 import { PublicDocumentsApi } from '../../services';
 import { PublicDocumentDetail } from '../../types';
 import { FileSizePipe } from '../../../../shared';
+import { SeoService } from '../../../../core/seo/seo.service';
 
 type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary';
 
@@ -54,6 +63,8 @@ export default class DocumentDetail {
   private readonly location = inject(Location);
   private readonly documentApi = inject(PublicDocumentsApi);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly responseInit = inject(RESPONSE_INIT);
+  private readonly seo = inject(SeoService);
 
   slug = input.required<string>();
 
@@ -80,6 +91,54 @@ export default class DocumentDetail {
       state: 'error',
       error: this.mapErrorToDetailState(error),
     };
+  });
+
+  private readonly metadataEffect = effect(() => {
+    const state = this.viewState();
+
+    if (state.state === 'ready' && state.document) {
+      const document = state.document;
+      const documentName = `${document.typeName} ${document.code}`;
+      const description =
+        document.summary?.trim() ||
+        `Consulta ${documentName} y otras normativas municipales oficiales de Sacaba.`;
+
+      this.seo.setPage({
+        title: `${documentName} | Gaceta Municipal de Sacaba`,
+        description,
+        path: `/normativas/${encodeURIComponent(document.slug)}`,
+        type: 'article',
+      });
+      return;
+    }
+
+    if (state.state === 'error') {
+      const resourceError = this.docResource.error();
+      const isNotFound = resourceError instanceof HttpErrorResponse && resourceError.status === 404;
+
+      if (isNotFound && this.responseInit) {
+        this.responseInit.status = 404;
+      }
+
+      this.seo.setPage({
+        title: isNotFound
+          ? 'Normativa no encontrada | Gaceta Municipal de Sacaba'
+          : 'No se pudo cargar la normativa | Gaceta Municipal de Sacaba',
+        description:
+          state.error?.description || 'Consulta la normativa municipal oficial de Sacaba.',
+        path: null,
+        type: 'website',
+      });
+      return;
+    }
+
+    this.seo.setPage({
+      title: 'Normativa | Gaceta Municipal de Sacaba',
+      description:
+        'Consulta normativa municipal oficial publicada por el Gobierno Autónomo Municipal de Sacaba.',
+      path: null,
+      type: 'article',
+    });
   });
 
   readonly skeletonItems = Array.from({ length: 3 }, (_, index) => index);

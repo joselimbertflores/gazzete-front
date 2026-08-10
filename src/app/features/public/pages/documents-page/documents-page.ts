@@ -25,6 +25,7 @@ import { debounceTime, map } from 'rxjs';
 
 import { PublicDocumentsApi, GetPublicDocumentsParams } from '../../services';
 import { WindowScrollStore } from '../../../../shared';
+import { SeoService } from '../../../../core/seo/seo.service';
 import { PublicDocumentResponse } from '../../types';
 import { PublicDocumentCard } from './components';
 
@@ -64,6 +65,7 @@ export default class DocumentsPage implements OnInit {
 
   private scrollStore = inject(WindowScrollStore);
   private documentPublicApi = inject(PublicDocumentsApi);
+  private seo = inject(SeoService);
 
   readonly rowsPerPageOptions = [10, 20, 30, 50];
   readonly yearOptions = this.buildYearOptions();
@@ -139,6 +141,14 @@ export default class DocumentsPage implements OnInit {
   private readonly filtersTop = viewChild<ElementRef<HTMLElement>>('filtersTop');
 
   constructor() {
+    this.seo.setPage({
+      title: 'Normativas | Gaceta Municipal de Sacaba',
+      description:
+        'Busca y consulta leyes, decretos, resoluciones y otra normativa municipal oficial de Sacaba.',
+      path: '/normativas',
+      type: 'website',
+    });
+
     afterRenderEffect(() => {
       this.handleScrollAfterRender();
     });

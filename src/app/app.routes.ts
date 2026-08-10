@@ -52,16 +52,13 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        title: 'Inicio',
         loadComponent: () => import('./features/public/pages/landing-page/landing-page'),
       },
       {
-        title: 'Normativas',
         path: 'normativas',
         loadComponent: () => import('./features/public/pages/documents-page/documents-page'),
       },
       {
-        title: 'Detalle',
         path: 'normativas/:slug',
         loadComponent: () => import('./features/public/pages/document-detail/document-detail'),
       },
