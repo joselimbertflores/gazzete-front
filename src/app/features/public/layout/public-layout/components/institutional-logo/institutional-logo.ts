@@ -1,14 +1,24 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'institutional-logo',
   imports: [],
   template: `
     <div
-      class="grid h-12 w-12 place-items-center rounded-full border-2 border-primary-800 p-0.5"
+      [class]="
+        tone() === 'inverse'
+          ? 'grid h-12 w-12 place-items-center rounded-full border-2 border-surface-0/70 p-0.5 text-surface-0'
+          : 'grid h-12 w-12 place-items-center rounded-full border-2 border-primary-800 p-0.5 text-surface-0'
+      "
       aria-hidden="true"
     >
-      <div class="grid h-full w-full place-items-center rounded-full bg-primary-800 text-white">
+      <div
+        [class]="
+          tone() === 'inverse'
+            ? 'grid h-full w-full place-items-center rounded-full bg-surface-0/12'
+            : 'grid h-full w-full place-items-center rounded-full bg-primary-800'
+        "
+      >
         <svg viewBox="0 0 886 893" class="h-8 w-8 fill-current">
           <path
             fill-rule="evenodd"
@@ -46,4 +56,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionalLogo {}
+export class InstitutionalLogo {
+  readonly tone = input<'default' | 'inverse'>('default');
+}

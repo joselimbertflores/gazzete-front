@@ -25,35 +25,33 @@ interface PublicNavItem {
   host: { class: 'block' },
   template: `
     <nav
-      class="relative border-b border-surface-200/80 bg-surface-0/90 shadow-sm shadow-surface-950/5 backdrop-blur-md"
+      class="relative border-b border-primary-800/80 bg-primary-950 text-surface-0 shadow-lg shadow-primary-950/20"
       aria-label="Navegación principal"
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between gap-4 py-2">
+        <div class="flex items-center justify-between gap-4 py-2.5">
           <a
             routerLink="/"
-            class="flex min-w-0 items-center gap-3.5 rounded-lg outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:gap-4"
+            class="flex min-w-0 items-center gap-3.5 rounded-lg outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-300 sm:gap-4"
             (click)="closeMenu()"
             aria-label="Ir al inicio de la Gaceta Municipal"
           >
-            <institutional-logo />
+            <institutional-logo tone="inverse" />
 
             <div class="min-w-0 leading-tight">
-              <p class="truncate text-lg font-semibold tracking-tight text-primary-800 sm:text-2xl">
+              <p class="truncate text-lg font-semibold tracking-tight text-surface-0 sm:text-xl">
                 Gaceta Municipal
               </p>
 
               <p
-                class="hidden max-w-64 truncate text-xs font-medium text-surface-500 sm:block sm:text-sm lg:max-w-none"
+                class="hidden max-w-64 truncate text-xs font-medium text-primary-100 sm:block lg:max-w-none"
               >
                 Gobierno Autónomo Municipal de Sacaba
               </p>
             </div>
           </a>
 
-          <ul
-            class="hidden items-center gap-1.5 rounded-full border border-surface-200 bg-surface-0/90 p-1.5 shadow-sm shadow-surface-950/5 md:flex"
-          >
+          <ul class="hidden items-center gap-1.5 md:flex">
             @for (item of navItems; track item.label) {
               <li>
                 <a
@@ -61,8 +59,8 @@ interface PublicNavItem {
                   [attr.aria-current]="isItemActive(item) ? 'page' : null"
                   [class]="
                     isItemActive(item)
-                      ? 'inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-4 py-2.5 text-[0.95rem] font-semibold text-primary-700 shadow-sm shadow-primary-950/5 transition'
-                      : 'inline-flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-[0.95rem] font-semibold text-surface-600 transition hover:bg-primary-50 hover:text-primary-700'
+                      ? 'inline-flex items-center gap-2 rounded-lg bg-primary-800 px-4 py-2.5 text-[0.95rem] font-semibold text-surface-0 shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300'
+                      : 'inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-[0.95rem] font-semibold text-primary-100 transition hover:bg-surface-0/10 hover:text-surface-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300'
                   "
                 >
                   <i [class]="item.icon + ' text-[0.8rem] leading-none'" aria-hidden="true"></i>
@@ -74,7 +72,7 @@ interface PublicNavItem {
 
           <button
             type="button"
-            class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-surface-200 bg-surface-0 text-surface-700 shadow-sm shadow-surface-950/5 transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 md:hidden"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-surface-0/15 bg-surface-0/5 text-surface-0 transition hover:bg-surface-0/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-300 md:hidden"
             [attr.aria-expanded]="menuOpen()"
             aria-controls="public-mobile-menu"
             [attr.aria-label]="
@@ -90,7 +88,7 @@ interface PublicNavItem {
       @if (menuOpen()) {
         <div id="public-mobile-menu" class="absolute inset-x-0 top-full z-40 px-3 pt-2 md:hidden">
           <div
-            class="mx-auto w-full max-w-7xl rounded-xl border border-surface-200/80 bg-surface-0/95 p-1.5 shadow-xl shadow-surface-950/15 ring-1 ring-surface-950/5 backdrop-blur-md"
+            class="mx-auto w-full max-w-7xl rounded-xl border border-primary-700/80 bg-primary-950/98 p-1.5 shadow-2xl shadow-primary-950/30"
           >
             <ul class="grid gap-1">
               @for (item of navItems; track item.label) {
@@ -100,8 +98,8 @@ interface PublicNavItem {
                     [attr.aria-current]="isItemActive(item) ? 'page' : null"
                     [class]="
                       isItemActive(item)
-                        ? 'inline-flex w-full items-center gap-3 rounded-lg bg-primary-50 px-3.5 py-2.5 text-sm font-semibold text-primary-700'
-                        : 'inline-flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold text-surface-600 transition hover:bg-primary-50 hover:text-primary-700'
+                        ? 'inline-flex w-full items-center gap-3 rounded-lg bg-primary-800 px-3.5 py-2.5 text-sm font-semibold text-surface-0 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent-300'
+                        : 'inline-flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold text-primary-100 transition hover:bg-surface-0/10 hover:text-surface-0 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent-300'
                     "
                     (click)="closeMenu()"
                   >

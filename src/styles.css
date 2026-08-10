@@ -2,6 +2,31 @@
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
 
+@theme inline {
+  --color-accent-50: var(--p-accent-50);
+  --color-accent-100: var(--p-accent-100);
+  --color-accent-200: var(--p-accent-200);
+  --color-accent-300: var(--p-accent-300);
+  --color-accent-400: var(--p-accent-400);
+  --color-accent-500: var(--p-accent-500);
+  --color-accent-600: var(--p-accent-600);
+  --color-accent-700: var(--p-accent-700);
+  --color-accent-800: var(--p-accent-800);
+  --color-accent-900: var(--p-accent-900);
+  --color-accent-950: var(--p-accent-950);
+  --color-secondary-50: var(--p-secondary-50);
+  --color-secondary-100: var(--p-secondary-100);
+  --color-secondary-200: var(--p-secondary-200);
+  --color-secondary-300: var(--p-secondary-300);
+  --color-secondary-400: var(--p-secondary-400);
+  --color-secondary-500: var(--p-secondary-500);
+  --color-secondary-600: var(--p-secondary-600);
+  --color-secondary-700: var(--p-secondary-700);
+  --color-secondary-800: var(--p-secondary-800);
+  --color-secondary-900: var(--p-secondary-900);
+  --color-secondary-950: var(--p-secondary-950);
+}
+
 /* DIALOG CONFI */
 .p-dialog-content {
   margin-bottom: 60px;

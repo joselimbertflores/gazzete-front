@@ -24,9 +24,37 @@ import { routes } from './app.routes';
 registerLocaleData(localeEs);
 
 const primaryColor = palette('{green}');
-const AuraSky = definePreset(theme, {
+const GacetaPreset = definePreset(theme, {
   semantic: {
     primary: primaryColor,
+  },
+  extend: {
+    accent: {
+      50: '#fdfaf1',
+      100: '#f8efcf',
+      200: '#f0dc9c',
+      300: '#e5c364',
+      400: '#d4a33a',
+      500: '#b98328',
+      600: '#95631f',
+      700: '#774b1c',
+      800: '#633d1c',
+      900: '#55341c',
+      950: '#301a0c',
+    },
+    secondary: {
+      50: '#effcfb',
+      100: '#d5f6f2',
+      200: '#afebe5',
+      300: '#7bd9d1',
+      400: '#45bfb6',
+      500: '#299f97',
+      600: '#207f7a',
+      700: '#1d6663',
+      800: '#1c5250',
+      900: '#1b4543',
+      950: '#0b2929',
+    },
   },
 });
 
@@ -48,7 +76,7 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       translation: es,
       theme: {
-        preset: AuraSky,
+        preset: GacetaPreset,
         options: {
           darkModeSelector: false || 'none',
         },

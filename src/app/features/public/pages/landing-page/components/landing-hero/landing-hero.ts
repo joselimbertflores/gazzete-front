@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
   imports: [FormsModule, ButtonModule, InputGroupModule, InputTextModule],
   template: `
     <section
-      class="relative isolate overflow-hidden border-b border-surface-200 bg-surface-950"
+      class="relative isolate overflow-hidden border-b border-primary-900 bg-primary-950"
       aria-labelledby="landing-title"
     >
       <div class="absolute inset-0 -z-20">
@@ -29,42 +29,50 @@ import { ButtonModule } from 'primeng/button';
           aria-hidden="true"
           fetchpriority="high"
           decoding="async"
-          class="h-full w-full object-cover object-[center_40%] opacity-[0.72] saturate-90 sm:object-[center_38%] sm:opacity-[0.7]"
+          class="h-full w-full object-cover object-[58%_40%] opacity-90 saturate-90 sm:object-[center_38%] sm:opacity-95"
         />
       </div>
       <div
-        class="absolute inset-0 -z-10 bg-primary-950/25 sm:bg-primary-950/30"
+        class="absolute inset-0 -z-10 bg-primary-950/20"
         aria-hidden="true"
       ></div>
       <div
-        class="absolute inset-0 -z-10 bg-linear-to-b from-surface-950/10 via-primary-950/0 to-surface-950/62 sm:from-surface-950/18 sm:via-primary-950/5 sm:to-surface-950/68"
+        class="absolute inset-0 -z-10 bg-linear-to-b from-primary-950/5 via-primary-950/10 to-primary-950/62"
         aria-hidden="true"
       ></div>
       <div
-        class="absolute inset-0 -z-10 bg-linear-to-r from-surface-950/35 via-surface-950/5 to-surface-950/32 sm:from-surface-950/48 sm:via-surface-950/10 sm:to-surface-950/42"
+        class="absolute inset-0 -z-10 bg-linear-to-r from-primary-950/45 via-primary-950/25 to-primary-950/45"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="absolute inset-x-0 bottom-0 -z-10 h-24 bg-linear-to-t from-primary-950/35 to-transparent"
         aria-hidden="true"
       ></div>
 
       <div
-        class="mx-auto flex min-h-105 w-full max-w-7xl items-center px-4 py-9 sm:min-h-125 sm:px-6 sm:py-12 lg:min-h-135 lg:px-8"
+        class="mx-auto flex min-h-115 w-full max-w-7xl items-center px-4 py-12 sm:min-h-125 sm:px-6 sm:py-16 lg:min-h-135 lg:px-8"
       >
         <div class="mx-auto w-full max-w-4xl text-center motion-safe:animate-fadein">
+          <span
+            class="mx-auto mb-6 block h-1 w-14 rounded-full bg-accent-400"
+            aria-hidden="true"
+          ></span>
           <h1
             id="landing-title"
-            class="text-3xl font-semibold tracking-tight text-surface-0 drop-shadow-sm sm:text-5xl lg:text-6xl"
+            class="mx-auto max-w-4xl text-4xl font-bold leading-[1.05] tracking-[-0.035em] text-balance text-surface-0 drop-shadow-sm sm:text-6xl lg:text-7xl"
           >
             Gaceta Municipal de Sacaba
           </h1>
 
           <p
-            class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-surface-100 sm:mt-5 sm:text-lg sm:leading-7"
+            class="mx-auto mt-5 max-w-2xl text-base leading-7 text-surface-100 sm:mt-6 sm:text-lg sm:leading-8"
           >
             Busque y consulte normativas municipales publicadas por el Gobierno Autónomo Municipal
             de Sacaba.
           </p>
 
           <form
-            class="mx-auto mt-8 w-full max-w-3xl"
+            class="mx-auto mt-8 w-full max-w-2xl rounded-lg border border-surface-0/20 bg-surface-0/10 p-1.5 shadow-lg shadow-primary-950/25 backdrop-blur-sm sm:mt-10"
             role="search"
             aria-label="Buscar normativas municipales"
             (ngSubmit)="onSearch(searchInput.value)"
@@ -77,8 +85,13 @@ import { ButtonModule } from 'primeng/button';
                 autocomplete="off"
                 aria-label="Buscar normativas por código o descripción"
                 placeholder="Buscar por código o descripción…"
+                class="min-h-13 border-0 px-4 text-base shadow-none sm:min-h-14"
               />
-              <p-button type="submit" icon="pi pi-search" label="Buscar" />
+              <p-button
+                type="submit"
+                label="Buscar"
+                styleClass="min-h-13 px-5 font-semibold shadow-none sm:min-h-14 sm:px-7"
+              />
             </p-inputgroup>
           </form>
         </div>

@@ -7,12 +7,12 @@
 } @else if (landingResource.hasValue()) {
   @let landing = landingResource.value();
 
-  @if (landing.documentTypes.length > 0) {
-    <app-document-types-section [documentTypes]="landing.documentTypes" />
-  }
-
   @if (landing.featuredDocuments.length > 0) {
     <app-featured-documents-section [documents]="landing.featuredDocuments" />
+  }
+
+  @if (landing.documentTypes.length > 0) {
+    <app-document-types-section [documentTypes]="landing.documentTypes" />
   }
 
   @if (landing.recentDocuments.length > 0) {

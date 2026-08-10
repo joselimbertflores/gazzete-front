@@ -25,7 +25,7 @@ interface OfficialChannel {
         <div class="grid gap-9 md:grid-cols-2 lg:grid-cols-3">
           <section aria-labelledby="footer-brand" class="md:col-span-2 lg:col-span-1 lg:pr-8">
             <div class="flex items-center gap-4">
-              <institutional-logo />
+              <institutional-logo tone="inverse" />
 
               <div class="min-w-0">
                 <h2 id="footer-brand" class="text-lg font-semibold tracking-tight text-surface-0">

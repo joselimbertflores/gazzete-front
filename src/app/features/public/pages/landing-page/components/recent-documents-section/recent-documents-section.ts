@@ -11,11 +11,11 @@ import { PublicDocumentCard } from '../../../../types';
   standalone: true,
   imports: [RouterLink, TagModule, DatePipe],
   template: `
-<section class="border-b border-surface-200 bg-surface-100/80" aria-labelledby="recent-title">
-  <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+<section class="border-b border-surface-200 bg-surface-0" aria-labelledby="recent-title">
+  <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 id="recent-title" class="text-2xl font-semibold text-surface-950 sm:text-3xl">
+        <h2 id="recent-title" class="text-3xl font-bold tracking-tight text-surface-950 sm:text-4xl">
           Normativas recientes
         </h2>
         <p class="mt-2 text-sm leading-6 text-surface-600">
@@ -34,23 +34,25 @@ import { PublicDocumentCard } from '../../../../types';
       </a>
     </div>
 
-    <div class="mt-6 grid gap-3 sm:mt-8 sm:gap-4 lg:grid-cols-2">
+    <div class="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
       @for (document of documents(); track document.id) {
         <article
-          class="group rounded-lg border border-surface-200 bg-surface-0 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-50/40 hover:shadow-md hover:shadow-primary-900/10 sm:p-5"
+          class="group h-full rounded-xl border border-surface-200 bg-surface-50 p-4 shadow-sm shadow-surface-950/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-950/8 sm:p-5"
         >
-          <div class="flex items-start gap-4">
+          <div class="flex h-full items-start gap-3.5 sm:gap-4">
             <span
-              class="hidden h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-primary-200 bg-primary-50 text-primary-700 sm:inline-flex"
+              class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm sm:h-12 sm:w-12"
             >
-              <i class="pi pi-file-check text-lg" aria-hidden="true"></i>
+              <i class="pi pi-file-check" style="font-size: 1.15rem" aria-hidden="true"></i>
             </span>
-            <div class="min-w-0 flex-1">
-              <h3 class="mt-2 text-lg font-semibold leading-7 text-surface-950 sm:text-xl">
+            <div class="flex min-w-0 flex-1 flex-col self-stretch">
+              <h3 class="text-lg font-bold leading-7 text-surface-950 sm:text-xl">
                 {{ document.typeName }} {{ document.code }}
               </h3>
 
-                <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
+                <div
+                  class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-2 border-y border-surface-200 py-2.5 text-sm"
+                >
                   @switch (document.legalStatus) {
                     @case ('VALID') {
                       <p-tag severity="success" value="Vigente" [rounded]="true" />
@@ -70,27 +72,30 @@ import { PublicDocumentCard } from '../../../../types';
                   }
                   <span class="text-surface-400" aria-hidden="true">·</span>
                   <time
-                    class="block text-sm text-surface-500"
+                    class="block text-sm font-medium text-surface-500"
                     [attr.datetime]="document.publicationDate"
                   >
                     Publicado el {{ document.publicationDate | date: 'd MMM y' }}
                   </time>
                 </div>
 
-                <p class="mt-2 line-clamp-2 text-sm leading-6 text-surface-600">
+                <p class="mt-4 line-clamp-2 text-sm leading-6 text-surface-600">
                   {{ document.summary }}
                 </p>
-                <a
-                  [routerLink]="['/normativas', document.slug]"
-                  [state]="{ from: 'landing' }"
-                  class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary-700 transition-colors duration-300 group-hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 sm:mt-5"
-                >
-                  Ver detalle
-                  <i
-                    class="pi pi-arrow-right text-xs transition-transform duration-200 group-hover:translate-x-0.5"
-                    aria-hidden="true"
-                  ></i>
-                </a>
+                <div class="mt-auto border-t border-surface-200 pt-4 sm:pt-5">
+                  <a
+                    [routerLink]="['/normativas', document.slug]"
+                    [state]="{ from: 'landing' }"
+                    class="inline-flex items-center gap-2.5 text-sm font-bold text-primary-700 transition-colors duration-300 group-hover:text-primary-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
+                  >
+                    Ver detalle
+                    <i
+                      class="pi pi-arrow-right transition-transform duration-200 group-hover:translate-x-0.5"
+                      style="font-size: 0.75rem"
+                      aria-hidden="true"
+                    ></i>
+                  </a>
+                </div>
               </div>
             </div>
         </article>
