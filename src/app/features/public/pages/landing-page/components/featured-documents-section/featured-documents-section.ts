@@ -1,17 +1,14 @@
-import { DatePipe, isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
-  inject,
   input,
-  PLATFORM_ID,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { TagModule } from 'primeng/tag';
-import { register } from 'swiper/element/bundle';
-
 import { PublicDocumentCard } from '../../../../types';
 
 @Component({
@@ -176,8 +173,8 @@ export class FeaturedDocumentsSection {
   };
 
   constructor() {
-    if (isPlatformBrowser(inject(PLATFORM_ID))) {
-      register();
-    }
+    afterNextRender(() => {
+      void import('swiper/element/bundle').then(({ register }) => register());
+    });
   }
 }

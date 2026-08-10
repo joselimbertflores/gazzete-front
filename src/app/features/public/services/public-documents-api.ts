@@ -2,7 +2,7 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 
-import { of, shareReplay, tap } from 'rxjs';
+import { of, tap } from 'rxjs';
 
 import {
   DocTypeResponse,
@@ -46,9 +46,7 @@ export class PublicDocumentsApi {
   }
 
   getTypeOptions() {
-    return this.http
-      .get<DocTypeResponse[]>(`${this.URL}/types`)
-      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+    return this.http.get<DocTypeResponse[]>(`${this.URL}/types`);
   }
 
   getDocumentDetail(slug: string) {

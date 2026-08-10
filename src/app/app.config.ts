@@ -1,5 +1,6 @@
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideClientHydration } from '@angular/platform-browser';
 import {
   withComponentInputBinding,
   withInMemoryScrolling,
@@ -41,7 +42,8 @@ export const appConfig: ApplicationConfig = {
       }),
       withViewTransitions({ onViewTransitionCreated: handleTransitionCreated }),
     ),
-    provideHttpClient(withInterceptors([httpErrorInterceptor, authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor, authInterceptor])),
+    provideClientHydration(),
     { provide: LOCALE_ID, useValue: 'es' },
     providePrimeNG({
       translation: es,
