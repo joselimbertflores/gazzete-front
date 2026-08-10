@@ -11,15 +11,22 @@ export interface UploadResult {
   name: string;
 }
 
-interface DocumentDto {
-  title: string;
-  year: string;
-  typeId: string;
+interface EditableDocumentDto {
   summary?: string;
-  correlativeNumber: number;
+  status?: string;
+  publicationDate?: Date;
+  promulgationDate?: Date | null;
+  validUntil?: Date | null;
+  isFeatured?: boolean;
+}
+
+interface CreateDocumentDto extends EditableDocumentDto {
+  summary: string;
   publicationDate: Date;
-  promulgationDate: Date;
-  validUntil?: Date;
+  year: string;
+  typeId: number;
+  correlativeNumber: number;
+  suffix?: string | null;
 }
 
 interface GetDocumentsParams {
@@ -48,8 +55,8 @@ export class DocumentAdminApi {
     });
   }
 
-  create(dto: DocumentDto, pdf: File) {
-    return this.uploadDocument(pdf, +dto.year).pipe(
+  create(dto: CreateDocumentDto, pdf: File) {
+    return this.uploadDocumentForCreate(pdf, +dto.year).pipe(
       switchMap((fileUploaded) =>
         this.http.post<DocumentResponse>(`${this.URL}`, {
           ...dto,
@@ -60,15 +67,14 @@ export class DocumentAdminApi {
     );
   }
 
-  update(id: string, dto: Partial<DocumentDto>, file: File | null) {
-    const fileUploadObserbable: Observable<null | UploadResult> = file
-      ? this.uploadDocument(file, dto.year ? +dto.year : undefined)
+  update(id: string, dto: EditableDocumentDto, file: File | null) {
+    const fileUploadObservable: Observable<null | UploadResult> = file
+      ? this.uploadDocumentForUpdate(id, file)
       : of(null);
-    return fileUploadObserbable.pipe(
+    return fileUploadObservable.pipe(
       switchMap((fileUploaded) =>
         this.http.patch<DocumentResponse>(`${this.URL}/${id}`, {
           ...dto,
-          ...(dto.year && { year: +dto.year }),
           ...(fileUploaded && { fileId: fileUploaded.id }),
         }),
       ),
@@ -85,13 +91,18 @@ export class DocumentAdminApi {
     );
   }
 
-  private uploadDocument(pdf: File, year: number | undefined) {
+  private uploadDocumentForCreate(pdf: File, year: number) {
     const formData = new FormData();
     formData.append('file', pdf);
-    const params = new HttpParams({ fromObject: { ...(year && { year: year.toString() }) } });
+    const params = new HttpParams({ fromObject: { year: year.toString() } });
 
-    return this.http.post<UploadResult>(`${environment.baseUrl}/api/files/documents`, formData, {
-      params,
-    });
+    return this.http.post<UploadResult>(`${this.URL}/files`, formData, { params });
+  }
+
+  private uploadDocumentForUpdate(id: string, pdf: File) {
+    const formData = new FormData();
+    formData.append('file', pdf);
+
+    return this.http.post<UploadResult>(`${this.URL}/${id}/file`, formData);
   }
 }

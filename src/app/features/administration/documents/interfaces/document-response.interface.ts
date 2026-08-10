@@ -21,13 +21,16 @@ export interface DocumentResponse {
   };
   typeId: number;
   correlativeNumber: number;
+  suffix: string | null;
   year: number;
   numberingScope: string;
+  slug: string | null;
   status: string;
   legalStatus: string;
   promulgationDate: string | null;
   publicationDate: string;
   validUntil: string | null;
+  isFeatured: boolean;
   createdAt: string;
   updatedAt: string;
   code: string;
@@ -45,9 +48,10 @@ export interface DocumentDetailResponse {
   summary: string;
   typeId: number;
   correlativeNumber: number;
-  suffix: null;
+  suffix: string | null;
   year: number;
   code: string;
+  slug: string | null;
   numberingScope: string;
   status: string;
   legalStatus: string;
@@ -55,6 +59,7 @@ export interface DocumentDetailResponse {
   publicationDate: string;
   promulgationDate: null;
   validUntil: null;
+  isFeatured: boolean;
   createdAt: string;
   updatedAt: string;
   createdBy: string | null;

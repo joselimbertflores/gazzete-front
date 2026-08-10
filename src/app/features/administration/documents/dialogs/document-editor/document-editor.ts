@@ -89,14 +89,20 @@ export class DocumentEditor implements OnInit {
   file: File | null = null;
   form: FormGroup = this.formBuilder.group({
     summary: ['', Validators.required],
-    typeId: ['', Validators.required],
     status: ['PUBLISHED'],
-    correlativeNumber: [null, [Validators.required, Validators.min(1)]],
-    year: [this.currentDate.getFullYear().toString(), Validators.required],
     promulgationDate: [null, [isBefore('publicationDate')]],
     publicationDate: [this.currentDate, Validators.required],
     validUntil: [null, isAfter('publicationDate')],
     isFeatured: [false],
+    ...(!this.data && {
+      typeId: ['', Validators.required],
+      correlativeNumber: [null, [Validators.required, Validators.min(1)]],
+      suffix: [
+        '',
+        [Validators.maxLength(5), Validators.pattern(/^[A-Z0-9]+(?:-[A-Z0-9]+)*$/i)],
+      ],
+      year: [this.currentDate.getFullYear().toString(), Validators.required],
+    }),
   });
 
   types = this.documentApi.documentTypes;
@@ -121,6 +127,11 @@ export class DocumentEditor implements OnInit {
   }
 
   save() {
+    const suffixControl = this.form.get('suffix');
+    if (typeof suffixControl?.value === 'string') {
+      suffixControl.setValue(suffixControl.value.trim().toUpperCase() || null);
+    }
+
     if (this.form.invalid || (!this.file && !this.data)) {
       this.form.markAllAsTouched();
       return;

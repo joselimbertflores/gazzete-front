@@ -1,29 +1,140 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-4 pt-1">
-    <div class="sm:col-span-3">
+    @if (data) {
+      <div
+        class="sm:col-span-3 rounded-lg border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-800/60"
+      >
+        <div class="mb-3 flex items-center gap-2">
+          <i class="pi pi-lock text-primary" aria-hidden="true"></i>
+          <div>
+            <p class="text-sm font-semibold text-surface-900 dark:text-surface-0">
+              Identidad del documento
+            </p>
+            <p class="text-xs text-surface-500">Estos datos quedan fijos después del registro.</p>
+          </div>
+        </div>
+        <dl class="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
+          <div class="col-span-2 sm:col-span-1">
+            <dt class="text-xs text-surface-500">Tipo</dt>
+            <dd class="mt-0.5 text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{ data.type.name }}
+            </dd>
+          </div>
+          <div>
+            <dt class="text-xs text-surface-500">Código</dt>
+            <dd
+              class="mt-0.5 text-sm font-medium tabular-nums text-surface-900 dark:text-surface-0"
+            >
+              {{ data.code }}
+            </dd>
+          </div>
+          <div>
+            <dt class="text-xs text-surface-500">Gestión</dt>
+            <dd
+              class="mt-0.5 text-sm font-medium tabular-nums text-surface-900 dark:text-surface-0"
+            >
+              {{ data.year }}
+            </dd>
+          </div>
+          <div>
+            <dt class="text-xs text-surface-500">Sufijo</dt>
+            <dd class="mt-0.5 text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{ data.suffix || '—' }}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    } @else {
+      <div class="sm:col-span-3">
+        <div class="flex flex-col gap-1">
+          <p-floatlabel class="w-full" variant="on">
+            <p-select
+              [options]="types()"
+              [filter]="true"
+              emptyFilterMessage="Sin resultados"
+              inputId="typeTxt"
+              optionLabel="name"
+              optionValue="id"
+              [fluid]="true"
+              appendTo="body"
+              formControlName="typeId"
+              [invalid]="formUtils.isInvalid(form.get('typeId'))"
+            />
+            <label for="typeTxt">Tipo de documento *</label>
+          </p-floatlabel>
+          @if (formUtils.isInvalid(form.get('typeId'))) {
+            <p-message severity="error" size="small" variant="simple">
+              {{ formUtils.getErrorMessage(form.get('typeId')) }}
+            </p-message>
+          }
+        </div>
+      </div>
+
       <div class="flex flex-col gap-1">
-        <p-floatlabel class="w-full" variant="on">
-          <p-select
-            [options]="types()"
-            [filter]="true"
-            emptyFilterMessage="Sin resultados"
-            inputId="typeTxt"
-            optionLabel="name"
-            optionValue="id"
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            formControlName="correlativeNumber"
+            inputId="correlativeTxt"
+            [autocomplete]="'off'"
+            mode="decimal"
+            [useGrouping]="false"
             [fluid]="true"
-            appendTo="body"
-            formControlName="typeId"
-            [invalid]="formUtils.isInvalid(form.get('typeId'))"
+            [min]="1"
+            [invalid]="formUtils.isInvalid(form.get('correlativeNumber'))"
           />
-          <label for="typeTxt">Tipo de documento *</label>
+          <label for="correlativeTxt">Correlativo *</label>
         </p-floatlabel>
-        @if (formUtils.isInvalid(form.get('typeId'))) {
+        @if (formUtils.isInvalid(form.get('correlativeNumber'))) {
           <p-message severity="error" size="small" variant="simple">
-            {{ formUtils.getErrorMessage(form.get('typeId')) }}
+            {{ formUtils.getErrorMessage(form.get('correlativeNumber')) }}
           </p-message>
         }
       </div>
-    </div>
+
+      <div class="flex flex-col gap-1">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="suffixTxt"
+            formControlName="suffix"
+            maxlength="5"
+            class="w-full"
+            autocomplete="off"
+            [invalid]="formUtils.isInvalid(form.get('suffix'))"
+          />
+          <label for="suffixTxt">Sufijo</label>
+        </p-floatlabel>
+        @if (formUtils.isInvalid(form.get('suffix'))) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ formUtils.getErrorMessage(form.get('suffix')) }}
+          </p-message>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="yearInput"
+            view="year"
+            dateFormat="yy"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            formControlName="year"
+            [fluid]="true"
+            dataType="string"
+            [invalid]="formUtils.isInvalid(form.get('year'))"
+          />
+          <label for="yearInput">Gestión *</label>
+        </p-floatlabel>
+        @if (formUtils.isInvalid(form.get('year'))) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ formUtils.getErrorMessage(form.get('year')) }}
+          </p-message>
+        }
+      </div>
+    }
+
     <div class="sm:col-span-3">
       <div class="flex flex-col gap-1">
         <p-floatlabel variant="on">
@@ -44,51 +155,6 @@
         }
       </div>
     </div>
-    <div class="flex flex-col gap-1">
-      <p-floatlabel variant="on">
-        <p-inputnumber
-          formControlName="correlativeNumber"
-          inputId="correlativeTxt"
-          [autocomplete]="'off'"
-          mode="decimal"
-          [useGrouping]="false"
-          [fluid]="true"
-          [min]="1"
-          [invalid]="formUtils.isInvalid(form.get('correlativeNumber'))"
-        />
-
-        <label for="correlativeTxt">Correlativo *</label>
-      </p-floatlabel>
-      @if (formUtils.isInvalid(form.get('correlativeNumber'))) {
-        <p-message severity="error" size="small" variant="simple">
-          {{ formUtils.getErrorMessage(form.get('correlativeNumber')) }}
-        </p-message>
-      }
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <p-floatlabel variant="on">
-        <p-datepicker
-          inputId="yearInput"
-          view="year"
-          dateFormat="yy"
-          showIcon
-          iconDisplay="input"
-          appendTo="body"
-          formControlName="year"
-          [fluid]="true"
-          dataType="string"
-          [invalid]="formUtils.isInvalid(form.get('year'))"
-        />
-        <label for="yearInput">Gestión</label>
-      </p-floatlabel>
-      @if (formUtils.isInvalid(form.get('year'))) {
-        <p-message severity="error" size="small" variant="simple">
-          {{ formUtils.getErrorMessage(form.get('year')) }}
-        </p-message>
-      }
-    </div>
-
     <div class="flex flex-col gap-1">
       <p-floatlabel variant="on">
         <p-select
