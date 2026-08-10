@@ -41,26 +41,26 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
     @let item = document();
 
     <article
-      class="flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm hover:border-primary-200 hover:shadow-md"
+      class="group flex flex-col overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-sm shadow-surface-950/5 transition duration-200 ease-out focus-within:border-primary-300 focus-within:shadow-lg hover:border-primary-300 hover:bg-primary-50/15 hover:shadow-lg hover:shadow-primary-950/10 motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none"
     >
-      <div class="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-start md:gap-6">
+      <div class="flex flex-col gap-5 p-5 sm:p-6 md:flex-row md:items-start md:gap-6">
         <div class="flex shrink-0 items-center gap-3 md:w-20 md:flex-col md:justify-center">
           <div
-            class="flex h-12 w-12 items-center justify-center rounded-lg border border-surface-100 bg-surface-50 text-surface-500 sm:h-14 sm:w-14 md:h-16 md:w-16"
+            class="flex h-14 w-14 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 shadow-sm transition-colors duration-200 group-hover:border-primary-200 group-hover:bg-primary-100 group-hover:text-primary-800 md:h-16 md:w-16"
           >
-            <i class="pi pi-file-pdf" style="font-size: 1.65rem" aria-hidden="true"></i>
+            <i class="pi pi-file-pdf" style="font-size: 1.85rem" aria-hidden="true"></i>
           </div>
 
-          <span class="text-xs font-medium text-surface-500">
+          <span class="text-xs font-semibold text-surface-500">
             {{ item.file.sizeBytes | fileSize }}
           </span>
         </div>
 
-        <div class="flex min-w-0 flex-1 flex-col gap-2">
+        <div class="flex min-w-0 flex-1 flex-col gap-2.5">
           <div
             class="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3"
           >
-            <h2 class="text-pretty text-lg font-bold leading-tight text-surface-900 md:text-xl">
+            <h2 class="text-pretty text-lg font-bold leading-tight tracking-tight text-surface-950 md:text-xl">
               {{ item.typeName }} {{ item.code }}
             </h2>
 
@@ -68,27 +68,39 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
             <p-tag [severity]="statusUi.severity" [value]="statusUi.label" [rounded]="true" />
           </div>
 
-          <p class="line-clamp-3 text-sm leading-relaxed text-surface-600 sm:line-clamp-2">
+          <p class="line-clamp-3 text-sm leading-6 text-surface-600 sm:line-clamp-2">
             {{ item.summary || 'Sin resumen registrado.' }}
           </p>
 
-          <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-surface-500">
+          <div class="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-surface-500">
             <span class="inline-flex items-center gap-1.5">
-              <i class="pi pi-calendar text-xs" aria-hidden="true"></i>
+              <i
+                class="pi pi-calendar text-primary-600"
+                style="font-size: 0.75rem"
+                aria-hidden="true"
+              ></i>
               <span>
-                <span class="font-medium text-surface-600">Publicado:</span>
+                <span class="font-semibold text-surface-600">Publicado:</span>
                 {{ item.publicationDate | date: 'dd/MM/yyyy' }}
               </span>
             </span>
 
             <span class="inline-flex items-center gap-1.5">
-              <i class="pi pi-calendar-clock text-xs" aria-hidden="true"></i>
+              <i
+                class="pi pi-calendar-clock text-primary-600"
+                style="font-size: 0.75rem"
+                aria-hidden="true"
+              ></i>
               Gestión {{ item.year }}
             </span>
 
             @if (showsDownloadCount(item)) {
               <span class="inline-flex items-center gap-1.5">
-                <i class="pi pi-download text-xs" aria-hidden="true"></i>
+                <i
+                  class="pi pi-download text-primary-600"
+                  style="font-size: 0.75rem"
+                  aria-hidden="true"
+                ></i>
                 {{ item.downloadCount }} descargas
               </span>
             }
@@ -96,7 +108,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
         </div>
 
         <div
-          class="flex shrink-0 flex-col gap-2 border-t border-surface-100 pt-4 md:w-40 md:border-l md:border-t-0 md:pl-6 md:pt-0"
+          class="flex shrink-0 flex-col gap-2.5 border-t border-surface-100 pt-5 md:w-40 md:border-l md:border-t-0 md:pl-6 md:pt-0"
         >
           <a
             pButton
@@ -106,28 +118,30 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
             class="w-full justify-center"
             [routerLink]="['/normativas', item.slug]"
             [state]="{ from: 'documents-list' }"
-            icon="pi pi-arrow-right"
-            label="Ver detalle"
-          ></a>
+          >
+            <i pButtonIcon class="pi pi-arrow-right" aria-hidden="true"></i>
+            <span pButtonLabel>Ver detalle</span>
+          </a>
 
           <a
             pButton
             size="small"
             class="w-full justify-center"
-            icon="pi pi-download"
-            label="Descargar"
             [href]="item.file.url + '?download=true'"
             rel="noopener noreferrer"
-          ></a>
+          >
+            <i pButtonIcon class="pi pi-download" aria-hidden="true"></i>
+            <span pButtonLabel>Descargar</span>
+          </a>
         </div>
       </div>
 
       @if (item.validUntil || item.incomingRelation) {
-        <div class="border-t border-surface-100 p-2 pt-0 sm:p-4 sm:pt-0">
+        <div class="border-t border-surface-100 px-5 pb-5 sm:px-6 sm:pb-6">
           <div class="space-y-2 pt-4">
             @if (item.incomingRelation; as relation) {
               <div
-                class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm leading-6 text-amber-950"
+                class="rounded-lg border border-accent-200 bg-accent-50 px-3 py-2.5 text-sm leading-6 text-accent-950"
               >
                 <p>
                   {{ relationDescription(relation) }}
@@ -141,7 +155,7 @@ const INCOMING_RELATION_DESCRIPTIONS: Record<string, string> = {
                 </p>
 
                 @if (relation.note) {
-                  <p class="mt-1 text-sm leading-5 text-amber-900/80">
+                  <p class="mt-1 text-sm leading-5 text-accent-900/80">
                     <span class="font-medium">Nota:</span>
                     {{ relation.note }}
                   </p>
