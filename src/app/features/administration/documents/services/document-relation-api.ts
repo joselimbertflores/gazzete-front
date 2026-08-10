@@ -14,10 +14,6 @@ interface SaveDocRelationDto {
   note?: string | null;
 }
 
-interface CreateDocRelationDto extends SaveDocRelationDto {
-  targetDocumentId: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })

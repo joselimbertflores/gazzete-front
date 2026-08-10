@@ -39,8 +39,6 @@ export class PublicDocumentsApi {
   private readonly documentListCache = new Map<string, PublicDocumentsData>();
   private readonly maxDocumentListCacheEntries = 30;
 
-  constructor() {}
-
   getLandingData() {
     return this.http.get<LandingDataResponse>(`${this.URL}/landing`);
   }

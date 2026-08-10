@@ -7,12 +7,17 @@ import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-  const reqWithHeader = req.clone({
-    withCredentials: true,
-  });
-  return next(reqWithHeader).pipe(
+  const isPublicRequest = req.url.includes('/api/public-documents');
+  const request = isPublicRequest ? req : req.clone({ withCredentials: true });
+
+  return next(request).pipe(
     catchError((error: unknown) => {
-      if (isBrowser && error instanceof HttpErrorResponse && error.status === 401) {
+      if (
+        isBrowser &&
+        !isPublicRequest &&
+        error instanceof HttpErrorResponse &&
+        error.status === 401
+      ) {
         window.location.href = `${environment.baseUrl}/auth/login`;
       }
 
