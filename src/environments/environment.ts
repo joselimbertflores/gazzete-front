@@ -1,5 +1,5 @@
 export const environment = {
-  baseUrl: '',
-  publicBaseUrl: '',
-  identityHubUrl: 'http://localhost:8000',
+  baseUrl: 'https://gaceta.sacaba.gob.bo',
+  publicBaseUrl: 'https://gaceta.sacaba.gob.bo',
+  identityHubUrl: 'http://10.0.38.23:8000',
 };
