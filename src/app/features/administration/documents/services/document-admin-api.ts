@@ -14,15 +14,15 @@ export interface UploadResult {
 interface EditableDocumentDto {
   summary?: string;
   status?: string;
-  publicationDate?: Date;
-  promulgationDate?: Date | null;
-  validUntil?: Date | null;
+  publicationDate?: string;
+  promulgationDate?: string | null;
+  validUntil?: string | null;
   isFeatured?: boolean;
 }
 
 interface CreateDocumentDto extends EditableDocumentDto {
   summary: string;
-  publicationDate: Date;
+  publicationDate: string;
   year: string;
   typeId: number;
   correlativeNumber: number;

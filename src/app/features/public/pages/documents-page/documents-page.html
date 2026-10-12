@@ -72,7 +72,7 @@
         <!-- Filtros avanzados -->
         <div
           id="advancedFilters"
-          class="space-y-4 md:contents"
+          class="min-w-0 space-y-4 md:contents"
           [class.max-md:hidden]="!showAdvancedFilters()"
         >
           <!-- Tipo -->
@@ -95,8 +95,13 @@
               [filter]="true"
               filterBy="label"
               appendTo="body"
-              class="block w-full"
-            />
+              [fluid]="true"
+              panelStyleClass="max-w-[calc(100vw-2rem)]"
+            >
+              <ng-template #item let-option>
+                <span class="min-w-0 wrap-break-word whitespace-normal">{{ option.label }}</span>
+              </ng-template>
+            </p-select>
           </div>
 
           <!-- Gestión -->

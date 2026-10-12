@@ -27,14 +27,26 @@ import { DocumentResponse } from '../../interfaces';
 import { FormUtils } from '../../../../../helpers';
 import { DocumentAdminApi } from '../../services';
 
+function toCalendarDate(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function toDateOnly(value: Date): string {
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, '0');
+  const day = String(value.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function isBefore(targetControlName: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const target = control.parent?.get(targetControlName);
 
     if (!control.value || !target?.value) return null;
 
-    const current = new Date(control.value).getTime();
-    const targetDate = new Date(target.value).getTime();
+    const current = control.value.getTime();
+    const targetDate = target.value.getTime();
 
     return current > targetDate ? { isBefore: true } : null;
   };
@@ -46,8 +58,8 @@ function isAfter(targetControlName: string): ValidatorFn {
 
     if (!control.value || !target?.value) return null;
 
-    const current = new Date(control.value).getTime();
-    const targetDate = new Date(target.value).getTime();
+    const current = control.value.getTime();
+    const targetDate = target.value.getTime();
 
     return current < targetDate ? { isAfter: true } : null;
   };
@@ -137,9 +149,16 @@ export class DocumentEditor implements OnInit {
       return;
     }
 
+    const formValue = this.form.value;
+    const dto = {
+      ...formValue,
+      publicationDate: toDateOnly(formValue.publicationDate),
+      promulgationDate: formValue.promulgationDate ? toDateOnly(formValue.promulgationDate) : null,
+      validUntil: formValue.validUntil ? toDateOnly(formValue.validUntil) : null,
+    };
     const saveObservable = this.data
-      ? this.documentApi.update(this.data.id, this.form.value, this.file)
-      : this.documentApi.create(this.form.value, this.file!);
+      ? this.documentApi.update(this.data.id, dto, this.file)
+      : this.documentApi.create(dto, this.file!);
     saveObservable.subscribe((resp) => {
       this.diagloRef.close(resp);
     });
@@ -150,9 +169,9 @@ export class DocumentEditor implements OnInit {
     const { year, publicationDate, promulgationDate, validUntil, ...props } = this.data;
     this.form.patchValue({
       ...props,
-      publicationDate: new Date(publicationDate),
-      promulgationDate: promulgationDate ? new Date(promulgationDate) : null,
-      validUntil: validUntil ? new Date(validUntil) : null,
+      publicationDate: toCalendarDate(publicationDate),
+      promulgationDate: promulgationDate ? toCalendarDate(promulgationDate) : null,
+      validUntil: validUntil ? toCalendarDate(validUntil) : null,
     });
   }
 }
